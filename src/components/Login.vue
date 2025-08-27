@@ -19,8 +19,11 @@
                   type="text" 
                   id="firstName" 
                   v-model="firstName"
+                  @blur="() => validateFirstName(true)"
+                  @input="() => validateFirstName(false)"
                   required
                 >
+                <div v-if="errors.firstName" class="error-message">{{ errors.firstName }}</div>
               </div>
               <div class="form-group">
                 <label for="lastName">Last name</label>
@@ -28,8 +31,11 @@
                   type="text" 
                   id="lastName" 
                   v-model="lastName"
+                  @blur="() => validateLastName(true)"
+                  @input="() => validateLastName(false)"
                   required
                 >
+                <div v-if="errors.lastName" class="error-message">{{ errors.lastName }}</div>
               </div>
             </div>
             
@@ -39,8 +45,11 @@
                 type="email" 
                 id="email" 
                 v-model="email"
+                @blur="() => validateEmail(true)"
+                @input="() => validateEmail(false)"
                 required
               >
+              <div v-if="errors.email" class="error-message">{{ errors.email }}</div>
             </div>
             
             <div class="form-row">
@@ -50,8 +59,11 @@
                   :type="showPassword ? 'text' : 'password'" 
                   id="password" 
                   v-model="password"
+                  @blur="() => validatePassword(true)"
+                  @input="() => validatePassword(false)"
                   required
                 >
+                <div v-if="errors.password" class="error-message">{{ errors.password }}</div>
               </div>
               <div class="form-group">
                 <label for="confirmPassword">Confirm your password</label>
@@ -59,8 +71,11 @@
                   :type="showPassword ? 'text' : 'password'" 
                   id="confirmPassword" 
                   v-model="confirmPassword"
+                  @blur="() => validateConfirmPassword(true)"
+                  @input="() => validateConfirmPassword(false)"
                   required
                 >
+                <div v-if="errors.confirmPassword" class="error-message">{{ errors.confirmPassword }}</div>
               </div>
             </div>
             
@@ -89,6 +104,7 @@
 </template>
 
 <script>
+import { ref } from 'vue'
 import MainHeader from './MainHeader.vue'
 
 export default {
@@ -96,42 +112,155 @@ export default {
   components: {
     MainHeader
   },
-  data() {
-    return {
-      firstName: '',
-      lastName: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-      showPassword: false,
-      isLoginMode: false
+  setup(props, { emit }) {
+    const firstName = ref('')
+    const lastName = ref('')
+    const email = ref('')
+    const password = ref('')
+    const confirmPassword = ref('')
+    const showPassword = ref(false)
+    const isLoginMode = ref(false)
+
+    const errors = ref({
+      firstName: null,
+      lastName: null,
+      email: null,
+      password: null,
+      confirmPassword: null
+    })
+
+    const validateFirstName = (blur) => {
+      if (firstName.value.length < 2) {
+        if (blur) errors.value.firstName = "First name must be at least 2 characters"
+      } else if (!/^[a-zA-Z\s]+$/.test(firstName.value)) {
+        if (blur) errors.value.firstName = "First name can only contain letters and spaces"
+      } else {
+        errors.value.firstName = null
+      }
     }
-  },
-  methods: {
-    goToHome() {
-      this.$emit('navigate-to-home');
-    },
-    switchToLogin() {
-      this.isLoginMode = !this.isLoginMode;
-      // Here you could switch between login and register forms
-      console.log('Switching to login mode');
-    },
-    handleSubmit() {
-      if (this.password !== this.confirmPassword) {
-        alert('Passwords do not match!');
-        return;
+
+    const validateLastName = (blur) => {
+      if (lastName.value.length < 2) {
+        if (blur) errors.value.lastName = "Last name must be at least 2 characters"
+      } else if (!/^[a-zA-Z\s]+$/.test(lastName.value)) {
+        if (blur) errors.value.lastName = "Last name can only contain letters and spaces"
+      } else {
+        errors.value.lastName = null
+      }
+    }
+
+    const validateEmail = (blur) => {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+      if (!email.value) {
+        if (blur) errors.value.email = "Email address is required"
+      } else if (!emailRegex.test(email.value)) {
+        if (blur) errors.value.email = "Please enter a valid email address"
+      } else {
+        errors.value.email = null
+      }
+    }
+
+    const validatePassword = (blur) => {
+      const minLength = 8
+      const hasUpperCase = /[A-Z]/.test(password.value)
+      const hasLowerCase = /[a-z]/.test(password.value)
+      const hasNumber = /\d/.test(password.value)
+      const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password.value)
+
+      if (password.value.length < minLength) {
+        if (blur) errors.value.password = `Password must be at least ${minLength} characters long`
+      } else if (!hasUpperCase) {
+        if (blur) errors.value.password = "Password must contain at least one uppercase letter"
+      } else if (!hasLowerCase) {
+        if (blur) errors.value.password = "Password must contain at least one lowercase letter"
+      } else if (!hasNumber) {
+        if (blur) errors.value.password = "Password must contain at least one number"
+      } else if (!hasSpecialChar) {
+        if (blur) errors.value.password = "Password must contain at least one special character"
+      } else {
+        errors.value.password = null
       }
       
-      // Handle form submission
-      console.log('Form submitted:', {
-        firstName: this.firstName,
-        lastName: this.lastName,
-        email: this.email,
-        password: this.password
-      });
-      
-      // You would typically send this data to your backend
-      alert('Account creation submitted! (This is just a demo)');
+      // Also validate confirm password when password changes
+      if (confirmPassword.value) {
+        validateConfirmPassword(false)
+      }
+    }
+
+    const validateConfirmPassword = (blur) => {
+      if (!confirmPassword.value) {
+        if (blur) errors.value.confirmPassword = "Please confirm your password"
+      } else if (confirmPassword.value !== password.value) {
+        if (blur) errors.value.confirmPassword = "Passwords do not match"
+      } else {
+        errors.value.confirmPassword = null
+      }
+    }
+
+    const goToHome = () => {
+      emit('navigate-to-home')
+    }
+
+    const switchToLogin = () => {
+      isLoginMode.value = !isLoginMode.value
+      console.log('Switching to login mode')
+    }
+
+    const handleSubmit = () => {
+      // Validate all fields
+      validateFirstName(true)
+      validateLastName(true)
+      validateEmail(true)
+      validatePassword(true)
+      validateConfirmPassword(true)
+
+      // Check if there are any errors
+      const hasErrors = Object.values(errors.value).some(error => error !== null)
+
+      if (!hasErrors) {
+        // Handle successful form submission
+        console.log('Form submitted successfully:', {
+          firstName: firstName.value,
+          lastName: lastName.value,
+          email: email.value,
+          password: password.value
+        })
+        
+        alert('Account created successfully! (This is just a demo)')
+        
+        // Clear form after successful submission
+        firstName.value = ''
+        lastName.value = ''
+        email.value = ''
+        password.value = ''
+        confirmPassword.value = ''
+        
+        // Clear any remaining errors
+        Object.keys(errors.value).forEach(key => {
+          errors.value[key] = null
+        })
+      } else {
+        console.log('Form has validation errors')
+      }
+    }
+
+    return {
+      firstName,
+      lastName,
+      email,
+      password,
+      confirmPassword,
+      showPassword,
+      isLoginMode,
+      errors,
+      validateFirstName,
+      validateLastName,
+      validateEmail,
+      validatePassword,
+      validateConfirmPassword,
+      goToHome,
+      switchToLogin,
+      handleSubmit
     }
   }
 }
@@ -230,6 +359,17 @@ export default {
 .form-group input:focus {
   outline: none;
   border-color: #007bff;
+}
+
+.error-message {
+  color: #dc3545;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+.form-group input.error {
+  border-color: #dc3545;
 }
 
 .password-requirement {
