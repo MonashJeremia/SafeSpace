@@ -3,69 +3,79 @@
     <MainHeader @navigate-to-home="goToHome" />
     
     <main class="login-content">
-      <div class="login-form-container">
-        <div class="login-form">
-          <div class="user-icon-large">👤</div>
-          <h2>Login to your account</h2>
-          <p class="login-subtitle">
-            Don't have an account? <a href="#" @click.prevent="switchToSignUp" class="login-link">Sign up</a>
-          </p>
-          
-          <form @submit.prevent="handleSubmit">
-            <div class="form-group">
-              <label for="email">Email address</label>
-              <input 
-                type="email" 
-                id="email" 
-                v-model="email"
-                @blur="() => validateEmail(true)"
-                @input="() => validateEmail(false)"
-                required
-              >
-              <div v-if="errors.email" class="error-message">{{ errors.email }}</div>
-            </div>
-            
-            <div class="form-group">
-              <label for="password">Password</label>
-              <input 
-                :type="showPassword ? 'text' : 'password'" 
-                id="password" 
-                v-model="password"
-                @blur="() => validatePassword(true)"
-                @input="() => validatePassword(false)"
-                required
-              >
-              <div v-if="errors.password" class="error-message">{{ errors.password }}</div>
-            </div>
-            
-            <div class="form-options">
-              <div class="checkbox-group">
-                <input 
-                  type="checkbox" 
-                  id="showPassword" 
-                  v-model="showPassword"
-                >
-                <label for="showPassword">Show password</label>
+      <div class="container-fluid">
+        <div class="row justify-content-center">
+          <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+            <div class="login-form-container">
+              <div class="login-form">
+                <div class="user-icon-large">👤</div>
+                <h2>Login to your account</h2>
+                <p class="login-subtitle">
+                  Don't have an account? <a href="#" @click.prevent="switchToSignUp" class="login-link">Sign up</a>
+                </p>
+                
+                <form @submit.prevent="handleSubmit">
+                  <div class="form-group">
+                    <label for="email">Email address</label>
+                    <input 
+                      type="email" 
+                      id="email" 
+                      v-model="email"
+                      @blur="() => validateEmail(true)"
+                      @input="() => validateEmail(false)"
+                      required
+                    >
+                    <div v-if="errors.email" class="error-message">{{ errors.email }}</div>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="password">Password</label>
+                    <input 
+                      :type="showPassword ? 'text' : 'password'" 
+                      id="password" 
+                      v-model="password"
+                      @blur="() => validatePassword(true)"
+                      @input="() => validatePassword(false)"
+                      required
+                    >
+                    <div v-if="errors.password" class="error-message">{{ errors.password }}</div>
+                  </div>
+                  
+                  <div class="row">
+                    <div class="col-12 col-sm-6">
+                      <div class="checkbox-group">
+                        <input 
+                          type="checkbox" 
+                          id="showPassword" 
+                          v-model="showPassword"
+                        >
+                        <label for="showPassword">Show password</label>
+                      </div>
+                    </div>
+                    
+                    <div class="col-12 col-sm-6">
+                      <div class="checkbox-group">
+                        <input 
+                          type="checkbox" 
+                          id="rememberMe" 
+                          v-model="rememberMe"
+                        >
+                        <label for="rememberMe">Remember me</label>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="forgot-password">
+                    <a href="#" @click.prevent="handleForgotPassword" class="forgot-link">Forgot your password?</a>
+                  </div>
+                  
+                  <div class="form-actions">
+                    <button type="submit" class="login-btn">Login</button>
+                  </div>
+                </form>
               </div>
-              
-              <div class="checkbox-group">
-                <input 
-                  type="checkbox" 
-                  id="rememberMe" 
-                  v-model="rememberMe"
-                >
-                <label for="rememberMe">Remember me</label>
-              </div>
             </div>
-            
-            <div class="forgot-password">
-              <a href="#" @click.prevent="handleForgotPassword" class="forgot-link">Forgot your password?</a>
-            </div>
-            
-            <div class="form-actions">
-              <button type="submit" class="login-btn">Login</button>
-            </div>
-          </form>
+          </div>
         </div>
       </div>
     </main>
@@ -195,14 +205,10 @@ export default {
 }
 
 .login-form-container {
-  display: flex;
-  justify-content: center;
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  max-width: 50vw;
-  min-width: 500px;
   width: 100%;
   min-height: 500px;
 }
@@ -278,15 +284,6 @@ export default {
   border-color: #dc3545;
 }
 
-.form-options {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
 .checkbox-group {
   display: flex;
   align-items: center;
@@ -344,39 +341,5 @@ export default {
 .login-btn:disabled {
   background-color: #e0e0e0;
   cursor: not-allowed;
-}
-
-/* Responsive design */
-@media (max-width: 1024px) {
-  .login-form-container {
-    max-width: 70vw;
-    min-width: 400px;
-  }
-}
-
-@media (max-width: 768px) {
-  .login-form-container {
-    margin: 1rem;
-    max-width: 90vw;
-    min-width: unset;
-  }
-  
-  .login-form {
-    padding: 2rem;
-  }
-  
-  .form-options {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
-  
-  .form-actions {
-    justify-content: center;
-  }
-  
-  .login-btn {
-    width: 100%;
-  }
 }
 </style>

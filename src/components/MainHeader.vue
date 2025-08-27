@@ -1,61 +1,65 @@
 <template>
   <header class="header-container">
-    <nav class="navigation">
-      <div class="nav-left">
-        <div class="logo-placeholder">Your Logo Here</div>
-        <h1>SafeSpace</h1>
-      </div>
-      <div class="nav-right">
-        <button class="help-btn">Help Now</button>
-        <button class="donate-btn">Donate now</button>
-        <button class="signup-btn" @click="goToSignUp">
-          <span class="user-icon">👤</span>
-          Sign Up / Login
-        </button>
-      </div>
-    </nav>
-    
-    <div class="nav-secondary">
-      <div class="home-icon" @click="goToHome">🏠</div>
-      <div class="nav-items">
-        <div class="dropdown nav-dropdown">
-          <button>For the Youth <span class="dropdown-arrow">▾</span></button>
-          <div class="dropdown-content">
-            <div class="dropdown-item">Youth Resource 1</div>
-            <div class="dropdown-item">Youth Resource 2</div>
-            <div class="dropdown-item">Youth Resource 3</div>
-          </div>
+    <div class="container-fluid">
+      <nav class="row navigation align-items-center">
+        <div class="col-md-6 nav-left d-flex align-items-center">
+          <div class="logo-placeholder me-3">Your Logo Here</div>
+          <h1 class="mb-0">SafeSpace</h1>
         </div>
-        <div class="dropdown nav-dropdown">
-          <button>For Community & Health Professionals <span class="dropdown-arrow">▾</span></button>
-          <div class="dropdown-content">
-            <div class="dropdown-item">Resource A</div>
-            <div class="dropdown-item">Resource B</div>
-            <div class="dropdown-item">Resource C</div>
-          </div>
+        <div class="col-md-6 nav-right d-flex justify-content-end">
+          <button class="btn help-btn me-2">Help Now</button>
+          <button class="btn donate-btn me-2">Donate now</button>
+          <button class="btn signup-btn" @click="goToSignUp">
+            <span class="user-icon">👤</span>
+            Sign Up
+          </button>
         </div>
-        <div class="dropdown nav-dropdown">
-          <button>For Educators <span class="dropdown-arrow">▾</span></button>
-          <div class="dropdown-content">
-            <div class="dropdown-item">Educator Resource 1</div>
-            <div class="dropdown-item">Educator Resource 2</div>
-            <div class="dropdown-item">Educator Resource 3</div>
-          </div>
-        </div>
-        <div class="dropdown nav-dropdown">
-          <button>Support & Resources <span class="dropdown-arrow">▾</span></button>
-          <div class="dropdown-content">
-            <div class="dropdown-item">Support Resource 1</div>
-            <div class="dropdown-item">Support Resource 2</div>
-            <div class="dropdown-item">Support Resource 3</div>
-          </div>
-        </div>
-        <div class="dropdown nav-dropdown">
-          <button>About Us <span class="dropdown-arrow">▾</span></button>
-          <div class="dropdown-content">
-            <div class="dropdown-item">Our Story</div>
-            <div class="dropdown-item">Team</div>
-            <div class="dropdown-item">Careers</div>
+      </nav>
+      
+      <div class="row nav-secondary align-items-center">
+        <div class="col-12 d-flex align-items-center">
+          <div class="home-icon me-4" @click="goToHome">🏠</div>
+          <div class="nav-items d-flex flex-wrap">
+            <div class="dropdown nav-dropdown me-4">
+              <button class="btn dropdown-toggle">For the Youth <span class="dropdown-arrow">▾</span></button>
+              <div class="dropdown-content">
+                <div class="dropdown-item">Youth Resource 1</div>
+                <div class="dropdown-item">Youth Resource 2</div>
+                <div class="dropdown-item">Youth Resource 3</div>
+              </div>
+            </div>
+            <div class="dropdown nav-dropdown me-4">
+              <button class="btn dropdown-toggle">For Community & Health Professionals <span class="dropdown-arrow">▾</span></button>
+              <div class="dropdown-content">
+                <div class="dropdown-item">Resource A</div>
+                <div class="dropdown-item">Resource B</div>
+                <div class="dropdown-item">Resource C</div>
+              </div>
+            </div>
+            <div class="dropdown nav-dropdown me-4">
+              <button class="btn dropdown-toggle">For Educators <span class="dropdown-arrow">▾</span></button>
+              <div class="dropdown-content">
+                <div class="dropdown-item">Educator Resource 1</div>
+                <div class="dropdown-item">Educator Resource 2</div>
+                <div class="dropdown-item">Educator Resource 3</div>
+              </div>
+            </div>
+            <div class="dropdown nav-dropdown me-4">
+              <button class="btn dropdown-toggle">Support & Resources <span class="dropdown-arrow">▾</span></button>
+              <div class="dropdown-content">
+                <div class="dropdown-item">Support Resource 1</div>
+                <div class="dropdown-item">Support Resource 2</div>
+                <div class="dropdown-item">Support Resource 3</div>
+              </div>
+            </div>
+            <div class="dropdown nav-dropdown">
+              <button class="btn dropdown-toggle">About Us <span class="dropdown-arrow">▾</span></button>
+              <div class="dropdown-content">
+                <div class="dropdown-item">Our Story</div>
+                <div class="dropdown-item">Team</div>
+                <div class="dropdown-item">Careers</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -88,9 +92,6 @@ export default {
 }
 
 .navigation {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   padding: 0.8rem 3rem;
   background-color: white;
   border-bottom: 1px solid #e0e0e0;
@@ -98,27 +99,7 @@ export default {
   box-sizing: border-box;
 }
 
-.nav-left {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-}
-
-.nav-left h1 {
-  margin: 0;
-  font-size: 2rem;
-  font-weight: bold;
-  color: #333;
-}
-
-.nav-right {
-  display: flex;
-  gap: 1.2rem;
-}
-
 .nav-secondary {
-  display: flex;
-  align-items: center;
   padding: 0 3rem;
   background-color: white;
   border-bottom: 3px solid #007bff;
@@ -129,7 +110,6 @@ export default {
 
 .home-icon {
   font-size: 2rem;
-  margin-right: 3rem;
   color: #333;
   cursor: pointer;
   transition: color 0.3s ease;
@@ -140,10 +120,7 @@ export default {
 }
 
 .nav-items {
-  display: flex;
-  gap: 3.5rem;
   padding: 0.6rem 0;
-  flex: 1;
 }
 
 .nav-dropdown {
@@ -231,16 +208,5 @@ export default {
   padding: 0.8rem 1rem;
   border-radius: 6px;
   background-color: #f9f9f9;
-}
-
-/* Responsive adjustments */
-@media (max-width: 1200px) {
-  .nav-items {
-    gap: 2.5rem;
-  }
-  
-  .dropdown button {
-    font-size: 1rem;
-  }
 }
 </style>

@@ -3,99 +3,113 @@
     <MainHeader @navigate-to-home="goToHome" />
     
     <main class="login-content">
-      <div class="login-form-container">
-        <div class="login-form">
-          <div class="user-icon-large">👤</div>
-          <h2>Create an account</h2>
-          <p class="login-subtitle">
-            Already have an account? <a href="#" @click.prevent="switchToLogin" class="login-link">Log in</a>
-          </p>
-          
-          <form @submit.prevent="handleSubmit">
-            <div class="form-row">
-              <div class="form-group">
-                <label for="firstName">First name</label>
-                <input 
-                  type="text" 
-                  id="firstName" 
-                  v-model="firstName"
-                  @blur="() => validateFirstName(true)"
-                  @input="() => validateFirstName(false)"
-                  required
-                >
-                <div v-if="errors.firstName" class="error-message">{{ errors.firstName }}</div>
+      <div class="container-fluid">
+        <div class="row justify-content-center">
+          <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+            <div class="login-form-container">
+              <div class="login-form">
+                <div class="user-icon-large">👤</div>
+                <h2>Create an account</h2>
+                <p class="login-subtitle">
+                  Already have an account? <a href="#" @click.prevent="switchToLogin" class="login-link">Log in</a>
+                </p>
+                
+                <form @submit.prevent="handleSubmit">
+                  <div class="row">
+                    <div class="col-12 col-sm-6">
+                      <div class="form-group">
+                        <label for="firstName">First name</label>
+                        <input 
+                          type="text" 
+                          id="firstName" 
+                          v-model="firstName"
+                          @blur="() => validateFirstName(true)"
+                          @input="() => validateFirstName(false)"
+                          required
+                        >
+                        <div v-if="errors.firstName" class="error-message">{{ errors.firstName }}</div>
+                      </div>
+                    </div>
+                    <div class="col-12 col-sm-6">
+                      <div class="form-group">
+                        <label for="lastName">Last name</label>
+                        <input 
+                          type="text" 
+                          id="lastName" 
+                          v-model="lastName"
+                          @blur="() => validateLastName(true)"
+                          @input="() => validateLastName(false)"
+                          required
+                        >
+                        <div v-if="errors.lastName" class="error-message">{{ errors.lastName }}</div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="email">Email address</label>
+                    <input 
+                      type="email" 
+                      id="email" 
+                      v-model="email"
+                      @blur="() => validateEmail(true)"
+                      @input="() => validateEmail(false)"
+                      required
+                    >
+                    <div v-if="errors.email" class="error-message">{{ errors.email }}</div>
+                  </div>
+                  
+                  <div class="row">
+                    <div class="col-12 col-sm-6">
+                      <div class="form-group">
+                        <label for="password">Password</label>
+                        <input 
+                          :type="showPassword ? 'text' : 'password'" 
+                          id="password" 
+                          v-model="password"
+                          @blur="() => validatePassword(true)"
+                          @input="() => validatePassword(false)"
+                          required
+                        >
+                        <div v-if="errors.password" class="error-message">{{ errors.password }}</div>
+                      </div>
+                    </div>
+                    <div class="col-12 col-sm-6">
+                      <div class="form-group">
+                        <label for="confirmPassword">Confirm your password</label>
+                        <input 
+                          :type="showPassword ? 'text' : 'password'" 
+                          id="confirmPassword" 
+                          v-model="confirmPassword"
+                          @blur="() => validateConfirmPassword(true)"
+                          @input="() => validateConfirmPassword(false)"
+                          required
+                        >
+                        <div v-if="errors.confirmPassword" class="error-message">{{ errors.confirmPassword }}</div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <p class="password-requirement">
+                    Use 8 or more characters with a mix of letters, numbers & symbols
+                  </p>
+                  
+                  <div class="checkbox-group">
+                    <input 
+                      type="checkbox" 
+                      id="showPassword" 
+                      v-model="showPassword"
+                    >
+                    <label for="showPassword">Show password</label>
+                  </div>
+                  
+                  <div class="form-actions">
+                    <button type="submit" class="create-account-btn">Create an account</button>
+                  </div>
+                </form>
               </div>
-              <div class="form-group">
-                <label for="lastName">Last name</label>
-                <input 
-                  type="text" 
-                  id="lastName" 
-                  v-model="lastName"
-                  @blur="() => validateLastName(true)"
-                  @input="() => validateLastName(false)"
-                  required
-                >
-                <div v-if="errors.lastName" class="error-message">{{ errors.lastName }}</div>
-              </div>
             </div>
-            
-            <div class="form-group">
-              <label for="email">Email address</label>
-              <input 
-                type="email" 
-                id="email" 
-                v-model="email"
-                @blur="() => validateEmail(true)"
-                @input="() => validateEmail(false)"
-                required
-              >
-              <div v-if="errors.email" class="error-message">{{ errors.email }}</div>
-            </div>
-            
-            <div class="form-row">
-              <div class="form-group">
-                <label for="password">Password</label>
-                <input 
-                  :type="showPassword ? 'text' : 'password'" 
-                  id="password" 
-                  v-model="password"
-                  @blur="() => validatePassword(true)"
-                  @input="() => validatePassword(false)"
-                  required
-                >
-                <div v-if="errors.password" class="error-message">{{ errors.password }}</div>
-              </div>
-              <div class="form-group">
-                <label for="confirmPassword">Confirm your password</label>
-                <input 
-                  :type="showPassword ? 'text' : 'password'" 
-                  id="confirmPassword" 
-                  v-model="confirmPassword"
-                  @blur="() => validateConfirmPassword(true)"
-                  @input="() => validateConfirmPassword(false)"
-                  required
-                >
-                <div v-if="errors.confirmPassword" class="error-message">{{ errors.confirmPassword }}</div>
-              </div>
-            </div>
-            
-            <p class="password-requirement">
-              Use 8 or more characters with a mix of letters, numbers & symbols
-            </p>
-            
-            <div class="checkbox-group">
-              <input 
-                type="checkbox" 
-                id="showPassword" 
-                v-model="showPassword"
-              >
-              <label for="showPassword">Show password</label>
-            </div>
-            
-            <div class="form-actions">
-              <button type="submit" class="create-account-btn">Create an account</button>
-            </div>
-          </form>
+          </div>
         </div>
       </div>
     </main>
@@ -281,14 +295,10 @@ export default {
 }
 
 .login-form-container {
-  display: flex;
-  justify-content: center;
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  max-width: 50vw;
-  min-width: 500px;
   width: 100%;
   min-height: 600px;
 }
@@ -327,14 +337,7 @@ export default {
   color: #0056b3;
 }
 
-.form-row {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
 .form-group {
-  flex: 1;
   margin-bottom: 1rem;
 }
 
@@ -419,38 +422,5 @@ export default {
 .create-account-btn:disabled {
   background-color: #e0e0e0;
   cursor: not-allowed;
-}
-
-/* Responsive design */
-@media (max-width: 1024px) {
-  .login-form-container {
-    max-width: 70vw;
-    min-width: 400px;
-  }
-}
-
-@media (max-width: 768px) {
-  .login-form-container {
-    margin: 1rem;
-    max-width: 90vw;
-    min-width: unset;
-  }
-  
-  .form-row {
-    flex-direction: column;
-    gap: 0;
-  }
-  
-  .login-form {
-    padding: 2rem;
-  }
-  
-  .form-actions {
-    justify-content: center;
-  }
-  
-  .create-account-btn {
-    width: 100%;
-  }
 }
 </style>
