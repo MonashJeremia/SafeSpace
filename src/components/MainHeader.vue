@@ -16,7 +16,7 @@
     </nav>
     
     <div class="nav-secondary">
-      <div class="home-icon">🏠</div>
+      <div class="home-icon" @click="goToHome">🏠</div>
       <div class="nav-items">
         <div class="dropdown nav-dropdown">
           <button>For the Youth <span class="dropdown-arrow">▾</span></button>
@@ -70,29 +70,12 @@ export default {
     goToLogin() {
       // Emit an event to parent component
       this.$emit('navigate-to-login');
-      
-      // Also try multiple navigation methods
       console.log('Login button clicked');
-      
-      // Method 1: Try Vue Router
-      try {
-        if (this.$router) {
-          this.$router.push('/login');
-          return;
-        }
-      } catch (error) {
-        console.log('Router not available:', error);
-      }
-      
-      // Method 2: Try direct page navigation
-      try {
-        window.location.hash = '#/login';
-      } catch (error) {
-        console.log('Hash navigation failed:', error);
-      }
-      
-      // Method 3: Show alert as fallback
-      alert('Login page would open here. Please check your router configuration.');
+    },
+    goToHome() {
+      // Emit event to navigate back to home
+      this.$emit('navigate-to-home');
+      console.log('Home navigation clicked');
     }
   }
 }
@@ -148,6 +131,12 @@ export default {
   font-size: 2rem;
   margin-right: 3rem;
   color: #333;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.home-icon:hover {
+  color: #007bff;
 }
 
 .nav-items {
