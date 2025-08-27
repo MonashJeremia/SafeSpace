@@ -1,21 +1,23 @@
 <template>
   <div class="main-container">
-    <MainPageHeader />
+    <MainHeader />
     
     <main class="content">
-      <h1 class="main-heading">This is your SafeSpace</h1>
+      <div class="content-wrapper">
+        <h1 class="main-heading">This is your SafeSpace</h1>
+      </div>
       <div class="contact">Contact us</div>
     </main>
   </div>
 </template>
 
 <script>
-import MainPageHeader from './MainPageHeader.vue'
+import MainHeader from './MainHeader.vue'
 
 export default {
-  name: 'MainPage',
+  name: 'Main',
   components: {
-    MainPageHeader
+    MainHeader
   }
 }
 </script>
@@ -28,8 +30,18 @@ export default {
 }
 
 .content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
   padding: 4rem 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.content-wrapper {
+  width: 100%;
+  max-width: 800px;
 }
 
 .main-heading {
@@ -37,6 +49,7 @@ export default {
   font-weight: bold;
   margin: 4rem 0 2rem 0;
   color: #000;
+  word-wrap: break-word;
 }
 
 .contact {
