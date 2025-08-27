@@ -1,6 +1,6 @@
 <template>
   <div class="main-container">
-    <MainHeader @navigate-to-login="handleNavigateToLogin" />
+    <MainHeader @navigate-to-signup="handleNavigateToSignUp" />
     
     <main class="content">
       <div class="content-wrapper">
@@ -20,8 +20,8 @@ export default {
     MainHeader
   },
   methods: {
-    handleNavigateToLogin() {
-      this.$emit('navigate-to-login');
+    handleNavigateToSignUp() {
+      this.$emit('navigate-to-signup');
     }
   }
 }

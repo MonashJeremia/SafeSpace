@@ -8,9 +8,9 @@
       <div class="nav-right">
         <button class="help-btn">Help Now</button>
         <button class="donate-btn">Donate now</button>
-        <button class="login-btn" @click="goToLogin">
+        <button class="signup-btn" @click="goToSignUp">
           <span class="user-icon">👤</span>
-          Login In
+          Sign Up / Login
         </button>
       </div>
     </nav>
@@ -67,10 +67,10 @@
 export default {
   name: 'MainHeader',
   methods: {
-    goToLogin() {
+    goToSignUp() {
       // Emit an event to parent component
-      this.$emit('navigate-to-login');
-      console.log('Login button clicked');
+      this.$emit('navigate-to-signup');
+      console.log('Sign up button clicked');
     },
     goToHome() {
       // Emit event to navigate back to home
@@ -202,7 +202,7 @@ export default {
   background-color: #f1f1f1;
 }
 
-.help-btn, .donate-btn, .login-btn {
+.help-btn, .donate-btn, .signup-btn {
   background-color: #e8e8e8;
   border: none;
   border-radius: 25px;
@@ -215,7 +215,7 @@ export default {
   white-space: nowrap;
 }
 
-.help-btn:hover, .donate-btn:hover, .login-btn:hover {
+.help-btn:hover, .donate-btn:hover, .signup-btn:hover {
   background-color: #d8d8d8;
 }
 

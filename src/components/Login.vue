@@ -6,39 +6,12 @@
       <div class="login-form-container">
         <div class="login-form">
           <div class="user-icon-large">👤</div>
-          <h2>Create an account</h2>
+          <h2>Login to your account</h2>
           <p class="login-subtitle">
-            Already have an account? <a href="#" @click.prevent="switchToLogin" class="login-link">Log in</a>
+            Don't have an account? <a href="#" @click.prevent="switchToSignUp" class="login-link">Sign up</a>
           </p>
           
           <form @submit.prevent="handleSubmit">
-            <div class="form-row">
-              <div class="form-group">
-                <label for="firstName">First name</label>
-                <input 
-                  type="text" 
-                  id="firstName" 
-                  v-model="firstName"
-                  @blur="() => validateFirstName(true)"
-                  @input="() => validateFirstName(false)"
-                  required
-                >
-                <div v-if="errors.firstName" class="error-message">{{ errors.firstName }}</div>
-              </div>
-              <div class="form-group">
-                <label for="lastName">Last name</label>
-                <input 
-                  type="text" 
-                  id="lastName" 
-                  v-model="lastName"
-                  @blur="() => validateLastName(true)"
-                  @input="() => validateLastName(false)"
-                  required
-                >
-                <div v-if="errors.lastName" class="error-message">{{ errors.lastName }}</div>
-              </div>
-            </div>
-            
             <div class="form-group">
               <label for="email">Email address</label>
               <input 
@@ -52,49 +25,45 @@
               <div v-if="errors.email" class="error-message">{{ errors.email }}</div>
             </div>
             
-            <div class="form-row">
-              <div class="form-group">
-                <label for="password">Password</label>
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input 
+                :type="showPassword ? 'text' : 'password'" 
+                id="password" 
+                v-model="password"
+                @blur="() => validatePassword(true)"
+                @input="() => validatePassword(false)"
+                required
+              >
+              <div v-if="errors.password" class="error-message">{{ errors.password }}</div>
+            </div>
+            
+            <div class="form-options">
+              <div class="checkbox-group">
                 <input 
-                  :type="showPassword ? 'text' : 'password'" 
-                  id="password" 
-                  v-model="password"
-                  @blur="() => validatePassword(true)"
-                  @input="() => validatePassword(false)"
-                  required
+                  type="checkbox" 
+                  id="showPassword" 
+                  v-model="showPassword"
                 >
-                <div v-if="errors.password" class="error-message">{{ errors.password }}</div>
+                <label for="showPassword">Show password</label>
               </div>
-              <div class="form-group">
-                <label for="confirmPassword">Confirm your password</label>
+              
+              <div class="checkbox-group">
                 <input 
-                  :type="showPassword ? 'text' : 'password'" 
-                  id="confirmPassword" 
-                  v-model="confirmPassword"
-                  @blur="() => validateConfirmPassword(true)"
-                  @input="() => validateConfirmPassword(false)"
-                  required
+                  type="checkbox" 
+                  id="rememberMe" 
+                  v-model="rememberMe"
                 >
-                <div v-if="errors.confirmPassword" class="error-message">{{ errors.confirmPassword }}</div>
+                <label for="rememberMe">Remember me</label>
               </div>
             </div>
             
-            <p class="password-requirement">
-              Use 8 or more characters with a mix of letters, numbers & symbols
-            </p>
-            
-            <div class="checkbox-group">
-              <input 
-                type="checkbox" 
-                id="showPassword" 
-                v-model="showPassword"
-              >
-              <label for="showPassword">Show password</label>
+            <div class="forgot-password">
+              <a href="#" @click.prevent="handleForgotPassword" class="forgot-link">Forgot your password?</a>
             </div>
             
             <div class="form-actions">
-              <a href="#" @click.prevent="goToHome" class="log-in-instead">log in instead</a>
-              <button type="submit" class="create-account-btn">Create an account</button>
+              <button type="submit" class="login-btn">Login</button>
             </div>
           </form>
         </div>
@@ -113,41 +82,15 @@ export default {
     MainHeader
   },
   setup(props, { emit }) {
-    const firstName = ref('')
-    const lastName = ref('')
     const email = ref('')
     const password = ref('')
-    const confirmPassword = ref('')
     const showPassword = ref(false)
-    const isLoginMode = ref(false)
+    const rememberMe = ref(false)
 
     const errors = ref({
-      firstName: null,
-      lastName: null,
       email: null,
-      password: null,
-      confirmPassword: null
+      password: null
     })
-
-    const validateFirstName = (blur) => {
-      if (firstName.value.length < 2) {
-        if (blur) errors.value.firstName = "First name must be at least 2 characters"
-      } else if (!/^[a-zA-Z\s]+$/.test(firstName.value)) {
-        if (blur) errors.value.firstName = "First name can only contain letters and spaces"
-      } else {
-        errors.value.firstName = null
-      }
-    }
-
-    const validateLastName = (blur) => {
-      if (lastName.value.length < 2) {
-        if (blur) errors.value.lastName = "Last name must be at least 2 characters"
-      } else if (!/^[a-zA-Z\s]+$/.test(lastName.value)) {
-        if (blur) errors.value.lastName = "Last name can only contain letters and spaces"
-      } else {
-        errors.value.lastName = null
-      }
-    }
 
     const validateEmail = (blur) => {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -161,39 +104,12 @@ export default {
     }
 
     const validatePassword = (blur) => {
-      const minLength = 8
-      const hasUpperCase = /[A-Z]/.test(password.value)
-      const hasLowerCase = /[a-z]/.test(password.value)
-      const hasNumber = /\d/.test(password.value)
-      const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password.value)
-
-      if (password.value.length < minLength) {
-        if (blur) errors.value.password = `Password must be at least ${minLength} characters long`
-      } else if (!hasUpperCase) {
-        if (blur) errors.value.password = "Password must contain at least one uppercase letter"
-      } else if (!hasLowerCase) {
-        if (blur) errors.value.password = "Password must contain at least one lowercase letter"
-      } else if (!hasNumber) {
-        if (blur) errors.value.password = "Password must contain at least one number"
-      } else if (!hasSpecialChar) {
-        if (blur) errors.value.password = "Password must contain at least one special character"
+      if (!password.value) {
+        if (blur) errors.value.password = "Password is required"
+      } else if (password.value.length < 6) {
+        if (blur) errors.value.password = "Password must be at least 6 characters long"
       } else {
         errors.value.password = null
-      }
-      
-      // Also validate confirm password when password changes
-      if (confirmPassword.value) {
-        validateConfirmPassword(false)
-      }
-    }
-
-    const validateConfirmPassword = (blur) => {
-      if (!confirmPassword.value) {
-        if (blur) errors.value.confirmPassword = "Please confirm your password"
-      } else if (confirmPassword.value !== password.value) {
-        if (blur) errors.value.confirmPassword = "Passwords do not match"
-      } else {
-        errors.value.confirmPassword = null
       }
     }
 
@@ -201,65 +117,62 @@ export default {
       emit('navigate-to-home')
     }
 
-    const switchToLogin = () => {
-      isLoginMode.value = !isLoginMode.value
-      console.log('Switching to login mode')
+    const switchToSignUp = () => {
+      emit('navigate-to-signup')
+      console.log('Switching to sign up mode')
+    }
+
+    const handleForgotPassword = () => {
+      alert('Forgot password functionality would be implemented here')
+      console.log('Forgot password clicked')
     }
 
     const handleSubmit = () => {
       // Validate all fields
-      validateFirstName(true)
-      validateLastName(true)
       validateEmail(true)
       validatePassword(true)
-      validateConfirmPassword(true)
 
       // Check if there are any errors
       const hasErrors = Object.values(errors.value).some(error => error !== null)
 
       if (!hasErrors) {
-        // Handle successful form submission
-        console.log('Form submitted successfully:', {
-          firstName: firstName.value,
-          lastName: lastName.value,
+        // Handle successful login submission
+        console.log('Login submitted successfully:', {
           email: email.value,
-          password: password.value
+          password: password.value,
+          rememberMe: rememberMe.value
         })
         
-        alert('Account created successfully! (This is just a demo)')
+        alert('Login successful! (This is just a demo)')
         
         // Clear form after successful submission
-        firstName.value = ''
-        lastName.value = ''
         email.value = ''
         password.value = ''
-        confirmPassword.value = ''
+        rememberMe.value = false
         
         // Clear any remaining errors
         Object.keys(errors.value).forEach(key => {
           errors.value[key] = null
         })
+        
+        // Optionally navigate back to home after successful login
+        goToHome()
       } else {
-        console.log('Form has validation errors')
+        console.log('Login form has validation errors')
       }
     }
 
     return {
-      firstName,
-      lastName,
       email,
       password,
-      confirmPassword,
       showPassword,
-      isLoginMode,
+      rememberMe,
       errors,
-      validateFirstName,
-      validateLastName,
       validateEmail,
       validatePassword,
-      validateConfirmPassword,
       goToHome,
-      switchToLogin,
+      switchToSignUp,
+      handleForgotPassword,
       handleSubmit
     }
   }
@@ -291,7 +204,7 @@ export default {
   max-width: 50vw;
   min-width: 500px;
   width: 100%;
-  min-height: 600px;
+  min-height: 500px;
 }
 
 .login-form {
@@ -328,15 +241,8 @@ export default {
   color: #0056b3;
 }
 
-.form-row {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-
 .form-group {
-  flex: 1;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .form-group label {
@@ -372,17 +278,19 @@ export default {
   border-color: #dc3545;
 }
 
-.password-requirement {
-  color: #666;
-  font-size: 0.9rem;
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 1rem;
+  flex-wrap: wrap;
+  gap: 1rem;
 }
 
 .checkbox-group {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-bottom: 2rem;
 }
 
 .checkbox-group input[type="checkbox"] {
@@ -393,27 +301,33 @@ export default {
   margin: 0;
   color: #333;
   cursor: pointer;
+  font-size: 0.9rem;
 }
 
-.form-actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: auto;
+.forgot-password {
+  text-align: center;
+  margin-bottom: 2rem;
 }
 
-.log-in-instead {
+.forgot-link {
   color: #007bff;
   text-decoration: underline;
   font-size: 0.9rem;
 }
 
-.log-in-instead:hover {
+.forgot-link:hover {
   color: #0056b3;
 }
 
-.create-account-btn {
-  background-color: #ccc;
+.form-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: auto;
+}
+
+.login-btn {
+  background-color: #007bff;
   color: white;
   border: none;
   border-radius: 25px;
@@ -423,11 +337,11 @@ export default {
   transition: background-color 0.3s ease;
 }
 
-.create-account-btn:hover {
-  background-color: #bbb;
+.login-btn:hover {
+  background-color: #0056b3;
 }
 
-.create-account-btn:disabled {
+.login-btn:disabled {
   background-color: #e0e0e0;
   cursor: not-allowed;
 }
@@ -447,22 +361,21 @@ export default {
     min-width: unset;
   }
   
-  .form-row {
-    flex-direction: column;
-    gap: 0;
-  }
-  
   .login-form {
     padding: 2rem;
   }
   
-  .form-actions {
+  .form-options {
     flex-direction: column;
-    gap: 1rem;
-    align-items: stretch;
+    align-items: flex-start;
+    gap: 0.5rem;
   }
   
-  .create-account-btn {
+  .form-actions {
+    justify-content: center;
+  }
+  
+  .login-btn {
     width: 100%;
   }
 }
