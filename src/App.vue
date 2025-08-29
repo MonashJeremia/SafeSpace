@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import Main from './components/Main.vue'
 import SignUp from './components/SignUp.vue'
 import Login from './components/Login.vue'
+import HelpNow from './components/HelpNow.vue'
 
 const currentView = ref('main')
 
@@ -12,6 +13,10 @@ const navigateToLogin = () => {
 
 const navigateToSignUp = () => {
   currentView.value = 'signup'
+}
+
+const navigateToHelpNow = () => {
+  currentView.value = 'helpnow'
 }
 
 const navigateToHome = () => {
@@ -24,6 +29,7 @@ const navigateToHome = () => {
     <Main 
       v-if="currentView === 'main'" 
       @navigate-to-signup="navigateToSignUp"
+      @navigate-to-helpnow="navigateToHelpNow"
     />
     <SignUp 
       v-if="currentView === 'signup'" 
@@ -32,6 +38,11 @@ const navigateToHome = () => {
     />
     <Login 
       v-if="currentView === 'login'" 
+      @navigate-to-home="navigateToHome"
+      @navigate-to-signup="navigateToSignUp"
+    />
+    <HelpNow 
+      v-if="currentView === 'helpnow'" 
       @navigate-to-home="navigateToHome"
       @navigate-to-signup="navigateToSignUp"
     />

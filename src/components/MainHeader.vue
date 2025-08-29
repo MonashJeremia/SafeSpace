@@ -8,7 +8,7 @@
           <h1 class="mb-0 text-center text-lg-start fs-4 fs-sm-3 fs-md-2">SafeSpace</h1>
         </div>
         <div class="col-12 col-lg-6 nav-right d-flex justify-content-center justify-content-lg-end flex-wrap gap-1 gap-sm-2">
-          <button class="btn help-btn btn-sm">Help Now</button>
+          <button class="btn help-btn btn-sm" @click="goToHelpNow">Help Now</button>
           <button class="btn donate-btn btn-sm">Donate now</button>
           <button class="btn signup-btn btn-sm" @click="goToSignUp">
             <span class="user-icon">👤</span>
@@ -159,6 +159,12 @@ export default {
       console.log('Sign up button clicked')
     }
     
+    const goToHelpNow = () => {
+      // Emit event to navigate to help now page
+      emit('navigate-to-helpnow')
+      console.log('Help Now button clicked')
+    }
+    
     const goToHome = () => {
       // Emit event to navigate back to home
       emit('navigate-to-home')
@@ -169,6 +175,7 @@ export default {
       mobileMenuOpen,
       toggleMobileMenu,
       goToSignUp,
+      goToHelpNow,
       goToHome
     }
   }

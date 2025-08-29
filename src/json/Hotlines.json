@@ -1,88 +1,64 @@
 {
-  "hotlines": [
-    {
-      "country": "Australia",
-      "name": "Lifeline",
-      "phone": "13 11 14",
-      "website": "https://www.lifeline.org.au",
-      "hours": "24/7"
-    },
-    {
-      "country": "Australia",
-      "name": "Beyond Blue",
-      "phone": "1300 22 4636",
-      "website": "https://www.beyondblue.org.au",
-      "hours": "24/7"
-    },
-    {
-      "country": "China",
-      "name": "Beijing Suicide Research & Prevention Center",
-      "phone": "0800-810-1117",
-      "website": "http://www.crisis.org.cn",
-      "hours": "24/7"
-    },
-    {
-      "country": "China",
-      "name": "Shanghai Mental Health Center Hotline",
-      "phone": "021-64387250",
-      "website": "http://www.smhc.org.cn",
-      "hours": "24/7"
-    },
-    {
-      "country": "New Zealand",
-      "name": "Lifeline New Zealand",
-      "phone": "0800 543 354",
-      "website": "https://www.lifeline.org.nz",
-      "hours": "24/7"
-    },
-    {
-      "country": "New Zealand",
-      "name": "Youthline New Zealand",
-      "phone": "0800 376 633",
-      "website": "https://www.youthline.co.nz",
-      "hours": "24/7"
-    },
-    {
-      "country": "United States",
-      "name": "National Suicide Prevention Lifeline",
-      "phone": "988",
-      "website": "https://988lifeline.org",
-      "hours": "24/7"
-    },
-    {
-      "country": "United Kingdom",
-      "name": "Samaritans",
-      "phone": "116 123",
-      "website": "https://www.samaritans.org",
-      "hours": "24/7"
-    },
-    {
-      "country": "Canada",
-      "name": "Talk Suicide Canada",
-      "phone": "988",
-      "website": "https://talksuicide.ca",
-      "hours": "24/7"
-    },
-    {
-      "country": "India",
-      "name": "AASRA Helpline",
-      "phone": "+91-98204 66726",
-      "website": "http://www.aasra.info",
-      "hours": "24/7"
-    },
-    {
-      "country": "Singapore",
-      "name": "Samaritans of Singapore (SOS)",
-      "phone": "1800-221-4444",
-      "website": "https://www.sos.org.sg",
-      "hours": "24/7"
-    },
-    {
-      "country": "South Africa",
-      "name": "South African Depression and Anxiety Group (SADAG)",
-      "phone": "0800 567 567",
-      "website": "https://www.sadag.org",
-      "hours": "24/7"
-    }
-  ]
+    "hotlines": [
+        {
+            "name": "Lifeline",
+            "phone": "13 11 14",
+            "hours": "24/7",
+            "category": "Mental Health"
+        },
+        {
+            "name": "Beyond Blue",
+            "phone": "1300 22 4636",
+            "hours": "24/7",
+            "category": "Mental Health"
+        },
+        {
+            "name": "Kids Helpline",
+            "phone": "1800 55 1800",
+            "hours": "24/7",
+            "category": "Youth"
+        },
+        {
+            "name": "Headspace",
+            "phone": "1800 650 890",
+            "hours": "9am - 1am AEST, 7 days",
+            "category": "Youth"
+        },
+        {
+            "name": "1800RESPECT",
+            "phone": "1800 737 732",
+            "hours": "24/7",
+            "category": "Domestic and Family Violence"
+        },
+        {
+            "name": "MensLine Australia",
+            "phone": "1300 78 99 78",
+            "hours": "24/7",
+            "category": "Domestic and Family Violence"
+        },
+        {
+            "name": "Suicide Call Back Service",
+            "phone": "1300 659 467",
+            "hours": "24/7",
+            "category": "Suicide Prevention and Crisis"
+        },
+        {
+            "name": "QLife",
+            "phone": "1800 184 527",
+            "hours": "3pm - Midnight AEST, 7 days",
+            "category": "Suicide Prevention and Crisis"
+        },
+        {
+            "name": "Alcohol and Drug Information Service (ADIS)",
+            "phone": "1800 250 015",
+            "hours": "24/7",
+            "category": "Other Support"
+        },
+        {
+            "name": "GriefLine",
+            "phone": "1300 845 745",
+            "hours": "6am - Midnight AEST, 7 days",
+            "category": "Other Support"
+        }
+    ]
 }

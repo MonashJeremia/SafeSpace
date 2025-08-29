@@ -1,6 +1,9 @@
 <template>
   <div class="main-container">
-    <MainHeader @navigate-to-signup="handleNavigateToSignUp" />
+    <MainHeader 
+      @navigate-to-signup="handleNavigateToSignUp" 
+      @navigate-to-helpnow="handleNavigateToHelpNow" 
+    />
     
     <main class="content py-3 py-sm-4 py-md-5 px-2 px-sm-3 px-md-4">
       <div class="container-fluid px-3">
@@ -28,6 +31,9 @@ export default {
   methods: {
     handleNavigateToSignUp() {
       this.$emit('navigate-to-signup');
+    },
+    handleNavigateToHelpNow() {
+      this.$emit('navigate-to-helpnow');
     }
   }
 }
