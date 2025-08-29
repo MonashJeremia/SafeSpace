@@ -14,18 +14,15 @@
                   Don't have an account? <a href="#" @click.prevent="switchToSignUp" class="login-link">Sign up</a>
                 </p>
                 
-                <form @submit.prevent="handleSubmit">
+                <form>
                   <div class="form-group">
                     <label for="email">Email address</label>
                     <input 
                       type="email" 
                       id="email" 
                       v-model="email"
-                      @blur="() => validateEmail(true)"
-                      @input="() => validateEmail(false)"
                       required
                     >
-                    <div v-if="errors.email" class="error-message">{{ errors.email }}</div>
                   </div>
                   
                   <div class="form-group">
@@ -34,11 +31,8 @@
                       :type="showPassword ? 'text' : 'password'" 
                       id="password" 
                       v-model="password"
-                      @blur="() => validatePassword(true)"
-                      @input="() => validatePassword(false)"
                       required
                     >
-                    <div v-if="errors.password" class="error-message">{{ errors.password }}</div>
                   </div>
                   
                   <div class="row">
@@ -70,7 +64,7 @@
                   </div>
                   
                   <div class="form-actions">
-                    <button type="submit" class="login-btn">Login</button>
+                    <button type="button" class="login-btn">Login</button>
                   </div>
                 </form>
               </div>
@@ -97,79 +91,16 @@ export default {
     const showPassword = ref(false)
     const rememberMe = ref(false)
 
-    const errors = ref({
-      email: null,
-      password: null
-    })
-
-    const validateEmail = (blur) => {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-      if (!email.value) {
-        if (blur) errors.value.email = "Email address is required"
-      } else if (!emailRegex.test(email.value)) {
-        if (blur) errors.value.email = "Please enter a valid email address"
-      } else {
-        errors.value.email = null
-      }
-    }
-
-    const validatePassword = (blur) => {
-      if (!password.value) {
-        if (blur) errors.value.password = "Password is required"
-      } else if (password.value.length < 6) {
-        if (blur) errors.value.password = "Password must be at least 6 characters long"
-      } else {
-        errors.value.password = null
-      }
-    }
-
     const goToHome = () => {
       emit('navigate-to-home')
     }
 
     const switchToSignUp = () => {
       emit('navigate-to-signup')
-      console.log('Switching to sign up mode')
     }
 
     const handleForgotPassword = () => {
-      alert('Forgot password functionality would be implemented here')
-      console.log('Forgot password clicked')
-    }
-
-    const handleSubmit = () => {
-      // Validate all fields
-      validateEmail(true)
-      validatePassword(true)
-
-      // Check if there are any errors
-      const hasErrors = Object.values(errors.value).some(error => error !== null)
-
-      if (!hasErrors) {
-        // Handle successful login submission
-        console.log('Login submitted successfully:', {
-          email: email.value,
-          password: password.value,
-          rememberMe: rememberMe.value
-        })
-        
-        alert('Login successful! (This is just a demo)')
-        
-        // Clear form after successful submission
-        email.value = ''
-        password.value = ''
-        rememberMe.value = false
-        
-        // Clear any remaining errors
-        Object.keys(errors.value).forEach(key => {
-          errors.value[key] = null
-        })
-        
-        // Optionally navigate back to home after successful login
-        goToHome()
-      } else {
-        console.log('Login form has validation errors')
-      }
+      // Empty function
     }
 
     return {
@@ -177,13 +108,9 @@ export default {
       password,
       showPassword,
       rememberMe,
-      errors,
-      validateEmail,
-      validatePassword,
       goToHome,
       switchToSignUp,
-      handleForgotPassword,
-      handleSubmit
+      handleForgotPassword
     }
   }
 }

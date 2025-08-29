@@ -11,7 +11,7 @@
           <button class="btn donate-btn me-2">Donate now</button>
           <button class="btn signup-btn" @click="goToSignUp">
             <span class="user-icon">👤</span>
-            Sign Up
+            Sign Up / Login
           </button>
         </div>
       </nav>
@@ -21,7 +21,7 @@
           <div class="home-icon me-4" @click="goToHome">🏠</div>
           <div class="nav-items d-flex flex-wrap">
             <div class="dropdown nav-dropdown me-4">
-              <button class="btn dropdown-toggle">For the Youth <span class="dropdown-arrow">▾</span></button>
+              <button class="btn dropdown-toggle">For the Youth </button>
               <div class="dropdown-content">
                 <div class="dropdown-item">Youth Resource 1</div>
                 <div class="dropdown-item">Youth Resource 2</div>
@@ -29,7 +29,7 @@
               </div>
             </div>
             <div class="dropdown nav-dropdown me-4">
-              <button class="btn dropdown-toggle">For Community & Health Professionals <span class="dropdown-arrow">▾</span></button>
+              <button class="btn dropdown-toggle">For Community & Health Professionals </button>
               <div class="dropdown-content">
                 <div class="dropdown-item">Resource A</div>
                 <div class="dropdown-item">Resource B</div>
@@ -37,7 +37,7 @@
               </div>
             </div>
             <div class="dropdown nav-dropdown me-4">
-              <button class="btn dropdown-toggle">For Educators <span class="dropdown-arrow">▾</span></button>
+              <button class="btn dropdown-toggle">For Educators </button>
               <div class="dropdown-content">
                 <div class="dropdown-item">Educator Resource 1</div>
                 <div class="dropdown-item">Educator Resource 2</div>
@@ -45,7 +45,7 @@
               </div>
             </div>
             <div class="dropdown nav-dropdown me-4">
-              <button class="btn dropdown-toggle">Support & Resources <span class="dropdown-arrow">▾</span></button>
+              <button class="btn dropdown-toggle">Support & Resources </button>
               <div class="dropdown-content">
                 <div class="dropdown-item">Support Resource 1</div>
                 <div class="dropdown-item">Support Resource 2</div>
@@ -53,7 +53,7 @@
               </div>
             </div>
             <div class="dropdown nav-dropdown">
-              <button class="btn dropdown-toggle">About Us <span class="dropdown-arrow">▾</span></button>
+              <button class="btn dropdown-toggle">About Us </button>
               <div class="dropdown-content">
                 <div class="dropdown-item">Our Story</div>
                 <div class="dropdown-item">Team</div>
