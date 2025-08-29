@@ -143,10 +143,12 @@
 
 <script>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 export default {
   name: 'MainHeader',
-  setup(props, { emit }) {
+  setup() {
+    const router = useRouter()
     const mobileMenuOpen = ref(false)
     
     const toggleMobileMenu = () => {
@@ -154,20 +156,17 @@ export default {
     }
     
     const goToSignUp = () => {
-      // Emit an event to parent component
-      emit('navigate-to-signup')
+      router.push('/signup')
       console.log('Sign up button clicked')
     }
     
     const goToHelpNow = () => {
-      // Emit event to navigate to help now page
-      emit('navigate-to-helpnow')
+      router.push('/help-now')
       console.log('Help Now button clicked')
     }
     
     const goToHome = () => {
-      // Emit event to navigate back to home
-      emit('navigate-to-home')
+      router.push('/')
       console.log('Home navigation clicked')
     }
     

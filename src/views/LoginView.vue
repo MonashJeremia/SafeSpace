@@ -1,6 +1,6 @@
 <template>
   <div class="login-container">
-    <MainHeader @navigate-to-home="goToHome" @navigate-to-helpnow="goToHelpNow" />
+    <MainHeader />
     
     <main class="login-content py-2 py-sm-3">
       <div class="container-fluid px-3">
@@ -12,7 +12,7 @@
                   <div class="user-icon-large" style="font-size: clamp(2rem, 4vw, 3rem);">👤</div>
                   <h2 class="fs-4 fs-sm-3 fs-md-2">Login to your account</h2>
                   <p class="login-subtitle fs-6 fs-sm-5">
-                    Don't have an account? <a href="#" @click.prevent="switchToSignUp" class="login-link">Sign up</a>
+                    Don't have an account? <router-link to="/signup" class="login-link">Sign up</router-link>
                   </p>
                 </div>
                 
@@ -84,30 +84,18 @@
 
 <script>
 import { ref } from 'vue'
-import MainHeader from './MainHeader.vue'
+import MainHeader from '../components/MainHeader.vue'
 
 export default {
-  name: 'Login',
+  name: 'LoginView',
   components: {
     MainHeader
   },
-  setup(props, { emit }) {
+  setup() {
     const email = ref('')
     const password = ref('')
     const showPassword = ref(false)
     const rememberMe = ref(false)
-
-    const goToHome = () => {
-      emit('navigate-to-home')
-    }
-
-    const goToHelpNow = () => {
-      emit('navigate-to-helpnow')
-    }
-
-    const switchToSignUp = () => {
-      emit('navigate-to-signup')
-    }
 
     const handleForgotPassword = () => {
       // Empty function
@@ -118,9 +106,6 @@ export default {
       password,
       showPassword,
       rememberMe,
-      goToHome,
-      goToHelpNow,
-      switchToSignUp,
       handleForgotPassword
     }
   }

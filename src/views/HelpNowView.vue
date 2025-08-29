@@ -1,6 +1,6 @@
 <template>
   <div class="help-now-container">
-    <MainHeader @navigate-to-signup="handleNavigateToSignUp" @navigate-to-home="handleNavigateToHome" />
+    <MainHeader />
     
     <main class="content py-3 py-sm-4 py-md-5 px-2 px-sm-3 px-md-4">
       <div class="container-fluid px-3">
@@ -79,11 +79,11 @@
 </template>
 
 <script>
-import MainHeader from './MainHeader.vue'
+import MainHeader from '../components/MainHeader.vue'
 import hotlinesData from '../json/Hotlines.json'
 
 export default {
-  name: 'HelpNow',
+  name: 'HelpNowView',
   components: {
     MainHeader
   },
@@ -103,14 +103,6 @@ export default {
       } else {
         return this.hotlines.filter(hotline => hotline.category === this.selectedCategory)
       }
-    }
-  },
-  methods: {
-    handleNavigateToSignUp() {
-      this.$emit('navigate-to-signup')
-    },
-    handleNavigateToHome() {
-      this.$emit('navigate-to-home')
     }
   }
 }

@@ -1,6 +1,6 @@
 <template>
   <div class="login-container">
-    <MainHeader @navigate-to-home="goToHome" @navigate-to-helpnow="goToHelpNow" />
+    <MainHeader />
     
     <main class="login-content py-2 py-sm-3">
       <div class="container-fluid px-3">
@@ -12,7 +12,7 @@
                   <div class="user-icon-large" style="font-size: clamp(2rem, 4vw, 3rem);">👤</div>
                   <h2 class="fs-4 fs-sm-3 fs-md-2">Create an account</h2>
                   <p class="login-subtitle fs-6 fs-sm-5">
-                    Already have an account? <a href="#" @click.prevent="switchToLogin" class="login-link">Log in</a>
+                    Already have an account? <router-link to="/login" class="login-link">Log in</router-link>
                   </p>
                 </div>
                 
@@ -126,9 +126,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import MainHeader from './MainHeader.vue'
-
-const emit = defineEmits(['navigate-to-home', 'navigate-to-login'])
+import MainHeader from '../components/MainHeader.vue'
 
 const formData = ref({
   firstName: '',
@@ -231,18 +229,6 @@ const clearForm = () => {
   formData.value.email = ''
   formData.value.password = ''
   formData.value.confirmPassword = ''
-}
-
-const goToHome = () => {
-  emit('navigate-to-home')
-}
-
-const goToHelpNow = () => {
-  emit('navigate-to-helpnow')
-}
-
-const switchToLogin = () => {
-  emit('navigate-to-login')
 }
 </script>
 

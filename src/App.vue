@@ -1,53 +1,10 @@
 <script setup>
-import { ref } from 'vue'
-import Main from './components/Main.vue'
-import SignUp from './components/SignUp.vue'
-import Login from './components/Login.vue'
-import HelpNow from './components/HelpNow.vue'
-
-const currentView = ref('main')
-
-const navigateToLogin = () => {
-  currentView.value = 'login'
-}
-
-const navigateToSignUp = () => {
-  currentView.value = 'signup'
-}
-
-const navigateToHelpNow = () => {
-  currentView.value = 'helpnow'
-}
-
-const navigateToHome = () => {
-  currentView.value = 'main'
-}
+// Router handles all navigation now
 </script>
 
 <template>
   <div id="app" class="w-100">
-    <Main 
-      v-if="currentView === 'main'" 
-      @navigate-to-signup="navigateToSignUp"
-      @navigate-to-helpnow="navigateToHelpNow"
-    />
-    <SignUp 
-      v-if="currentView === 'signup'" 
-      @navigate-to-home="navigateToHome"
-      @navigate-to-login="navigateToLogin"
-      @navigate-to-helpnow="navigateToHelpNow"
-    />
-    <Login 
-      v-if="currentView === 'login'" 
-      @navigate-to-home="navigateToHome"
-      @navigate-to-signup="navigateToSignUp"
-      @navigate-to-helpnow="navigateToHelpNow"
-    />
-    <HelpNow 
-      v-if="currentView === 'helpnow'" 
-      @navigate-to-home="navigateToHome"
-      @navigate-to-signup="navigateToSignUp"
-    />
+    <router-view />
   </div>
 </template>
 
