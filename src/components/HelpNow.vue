@@ -15,7 +15,6 @@
                   <select 
                     v-model="selectedCategory" 
                     class="form-select category-select w-100"
-                    @change="filterHotlines"
                   >
                     <option value="">All Categories</option>
                     <option v-for="category in uniqueCategories" :key="category" :value="category">
@@ -75,7 +74,6 @@
           </div>
         </div>
       </div>
-      <div class="contact position-fixed bottom-0 start-0 m-2 m-sm-3 m-lg-4 fs-6 fs-sm-5">Contact us</div>
     </main>
   </div>
 </template>
@@ -92,35 +90,28 @@ export default {
   data() {
     return {
       hotlines: hotlinesData.hotlines,
-      filteredHotlines: hotlinesData.hotlines,
       selectedCategory: ''
     }
   },
   computed: {
     uniqueCategories() {
       return [...new Set(this.hotlines.map(hotline => hotline.category))].sort()
+    },
+    filteredHotlines() {
+      if (this.selectedCategory === '') {
+        return this.hotlines
+      } else {
+        return this.hotlines.filter(hotline => hotline.category === this.selectedCategory)
+      }
     }
   },
   methods: {
-    filterHotlines() {
-      if (this.selectedCategory === '') {
-        this.filteredHotlines = this.hotlines
-      } else {
-        this.filteredHotlines = this.hotlines.filter(
-          hotline => hotline.category === this.selectedCategory
-        )
-      }
-    },
     handleNavigateToSignUp() {
       this.$emit('navigate-to-signup')
     },
     handleNavigateToHome() {
       this.$emit('navigate-to-home')
     }
-  },
-  mounted() {
-    // Initialize with all hotlines
-    this.filteredHotlines = this.hotlines
   }
 }
 </script>
