@@ -212,8 +212,17 @@ const submitForm = () => {
   validateConfirmPassword(true)
   
   if (!errors.value.firstName && !errors.value.lastName && !errors.value.email && !errors.value.password && !errors.value.confirmPassword) {
-    // Form is valid
+    alert('Account Created!')
+    clearForm()
   }
+}
+
+const clearForm = () => {
+  formData.value.firstName = ''
+  formData.value.lastName = ''
+  formData.value.email = ''
+  formData.value.password = ''
+  formData.value.confirmPassword = ''
 }
 
 const goToHome = () => {
