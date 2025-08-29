@@ -20,7 +20,7 @@ const navigateToHome = () => {
 </script>
 
 <template>
-  <div id="app">
+  <div id="app" class="w-100">
     <Main 
       v-if="currentView === 'main'" 
       @navigate-to-signup="navigateToSignUp"

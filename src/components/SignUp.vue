@@ -2,26 +2,29 @@
   <div class="login-container">
     <MainHeader @navigate-to-home="goToHome" />
     
-    <main class="login-content">
+    <main class="login-content py-2 py-sm-3">
       <div class="container-fluid px-3">
         <div class="row justify-content-center">
-          <div class="col-12 col-md-10 col-lg-8 col-xl-8">
+          <div class="col-12 col-sm-11 col-md-10 col-lg-8 col-xl-6 col-xxl-5">
             <div class="login-form-container">
-              <div class="login-form">
-                <div class="user-icon-large">👤</div>
-                <h2>Create an account</h2>
-                <p class="login-subtitle">
-                  Already have an account? <a href="#" @click.prevent="switchToLogin" class="login-link">Log in</a>
-                </p>
+              <div class="login-form p-3 p-sm-4 p-md-5">
+                <div class="text-center">
+                  <div class="user-icon-large" style="font-size: clamp(2rem, 4vw, 3rem);">👤</div>
+                  <h2 class="fs-4 fs-sm-3 fs-md-2">Create an account</h2>
+                  <p class="login-subtitle fs-6 fs-sm-5">
+                    Already have an account? <a href="#" @click.prevent="switchToLogin" class="login-link">Log in</a>
+                  </p>
+                </div>
                 
                 <form @submit.prevent="submitForm">
-                  <div class="row">
-                    <div class="col-12 col-sm-6">
+                  <div class="row g-3">
+                    <div class="col-12 col-md-6">
                       <div class="form-group">
                         <label for="firstName">First name</label>
                         <input 
                           type="text" 
                           id="firstName" 
+                          class="form-control"
                           v-model="formData.firstName"
                           @blur="() => validateFirstName(true)"
                           @input="() => validateFirstName(false)"
@@ -30,12 +33,13 @@
                         <div v-if="errors.firstName" class="error-message">{{ errors.firstName }}</div>
                       </div>
                     </div>
-                    <div class="col-12 col-sm-6">
+                    <div class="col-12 col-md-6">
                       <div class="form-group">
                         <label for="lastName">Last name</label>
                         <input 
                           type="text" 
                           id="lastName" 
+                          class="form-control"
                           v-model="formData.lastName"
                           @blur="() => validateLastName(true)"
                           @input="() => validateLastName(false)"
@@ -51,6 +55,7 @@
                     <input 
                       type="email" 
                       id="email" 
+                      class="form-control"
                       v-model="formData.email"
                       @blur="() => validateEmail(true)"
                       @input="() => validateEmail(false)"
@@ -59,13 +64,14 @@
                     <div v-if="errors.email" class="error-message">{{ errors.email }}</div>
                   </div>
                   
-                  <div class="row">
-                    <div class="col-12 col-sm-6">
+                  <div class="row g-3">
+                    <div class="col-12 col-md-6">
                       <div class="form-group">
                         <label for="password">Password</label>
                         <input 
                           :type="showPassword ? 'text' : 'password'" 
                           id="password" 
+                          class="form-control"
                           v-model="formData.password"
                           @blur="() => validatePassword(true)"
                           @input="() => validatePassword(false)"
@@ -74,12 +80,13 @@
                         <div v-if="errors.password" class="error-message">{{ errors.password }}</div>
                       </div>
                     </div>
-                    <div class="col-12 col-sm-6">
+                    <div class="col-12 col-md-6">
                       <div class="form-group">
                         <label for="confirmPassword">Confirm your password</label>
                         <input 
                           :type="showPassword ? 'text' : 'password'" 
                           id="confirmPassword" 
+                          class="form-control"
                           v-model="formData.confirmPassword"
                           @blur="() => validateConfirmPassword(true)"
                           @input="() => validateConfirmPassword(false)"
@@ -94,17 +101,18 @@
                     Use 8 or more characters with a mix of letters, numbers & symbols
                   </p>
                   
-                  <div class="checkbox-group">
+                  <div class="form-check mb-3">
                     <input 
                       type="checkbox" 
                       id="showPassword" 
+                      class="form-check-input"
                       v-model="showPassword"
                     >
-                    <label for="showPassword">Show password</label>
+                    <label for="showPassword" class="form-check-label">Show password</label>
                   </div>
                   
-                  <div class="form-actions">
-                    <button type="submit" class="create-account-btn">Create an account</button>
+                  <div class="d-grid">
+                    <button type="submit" class="btn create-account-btn">Create an account</button>
                   </div>
                 </form>
               </div>
@@ -238,58 +246,60 @@ const switchToLogin = () => {
 .login-container {
   font-family: Arial, sans-serif;
   min-height: 100vh;
-  background-color: #f5f5f5;
+  background-color: #f8f9fa;
 }
 
 .login-content {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: calc(100vh - 120px);
+  min-height: calc(100vh - 150px);
   padding: 1rem 0;
 }
 
 .login-form-container {
   background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   width: 100%;
-  min-height: 600px;
 }
 
 .login-form {
   width: 100%;
-  padding: 2rem 3rem 3rem 3rem;
+  padding: 1.5rem;
   display: flex;
   flex-direction: column;
 }
 
 .user-icon-large {
-  font-size: 3rem;
+  font-size: 2.5rem;
   margin-bottom: 1rem;
-  color: #ccc;
+  color: #6c757d;
 }
 
 .login-form h2 {
-  font-size: 2rem;
-  font-weight: bold;
+  font-size: 1.75rem;
+  font-weight: 600;
   margin-bottom: 0.5rem;
-  color: #333;
+  color: #212529;
 }
 
 .login-subtitle {
-  color: #666;
-  margin-bottom: 2rem;
+  color: #6c757d;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
 }
 
 .login-link {
-  color: #007bff;
-  text-decoration: underline;
+  color: #0d6efd;
+  text-decoration: none;
+  font-weight: 500;
 }
 
 .login-link:hover {
-  color: #0056b3;
+  color: #0b5ed7;
+  text-decoration: underline;
 }
 
 .form-group {
@@ -299,23 +309,22 @@ const switchToLogin = () => {
 .form-group label {
   display: block;
   margin-bottom: 0.5rem;
-  color: #333;
+  color: #212529;
   font-weight: 500;
+  font-size: 0.95rem;
 }
 
-.form-group input {
-  width: 100%;
-  padding: 0.75rem;
-  border: 2px solid #ddd;
-  border-radius: 4px;
+.form-control {
+  border: 2px solid #e9ecef;
+  border-radius: 8px;
   font-size: 1rem;
-  transition: border-color 0.3s ease;
-  box-sizing: border-box;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  padding: 0.75rem;
 }
 
-.form-group input:focus {
-  outline: none;
-  border-color: #007bff;
+.form-control:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
 }
 
 .error-message {
@@ -325,86 +334,65 @@ const switchToLogin = () => {
   display: block;
 }
 
-.form-group input.error {
+.form-control.is-invalid {
   border-color: #dc3545;
 }
 
 .password-requirement {
-  color: #666;
-  font-size: 0.9rem;
+  color: #6c757d;
+  font-size: 0.875rem;
   margin-bottom: 1rem;
+  text-align: center;
 }
 
-.checkbox-group {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 2rem;
+.form-check-input {
+  margin-top: 0.1rem;
 }
 
-.checkbox-group input[type="checkbox"] {
-  width: auto;
-}
-
-.checkbox-group label {
-  margin: 0;
-  color: #333;
+.form-check-label {
+  color: #212529;
+  font-size: 0.95rem;
   cursor: pointer;
-}
-
-.form-actions {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: auto;
 }
 
 .create-account-btn {
-  background-color: #ccc;
+  background-color: #6c757d;
+  border: 2px solid #6c757d;
   color: white;
-  border: none;
   border-radius: 25px;
   padding: 0.75rem 2rem;
   font-size: 1rem;
+  font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.15s ease-in-out;
+  width: 100%;
 }
 
 .create-account-btn:hover {
-  background-color: #bbb;
+  background-color: #5c636a;
+  border-color: #565e64;
 }
 
-.create-account-btn:disabled {
-  background-color: #e0e0e0;
-  cursor: not-allowed;
+.create-account-btn:focus {
+  box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.5);
 }
 
-/* Responsive adjustments for better mobile experience */
-@media (max-width: 768px) {
-  .login-form {
-    padding: 1.5rem 2rem 2rem 2rem;
-  }
-  
-  .user-icon-large {
-    font-size: 2.5rem;
-  }
-  
-  .login-form h2 {
-    font-size: 1.75rem;
-  }
+/* Form validation states */
+.was-validated .form-control:invalid,
+.form-control.is-invalid {
+  border-color: #dc3545;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath d='m5.8 3.6.4.4.4-.4m0 4.2v.6h-.8v-.6z'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right calc(0.375em + 0.1875rem) center;
+  background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
 }
 
-@media (max-width: 576px) {
-  .login-form {
-    padding: 1rem 1.5rem 1.5rem 1.5rem;
-  }
-  
-  .user-icon-large {
-    font-size: 2rem;
-  }
-  
-  .login-form h2 {
-    font-size: 1.5rem;
-  }
+.was-validated .form-control:valid,
+.form-control.is-valid {
+  border-color: #198754;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23198754' d='m2.3 6.73.13-.12L6.29 2.76l.07-.08L5.77 2l-.07.08L2.96 4.82 2.12 3.99l-.06-.08L1.48 4.5l.06.08z'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right calc(0.375em + 0.1875rem) center;
+  background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
 }
 </style>

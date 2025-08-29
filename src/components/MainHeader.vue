@@ -1,63 +1,137 @@
 <template>
   <header class="header-container">
     <div class="container-fluid">
+      <!-- Top Navigation -->
       <nav class="row navigation align-items-center">
-        <div class="col-md-6 nav-left d-flex align-items-center">
-          <div class="logo-placeholder me-3">Your Logo Here</div>
-          <h1 class="mb-0">SafeSpace</h1>
+        <div class="col-12 col-lg-6 nav-left d-flex align-items-center justify-content-center justify-content-lg-start mb-2 mb-lg-0">
+          <div class="logo-placeholder me-2 me-sm-3 d-none d-sm-block">Your Logo Here</div>
+          <h1 class="mb-0 text-center text-lg-start fs-4 fs-sm-3 fs-md-2">SafeSpace</h1>
         </div>
-        <div class="col-md-6 nav-right d-flex justify-content-end">
-          <button class="btn help-btn me-2">Help Now</button>
-          <button class="btn donate-btn me-2">Donate now</button>
-          <button class="btn signup-btn" @click="goToSignUp">
+        <div class="col-12 col-lg-6 nav-right d-flex justify-content-center justify-content-lg-end flex-wrap gap-1 gap-sm-2">
+          <button class="btn help-btn btn-sm">Help Now</button>
+          <button class="btn donate-btn btn-sm">Donate now</button>
+          <button class="btn signup-btn btn-sm" @click="goToSignUp">
             <span class="user-icon">👤</span>
-            Sign Up / Login
+            <span class="d-none d-sm-inline">Sign Up / Login</span>
+            <span class="d-sm-none">Login</span>
           </button>
         </div>
       </nav>
       
+      <!-- Secondary Navigation -->
       <div class="row nav-secondary align-items-center">
-        <div class="col-12 d-flex align-items-center">
-          <div class="home-icon me-4" @click="goToHome">🏠</div>
-          <div class="nav-items d-flex flex-wrap">
-            <div class="dropdown nav-dropdown me-4">
-              <button class="btn dropdown-toggle">For the Youth </button>
-              <div class="dropdown-content">
-                <div class="dropdown-item">Youth Resource 1</div>
-                <div class="dropdown-item">Youth Resource 2</div>
-                <div class="dropdown-item">Youth Resource 3</div>
+        <div class="col-12">
+          <div class="d-flex align-items-center justify-content-center justify-content-lg-start">
+            <div class="home-icon me-3 me-lg-4" @click="goToHome">🏠</div>
+            
+            <!-- Desktop Navigation -->
+            <div class="nav-items d-none d-lg-flex flex-wrap">
+              <div class="dropdown nav-dropdown me-4">
+                <button class="btn dropdown-toggle">For the Youth</button>
+                <div class="dropdown-content">
+                  <div class="dropdown-item">Youth Resource 1</div>
+                  <div class="dropdown-item">Youth Resource 2</div>
+                  <div class="dropdown-item">Youth Resource 3</div>
+                </div>
+              </div>
+              <div class="dropdown nav-dropdown me-4">
+                <button class="btn dropdown-toggle">For Community & Health Professionals</button>
+                <div class="dropdown-content">
+                  <div class="dropdown-item">Resource A</div>
+                  <div class="dropdown-item">Resource B</div>
+                  <div class="dropdown-item">Resource C</div>
+                </div>
+              </div>
+              <div class="dropdown nav-dropdown me-4">
+                <button class="btn dropdown-toggle">For Educators</button>
+                <div class="dropdown-content">
+                  <div class="dropdown-item">Educator Resource 1</div>
+                  <div class="dropdown-item">Educator Resource 2</div>
+                  <div class="dropdown-item">Educator Resource 3</div>
+                </div>
+              </div>
+              <div class="dropdown nav-dropdown me-4">
+                <button class="btn dropdown-toggle">Support & Resources</button>
+                <div class="dropdown-content">
+                  <div class="dropdown-item">Support Resource 1</div>
+                  <div class="dropdown-item">Support Resource 2</div>
+                  <div class="dropdown-item">Support Resource 3</div>
+                </div>
+              </div>
+              <div class="dropdown nav-dropdown">
+                <button class="btn dropdown-toggle">About Us</button>
+                <div class="dropdown-content">
+                  <div class="dropdown-item">Our Story</div>
+                  <div class="dropdown-item">Team</div>
+                  <div class="dropdown-item">Careers</div>
+                </div>
               </div>
             </div>
-            <div class="dropdown nav-dropdown me-4">
-              <button class="btn dropdown-toggle">For Community & Health Professionals </button>
-              <div class="dropdown-content">
-                <div class="dropdown-item">Resource A</div>
-                <div class="dropdown-item">Resource B</div>
-                <div class="dropdown-item">Resource C</div>
+            
+            <!-- Mobile Navigation Toggle -->
+            <button 
+              class="btn mobile-menu-toggle d-lg-none ms-auto" 
+              type="button" 
+              @click="toggleMobileMenu"
+              :aria-expanded="mobileMenuOpen"
+              aria-controls="mobileNav"
+            >
+              <span class="navbar-toggler-icon">{{ mobileMenuOpen ? '✕' : '☰' }}</span>
+            </button>
+          </div>
+          
+          <!-- Mobile Navigation Menu -->
+          <div v-show="mobileMenuOpen" class="mobile-nav-menu d-lg-none mt-3" id="mobileNav">
+            <div class="row g-2">
+              <div class="col-12 col-sm-6">
+                <div class="dropdown nav-dropdown w-100">
+                  <button class="btn dropdown-toggle w-100 text-start">For the Youth</button>
+                  <div class="dropdown-content w-100">
+                    <div class="dropdown-item">Youth Resource 1</div>
+                    <div class="dropdown-item">Youth Resource 2</div>
+                    <div class="dropdown-item">Youth Resource 3</div>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div class="dropdown nav-dropdown me-4">
-              <button class="btn dropdown-toggle">For Educators </button>
-              <div class="dropdown-content">
-                <div class="dropdown-item">Educator Resource 1</div>
-                <div class="dropdown-item">Educator Resource 2</div>
-                <div class="dropdown-item">Educator Resource 3</div>
+              <div class="col-12 col-sm-6">
+                <div class="dropdown nav-dropdown w-100">
+                  <button class="btn dropdown-toggle w-100 text-start">Community & Health</button>
+                  <div class="dropdown-content w-100">
+                    <div class="dropdown-item">Resource A</div>
+                    <div class="dropdown-item">Resource B</div>
+                    <div class="dropdown-item">Resource C</div>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div class="dropdown nav-dropdown me-4">
-              <button class="btn dropdown-toggle">Support & Resources </button>
-              <div class="dropdown-content">
-                <div class="dropdown-item">Support Resource 1</div>
-                <div class="dropdown-item">Support Resource 2</div>
-                <div class="dropdown-item">Support Resource 3</div>
+              <div class="col-12 col-sm-6">
+                <div class="dropdown nav-dropdown w-100">
+                  <button class="btn dropdown-toggle w-100 text-start">For Educators</button>
+                  <div class="dropdown-content w-100">
+                    <div class="dropdown-item">Educator Resource 1</div>
+                    <div class="dropdown-item">Educator Resource 2</div>
+                    <div class="dropdown-item">Educator Resource 3</div>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div class="dropdown nav-dropdown">
-              <button class="btn dropdown-toggle">About Us </button>
-              <div class="dropdown-content">
-                <div class="dropdown-item">Our Story</div>
-                <div class="dropdown-item">Team</div>
-                <div class="dropdown-item">Careers</div>
+              <div class="col-12 col-sm-6">
+                <div class="dropdown nav-dropdown w-100">
+                  <button class="btn dropdown-toggle w-100 text-start">Support & Resources</button>
+                  <div class="dropdown-content w-100">
+                    <div class="dropdown-item">Support Resource 1</div>
+                    <div class="dropdown-item">Support Resource 2</div>
+                    <div class="dropdown-item">Support Resource 3</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-12">
+                <div class="dropdown nav-dropdown w-100">
+                  <button class="btn dropdown-toggle w-100 text-start">About Us</button>
+                  <div class="dropdown-content w-100">
+                    <div class="dropdown-item">Our Story</div>
+                    <div class="dropdown-item">Team</div>
+                    <div class="dropdown-item">Careers</div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -68,18 +142,34 @@
 </template>
 
 <script>
+import { ref } from 'vue'
+
 export default {
   name: 'MainHeader',
-  methods: {
-    goToSignUp() {
+  setup(props, { emit }) {
+    const mobileMenuOpen = ref(false)
+    
+    const toggleMobileMenu = () => {
+      mobileMenuOpen.value = !mobileMenuOpen.value
+    }
+    
+    const goToSignUp = () => {
       // Emit an event to parent component
-      this.$emit('navigate-to-signup');
-      console.log('Sign up button clicked');
-    },
-    goToHome() {
+      emit('navigate-to-signup')
+      console.log('Sign up button clicked')
+    }
+    
+    const goToHome = () => {
       // Emit event to navigate back to home
-      this.$emit('navigate-to-home');
-      console.log('Home navigation clicked');
+      emit('navigate-to-home')
+      console.log('Home navigation clicked')
+    }
+    
+    return {
+      mobileMenuOpen,
+      toggleMobileMenu,
+      goToSignUp,
+      goToHome
     }
   }
 }
@@ -92,7 +182,7 @@ export default {
 }
 
 .navigation {
-  padding: 0.8rem 3rem;
+  padding: 0.8rem 1rem;
   background-color: white;
   border-bottom: 1px solid #e0e0e0;
   width: 100%;
@@ -100,7 +190,7 @@ export default {
 }
 
 .nav-secondary {
-  padding: 0 3rem;
+  padding: 0.6rem 1rem;
   background-color: white;
   border-bottom: 3px solid #007bff;
   position: relative;
@@ -109,7 +199,7 @@ export default {
 }
 
 .home-icon {
-  font-size: 2rem;
+  font-size: 1.8rem;
   color: #333;
   cursor: pointer;
   transition: color 0.3s ease;
@@ -131,7 +221,7 @@ export default {
   background: none;
   border: none;
   color: #333;
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   padding: 0.4rem 0;
   cursor: pointer;
   transition: color 0.3s ease;
@@ -158,7 +248,7 @@ export default {
   width: 100%;
   min-width: max-content;
   box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
-  z-index: 1;
+  z-index: 1000;
   border-radius: 4px;
   border: 1px solid #e0e0e0;
 }
@@ -183,11 +273,11 @@ export default {
   background-color: #e8e8e8;
   border: none;
   border-radius: 25px;
-  padding: 0.8rem 1.8rem;
+  padding: 0.6rem 1.2rem;
   font-weight: 500;
   cursor: pointer;
   color: #333;
-  font-size: 1rem;
+  font-size: 0.9rem;
   transition: background-color 0.3s ease;
   white-space: nowrap;
 }
@@ -198,15 +288,48 @@ export default {
 
 .user-icon {
   margin-right: 0.5rem;
-  font-size: 1.1rem;
+  font-size: 1rem;
 }
 
 .logo-placeholder {
   color: #666;
-  font-size: 1rem;
+  font-size: 0.85rem;
   border: 2px solid #999;
-  padding: 0.8rem 1rem;
+  padding: 0.6rem 0.8rem;
   border-radius: 6px;
   background-color: #f9f9f9;
+}
+
+.mobile-menu-toggle {
+  background-color: transparent;
+  border: 2px solid #0d6efd;
+  color: #0d6efd;
+  border-radius: 4px;
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+}
+
+.mobile-menu-toggle:hover {
+  background-color: #0d6efd;
+  color: white;
+}
+
+.navbar-toggler-icon {
+  font-size: 1.2rem;
+  transition: transform 0.3s ease;
+}
+
+.mobile-menu-toggle:hover .navbar-toggler-icon {
+  transform: scale(1.1);
+}
+
+.mobile-nav-menu {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-top: 0.5rem;
+  border: 1px solid #dee2e6;
 }
 </style>
