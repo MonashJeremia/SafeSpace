@@ -3,9 +3,9 @@
     <MainHeader @navigate-to-home="goToHome" />
     
     <main class="login-content">
-      <div class="container-fluid">
+      <div class="container-fluid px-3">
         <div class="row justify-content-center">
-          <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+          <div class="col-12 col-md-10 col-lg-8 col-xl-8">
             <div class="login-form-container">
               <div class="login-form">
                 <div class="user-icon-large">👤</div>
@@ -128,7 +128,7 @@ export default {
   justify-content: center;
   align-items: center;
   min-height: calc(100vh - 120px);
-  padding: 2rem;
+  padding: 1rem 0;
 }
 
 .login-form-container {
@@ -137,12 +137,12 @@ export default {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   width: 100%;
-  min-height: 500px;
+  min-height: 600px;
 }
 
 .login-form {
   width: 100%;
-  padding: 3rem;
+  padding: 2rem 3rem 3rem 3rem;
   display: flex;
   flex-direction: column;
 }
@@ -268,5 +268,34 @@ export default {
 .login-btn:disabled {
   background-color: #e0e0e0;
   cursor: not-allowed;
+}
+
+/* Responsive adjustments for better mobile experience */
+@media (max-width: 768px) {
+  .login-form {
+    padding: 1.5rem 2rem 2rem 2rem;
+  }
+  
+  .user-icon-large {
+    font-size: 2.5rem;
+  }
+  
+  .login-form h2 {
+    font-size: 1.75rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .login-form {
+    padding: 1rem 1.5rem 1.5rem 1.5rem;
+  }
+  
+  .user-icon-large {
+    font-size: 2rem;
+  }
+  
+  .login-form h2 {
+    font-size: 1.5rem;
+  }
 }
 </style>
