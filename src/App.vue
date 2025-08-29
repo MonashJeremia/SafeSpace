@@ -35,11 +35,13 @@ const navigateToHome = () => {
       v-if="currentView === 'signup'" 
       @navigate-to-home="navigateToHome"
       @navigate-to-login="navigateToLogin"
+      @navigate-to-helpnow="navigateToHelpNow"
     />
     <Login 
       v-if="currentView === 'login'" 
       @navigate-to-home="navigateToHome"
       @navigate-to-signup="navigateToSignUp"
+      @navigate-to-helpnow="navigateToHelpNow"
     />
     <HelpNow 
       v-if="currentView === 'helpnow'" 

@@ -1,6 +1,6 @@
 <template>
   <div class="login-container">
-    <MainHeader @navigate-to-home="goToHome" />
+    <MainHeader @navigate-to-home="goToHome" @navigate-to-helpnow="goToHelpNow" />
     
     <main class="login-content py-2 py-sm-3">
       <div class="container-fluid px-3">
@@ -235,6 +235,10 @@ const clearForm = () => {
 
 const goToHome = () => {
   emit('navigate-to-home')
+}
+
+const goToHelpNow = () => {
+  emit('navigate-to-helpnow')
 }
 
 const switchToLogin = () => {

@@ -1,6 +1,6 @@
 <template>
   <div class="login-container">
-    <MainHeader @navigate-to-home="goToHome" />
+    <MainHeader @navigate-to-home="goToHome" @navigate-to-helpnow="goToHelpNow" />
     
     <main class="login-content py-2 py-sm-3">
       <div class="container-fluid px-3">
@@ -101,6 +101,10 @@ export default {
       emit('navigate-to-home')
     }
 
+    const goToHelpNow = () => {
+      emit('navigate-to-helpnow')
+    }
+
     const switchToSignUp = () => {
       emit('navigate-to-signup')
     }
@@ -115,6 +119,7 @@ export default {
       showPassword,
       rememberMe,
       goToHome,
+      goToHelpNow,
       switchToSignUp,
       handleForgotPassword
     }
