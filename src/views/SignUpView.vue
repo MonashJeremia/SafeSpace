@@ -111,8 +111,15 @@
                     <label for="showPassword" class="form-check-label">Show password</label>
                   </div>
                   
+                  <!-- Registration Error Message -->
+                  <div v-if="errors.registration" class="alert alert-danger mb-3" role="alert">
+                    {{ errors.registration }}
+                  </div>
+                  
                   <div class="d-grid">
-                    <button type="submit" class="btn create-account-btn">Create an account</button>
+                    <button type="submit" class="btn create-account-btn">
+                      Create an account
+                    </button>
                   </div>
                 </form>
               </div>
@@ -126,7 +133,11 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import MainHeader from '../components/MainHeader.vue'
+import { registerUser } from '../services/authService.js'
+
+const router = useRouter()
 
 const formData = ref({
   firstName: '',
@@ -143,7 +154,8 @@ const errors = ref({
   lastName: null,
   email: null,
   password: null,
-  confirmPassword: null
+  confirmPassword: null,
+  registration: null
 })
 
 const validateFirstName = (blur) => {
@@ -210,16 +222,44 @@ const validateConfirmPassword = (blur) => {
   }
 }
 
-const submitForm = () => {
+const submitForm = async () => {
+  // Clear previous registration error
+  errors.value.registration = null
+  
+  // Validate all fields
   validateFirstName(true)
   validateLastName(true)
   validateEmail(true)
   validatePassword(true)
   validateConfirmPassword(true)
   
-  if (!errors.value.firstName && !errors.value.lastName && !errors.value.email && !errors.value.password && !errors.value.confirmPassword) {
-    alert('Account Created!')
-    clearForm()
+  // Check if all validations pass
+  const hasErrors = errors.value.firstName || errors.value.lastName || 
+                   errors.value.email || errors.value.password || 
+                   errors.value.confirmPassword
+  
+  if (!hasErrors) {
+    try {
+      // Register user using auth service
+      const newUser = registerUser({
+        firstName: formData.value.firstName,
+        lastName: formData.value.lastName,
+        email: formData.value.email,
+        password: formData.value.password
+      })
+      
+      // Success - redirect to login with success message
+      router.push({ 
+        path: '/login', 
+        query: { 
+          message: 'Account created successfully! Please log in.'
+        } 
+      })
+      
+    } catch (error) {
+      // Handle registration errors (like duplicate email)
+      errors.value.registration = error.message
+    }
   }
 }
 
@@ -365,5 +405,20 @@ const clearForm = () => {
 
 .create-account-btn:focus {
   box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.5);
+}
+
+
+
+.alert {
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid transparent;
+}
+
+.alert-danger {
+  color: #721c24;
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
 }
 </style>

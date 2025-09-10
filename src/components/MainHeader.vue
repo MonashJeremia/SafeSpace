@@ -10,11 +10,30 @@
         <div class="col-12 col-lg-6 nav-right d-flex justify-content-center justify-content-lg-end flex-wrap gap-1 gap-sm-2">
           <button class="btn help-btn btn-sm" @click="goToHelpNow">Help Now</button>
           <button class="btn donate-btn btn-sm">Donate now</button>
-          <button class="btn signup-btn btn-sm" @click="goToSignUp">
-            <span class="user-icon">👤</span>
-            <span class="d-none d-sm-inline">Sign Up / Login</span>
-            <span class="d-sm-none">Login</span>
-          </button>
+          
+          <!-- Show different buttons based on authentication state -->
+          <div v-if="!isAuthenticated" class="d-flex gap-1 gap-sm-2">
+            <button class="btn login-btn btn-sm" @click="goToLogin">
+              <span class="user-icon">👤</span>
+              <span class="d-none d-sm-inline">Login</span>
+              <span class="d-sm-none">Login</span>
+            </button>
+            <button class="btn signup-btn btn-sm" @click="goToSignUp">
+              <span class="d-none d-sm-inline">Sign Up</span>
+              <span class="d-sm-none">Join</span>
+            </button>
+          </div>
+          
+          <div v-else class="d-flex align-items-center gap-1 gap-sm-2">
+            <div class="user-info d-flex align-items-center">
+              <span class="user-icon">👤</span>
+              <span class="user-name d-none d-sm-inline">{{ currentUser.firstName }}</span>
+            </div>
+            <button class="btn logout-btn btn-sm" @click="handleLogout">
+              <span class="d-none d-sm-inline">Logout</span>
+              <span class="d-sm-none">Out</span>
+            </button>
+          </div>
         </div>
       </nav>
       
@@ -142,14 +161,19 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { authState, logoutUser } from '../services/authService.js'
 
 export default {
   name: 'MainHeader',
   setup() {
     const router = useRouter()
     const mobileMenuOpen = ref(false)
+    
+    // Computed properties for authentication state
+    const isAuthenticated = computed(() => authState.isAuthenticated)
+    const currentUser = computed(() => authState.currentUser)
     
     const toggleMobileMenu = () => {
       mobileMenuOpen.value = !mobileMenuOpen.value
@@ -158,6 +182,17 @@ export default {
     const goToSignUp = () => {
       router.push('/signup')
       console.log('Sign up button clicked')
+    }
+    
+    const goToLogin = () => {
+      router.push('/login')
+      console.log('Login button clicked')
+    }
+    
+    const handleLogout = () => {
+      logoutUser()
+      router.push('/')
+      console.log('User logged out')
     }
     
     const goToHelpNow = () => {
@@ -172,8 +207,12 @@ export default {
     
     return {
       mobileMenuOpen,
+      isAuthenticated,
+      currentUser,
       toggleMobileMenu,
       goToSignUp,
+      goToLogin,
+      handleLogout,
       goToHelpNow,
       goToHome
     }
@@ -275,7 +314,7 @@ export default {
   background-color: #f1f1f1;
 }
 
-.help-btn, .donate-btn, .signup-btn {
+.help-btn, .donate-btn, .signup-btn, .login-btn, .logout-btn {
   background-color: #e8e8e8;
   border: none;
   border-radius: 25px;
@@ -288,8 +327,30 @@ export default {
   white-space: nowrap;
 }
 
-.help-btn:hover, .donate-btn:hover, .signup-btn:hover {
+.help-btn:hover, .donate-btn:hover, .signup-btn:hover, .login-btn:hover {
   background-color: #d8d8d8;
+}
+
+.logout-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+.logout-btn:hover {
+  background-color: #c82333;
+}
+
+.user-info {
+  background-color: #f8f9fa;
+  border-radius: 20px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+.user-name {
+  margin-left: 0.5rem;
+  font-weight: 500;
 }
 
 .user-icon {

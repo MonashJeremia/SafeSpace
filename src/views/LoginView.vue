@@ -16,7 +16,17 @@
                   </p>
                 </div>
                 
-                <form>
+                <!-- Success Message from Registration -->
+                <div v-if="successMessage" class="alert alert-success mb-3" role="alert">
+                  {{ successMessage }}
+                </div>
+                
+                <!-- Login Error Message -->
+                <div v-if="loginError" class="alert alert-danger mb-3" role="alert">
+                  {{ loginError }}
+                </div>
+                
+                <form @submit.prevent="handleLogin">
                   <div class="form-group">
                     <label for="email">Email address</label>
                     <input 
@@ -39,30 +49,14 @@
                     >
                   </div>
                   
-                  <div class="row g-2 mb-3">
-                    <div class="col-12 col-sm-6">
-                      <div class="form-check">
-                        <input 
-                          type="checkbox" 
-                          id="showPassword" 
-                          class="form-check-input"
-                          v-model="showPassword"
-                        >
-                        <label for="showPassword" class="form-check-label">Show password</label>
-                      </div>
-                    </div>
-                    
-                    <div class="col-12 col-sm-6">
-                      <div class="form-check">
-                        <input 
-                          type="checkbox" 
-                          id="rememberMe" 
-                          class="form-check-input"
-                          v-model="rememberMe"
-                        >
-                        <label for="rememberMe" class="form-check-label">Remember me</label>
-                      </div>
-                    </div>
+                  <div class="form-check mb-3">
+                    <input 
+                      type="checkbox" 
+                      id="showPassword" 
+                      class="form-check-input"
+                      v-model="showPassword"
+                    >
+                    <label for="showPassword" class="form-check-label">Show password</label>
                   </div>
                   
                   <div class="text-center mb-4">
@@ -70,7 +64,9 @@
                   </div>
                   
                   <div class="d-grid">
-                    <button type="button" class="btn login-btn">Login</button>
+                    <button type="submit" class="btn login-btn">
+                      Login
+                    </button>
                   </div>
                 </form>
               </div>
@@ -83,8 +79,10 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import MainHeader from '../components/MainHeader.vue'
+import { loginUser } from '../services/authService.js'
 
 export default {
   name: 'LoginView',
@@ -92,20 +90,53 @@ export default {
     MainHeader
   },
   setup() {
+    const router = useRouter()
+    const route = useRoute()
+    
     const email = ref('')
     const password = ref('')
     const showPassword = ref(false)
-    const rememberMe = ref(false)
+    const loginError = ref(null)
+    const successMessage = ref(null)
+
+    // Check for success message from registration
+    onMounted(() => {
+      if (route.query.message) {
+        successMessage.value = route.query.message
+      }
+    })
+
+    const handleLogin = async () => {
+      loginError.value = null
+      
+      if (!email.value || !password.value) {
+        loginError.value = 'Please enter both email and password'
+        return
+      }
+      
+      try {
+        const user = loginUser(email.value, password.value, false)
+        
+        // Success - redirect to intended page or home
+        const redirectPath = route.query.redirect || '/'
+        router.push({ path: redirectPath })
+        
+      } catch (error) {
+        loginError.value = error.message
+      }
+    }
 
     const handleForgotPassword = () => {
-      // Empty function
+      // Empty function for now
     }
 
     return {
       email,
       password,
       showPassword,
-      rememberMe,
+      loginError,
+      successMessage,
+      handleLogin,
       handleForgotPassword
     }
   }
@@ -252,9 +283,24 @@ export default {
   box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.5);
 }
 
-.login-btn:disabled {
-  background-color: #6c757d;
-  border-color: #6c757d;
-  cursor: not-allowed;
+
+
+.alert {
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid transparent;
+}
+
+.alert-success {
+  color: #0f5132;
+  background-color: #d1e7dd;
+  border-color: #badbcc;
+}
+
+.alert-danger {
+  color: #721c24;
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
 }
 </style>
