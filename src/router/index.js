@@ -3,6 +3,9 @@ import HomeView from '../views/HomeView.vue'
 import LoginView from '../views/LoginView.vue'
 import SignUpView from '../views/SignUpView.vue'
 import HelpNowView from '../views/HelpNowView.vue'
+import InteractiveToolsView from '../views/InteractiveToolsView.vue'
+import TeachingResourcesView from '../views/TeachingResourcesView.vue'
+import GuidelinesView from '../views/GuidelinesView.vue'
 import { authState } from '../services/authService.js'
 
 const routes = [
@@ -31,6 +34,21 @@ const routes = [
     path: '/help-now',
     name: 'HelpNow',
     component: HelpNowView
+  },
+  {
+    path: '/interactive-tools',
+    name: 'InteractiveTools',
+    component: InteractiveToolsView
+  },
+  {
+    path: '/teaching-resources',
+    name: 'TeachingResources',
+    component: TeachingResourcesView
+  },
+  {
+    path: '/guidelines',
+    name: 'Guidelines',
+    component: GuidelinesView
   }
 ]
 

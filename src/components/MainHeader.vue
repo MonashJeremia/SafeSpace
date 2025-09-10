@@ -50,7 +50,7 @@
                 <div class="dropdown-content">
                   <div class="dropdown-item">Youth Resource 1</div>
                   <div class="dropdown-item">Youth Resource 2</div>
-                  <div class="dropdown-item">Youth Resource 3</div>
+                  <div class="dropdown-item" @click="goToInteractiveTools">Interactive Tools</div>
                 </div>
               </div>
               <div class="dropdown nav-dropdown me-4">
@@ -65,9 +65,8 @@
               <div v-if="!isAuthenticated || (currentUser && currentUser.userType === 'advisor')" class="dropdown nav-dropdown me-4">
                 <button class="btn dropdown-toggle">For Educators</button>
                 <div class="dropdown-content">
-                  <div class="dropdown-item">Educator Resource 1</div>
-                  <div class="dropdown-item">Educator Resource 2</div>
-                  <div class="dropdown-item">Educator Resource 3</div>
+                  <div class="dropdown-item" @click="goToTeachingResources">Teaching Resources</div>
+                  <div class="dropdown-item" @click="goToGuidelines">Guidelines for Supporting Students</div>
                 </div>
               </div>
               <div class="dropdown nav-dropdown me-4">
@@ -109,7 +108,7 @@
                   <div class="dropdown-content w-100">
                     <div class="dropdown-item">Youth Resource 1</div>
                     <div class="dropdown-item">Youth Resource 2</div>
-                    <div class="dropdown-item">Youth Resource 3</div>
+                    <div class="dropdown-item" @click="goToInteractiveTools">Interactive Tools</div>
                   </div>
                 </div>
               </div>
@@ -128,9 +127,8 @@
                 <div class="dropdown nav-dropdown w-100">
                   <button class="btn dropdown-toggle w-100 text-start">For Educators</button>
                   <div class="dropdown-content w-100">
-                    <div class="dropdown-item">Educator Resource 1</div>
-                    <div class="dropdown-item">Educator Resource 2</div>
-                    <div class="dropdown-item">Educator Resource 3</div>
+                    <div class="dropdown-item" @click="goToTeachingResources">Teaching Resources</div>
+                    <div class="dropdown-item" @click="goToGuidelines">Guidelines for Supporting Students</div>
                   </div>
                 </div>
               </div>
@@ -207,6 +205,21 @@ export default {
       console.log('Home navigation clicked')
     }
     
+    const goToInteractiveTools = () => {
+      router.push('/interactive-tools')
+      console.log('Interactive Tools navigation clicked')
+    }
+    
+    const goToTeachingResources = () => {
+      router.push('/teaching-resources')
+      console.log('Teaching Resources navigation clicked')
+    }
+    
+    const goToGuidelines = () => {
+      router.push('/guidelines')
+      console.log('Guidelines navigation clicked')
+    }
+    
     return {
       mobileMenuOpen,
       isAuthenticated,
@@ -216,7 +229,10 @@ export default {
       goToLogin,
       handleLogout,
       goToHelpNow,
-      goToHome
+      goToHome,
+      goToInteractiveTools,
+      goToTeachingResources,
+      goToGuidelines
     }
   }
 }
