@@ -61,7 +61,8 @@
                   <div class="dropdown-item">Resource C</div>
                 </div>
               </div>
-              <div class="dropdown nav-dropdown me-4">
+              <!-- Only show "For Educators" if user is advisor or not logged in -->
+              <div v-if="!isAuthenticated || (currentUser && currentUser.userType === 'advisor')" class="dropdown nav-dropdown me-4">
                 <button class="btn dropdown-toggle">For Educators</button>
                 <div class="dropdown-content">
                   <div class="dropdown-item">Educator Resource 1</div>
@@ -122,7 +123,8 @@
                   </div>
                 </div>
               </div>
-              <div class="col-12 col-sm-6">
+              <!-- Only show "For Educators" if user is advisor or not logged in -->
+              <div v-if="!isAuthenticated || (currentUser && currentUser.userType === 'advisor')" class="col-12 col-sm-6">
                 <div class="dropdown nav-dropdown w-100">
                   <button class="btn dropdown-toggle w-100 text-start">For Educators</button>
                   <div class="dropdown-content w-100">

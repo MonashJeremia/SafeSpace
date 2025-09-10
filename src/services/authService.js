@@ -1,4 +1,4 @@
-import { reactive, ref, watch, computed } from 'vue'
+import { reactive } from 'vue'
 
 // Authentication state
 const authState = reactive({
@@ -7,50 +7,54 @@ const authState = reactive({
   users: []
 })
 
-// Computed properties for localStorage
-const usersFromLocalStorage = computed(() => {
-  return JSON.parse(localStorage.getItem('safespace_users') || '[]')
-})
-
-const currentUserFromLocalStorage = computed(() => {
-  const storedUser = localStorage.getItem('safespace_current_user')
-  return storedUser ? JSON.parse(storedUser) : null
-})
-
-// Watchers for automatic localStorage sync
-watch(() => authState.users, (newUsers) => {
+// Helper functions for localStorage
+const saveUsersToStorage = (users) => {
   try {
-    localStorage.setItem('safespace_users', JSON.stringify(newUsers))
+    localStorage.setItem('safespace_users', JSON.stringify(users))
   } catch (error) {
     console.error('Error saving users to storage:', error)
   }
-}, { deep: true })
+}
 
-watch(() => authState.currentUser, (newUser) => {
+const loadUsersFromStorage = () => {
   try {
-    if (newUser && !newUser.temporary) {
-      // Only save to localStorage if it's not a temporary session
-      const userToSave = { ...newUser }
-      delete userToSave.temporary // Remove temporary flag before saving
-      localStorage.setItem('safespace_current_user', JSON.stringify(userToSave))
-    } else if (!newUser) {
-      // Clear localStorage when user is null (logout)
+    return JSON.parse(localStorage.getItem('safespace_users') || '[]')
+  } catch (error) {
+    console.error('Error loading users from storage:', error)
+    return []
+  }
+}
+
+const saveCurrentUserToStorage = (user) => {
+  try {
+    if (user) {
+      localStorage.setItem('safespace_current_user', JSON.stringify(user))
+    } else {
       localStorage.removeItem('safespace_current_user')
     }
-    // If user.temporary is true, don't save to localStorage
   } catch (error) {
-    console.error('Error managing current user session:', error)
+    console.error('Error saving current user to storage:', error)
   }
-}, { deep: true })
+}
+
+const loadCurrentUserFromStorage = () => {
+  try {
+    const storedUser = localStorage.getItem('safespace_current_user')
+    return storedUser ? JSON.parse(storedUser) : null
+  } catch (error) {
+    console.error('Error loading current user from storage:', error)
+    return null
+  }
+}
 
 // Initialize state from localStorage
 const initializeAuthState = () => {
   try {
     // Load users
-    authState.users = usersFromLocalStorage.value
+    authState.users = loadUsersFromStorage()
     
     // Load current user session
-    const storedUser = currentUserFromLocalStorage.value
+    const storedUser = loadCurrentUserFromStorage()
     if (storedUser) {
       authState.currentUser = storedUser
       authState.isAuthenticated = true
@@ -82,14 +86,15 @@ const registerUser = (userData) => {
     createdAt: new Date().toISOString()
   }
   
-  // Add user to the list (watcher will automatically save to localStorage)
+  // Add user to the list and manually save to localStorage
   authState.users.push(newUser)
+  saveUsersToStorage(authState.users)
   
   return newUser
 }
 
 // Login user
-const loginUser = (email, password, rememberMe = false) => {
+const loginUser = (email, password) => {
   const user = authState.users.find(u => 
     u.email.toLowerCase() === email.toLowerCase() && u.password === password
   )
@@ -100,27 +105,16 @@ const loginUser = (email, password, rememberMe = false) => {
   
   // Set authentication state
   authState.isAuthenticated = true
-  
-  if (rememberMe) {
-    // Save full session (watcher will handle localStorage)
-    authState.currentUser = {
-      id: user.id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      userType: user.userType
-    }
-  } else {
-    // Set current user but don't persist to localStorage
-    authState.currentUser = {
-      id: user.id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-      userType: user.userType,
-      temporary: true // Flag to indicate this shouldn't be persisted
-    }
+  authState.currentUser = {
+    id: user.id,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    email: user.email,
+    userType: user.userType
   }
+  
+  // Manually save current user to localStorage
+  saveCurrentUserToStorage(authState.currentUser)
   
   return authState.currentUser
 }
@@ -128,7 +122,10 @@ const loginUser = (email, password, rememberMe = false) => {
 // Logout user
 const logoutUser = () => {
   authState.isAuthenticated = false
-  authState.currentUser = null // Watcher will clear localStorage
+  authState.currentUser = null
+  
+  // Manually clear current user from localStorage
+  saveCurrentUserToStorage(null)
 }
 
 // Get current authentication state
