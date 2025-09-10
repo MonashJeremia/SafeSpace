@@ -6,7 +6,7 @@
       <div class="container-fluid px-3">
         <div class="row justify-content-center">
           <div class="col-12 col-lg-10 col-xl-9">
-            <div class="content-wrapper">
+            <div class="content-wrapper p-3 p-md-5">
               <!-- Header Section -->
               <div class="page-header text-center mb-5">
                 <div class="header-icon mb-3">📚</div>
@@ -43,7 +43,6 @@ export default {
   background-color: white;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  padding: 3rem 2.5rem;
 }
 
 .page-header {
@@ -190,17 +189,5 @@ export default {
   border-color: #218838;
 }
 
-@media (max-width: 768px) {
-  .content-wrapper {
-    padding: 1.5rem;
-  }
-  
-  .page-title {
-    font-size: 2rem;
-  }
-  
-  .resource-card {
-    padding: 1.5rem;
-  }
-}
+
 </style>

@@ -6,7 +6,7 @@
       <div class="container-fluid px-3">
         <div class="row justify-content-center">
           <div class="col-12 col-lg-10 col-xl-9">
-            <div class="content-wrapper">
+            <div class="content-wrapper p-3 p-md-5">
               <div class="page-header text-center">
                 <div class="header-icon mb-3">🧠</div>
                 <h1 class="page-title">Coping with Negative Thoughts</h1>
@@ -42,7 +42,6 @@ export default {
   background-color: white;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  padding: 3rem 2.5rem;
 }
 
 .header-icon {
@@ -62,13 +61,5 @@ export default {
   margin: 0;
 }
 
-@media (max-width: 768px) {
-  .content-wrapper {
-    padding: 1.5rem;
-  }
-  
-  .page-title {
-    font-size: 2rem;
-  }
-}
+
 </style>

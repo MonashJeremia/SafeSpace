@@ -6,13 +6,13 @@
       <div class="container-fluid px-3">
         <div class="row justify-content-center">
           <div class="col-12 col-lg-10 col-xl-9">
-            <div class="content-wrapper">
+            <div class="content-wrapper p-3 p-md-5">
               <div class="row g-4">
                 <!-- Step-by-Step Guides Section -->
                 <div class="col-12 col-lg-6">
                   <div class="tools-section">
-                    <div class="section-header">
-                      <div class="section-icon">📋</div>
+                    <div class="section-header d-flex flex-column flex-md-row align-items-center text-center text-md-start">
+                      <div class="section-icon me-0 me-md-3 mb-2 mb-md-0">📋</div>
                       <h2 class="section-title">Step-by-Step Guides</h2>
                     </div>
                     
@@ -47,8 +47,8 @@
                 <!-- Daily Challenge Section -->
                 <div class="col-12 col-lg-6">
                   <div class="tools-section">
-                    <div class="section-header">
-                      <div class="section-icon">⭐</div>
+                    <div class="section-header d-flex flex-column flex-md-row align-items-center text-center text-md-start">
+                      <div class="section-icon me-0 me-md-3 mb-2 mb-md-0">⭐</div>
                       <h2 class="section-title">Daily Challenge !</h2>
                     </div>
                     
@@ -58,7 +58,7 @@
                           <p>{{ dailyChallenge.text }}</p>
                         </div>
                         
-                        <div class="challenge-actions">
+                        <div class="challenge-actions d-flex flex-column flex-md-row gap-3">
                           <button 
                             class="btn challenge-complete-btn" 
                             @click="completeChallenge"
@@ -183,7 +183,6 @@ export default {
   background-color: white;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  padding: 3rem 2.5rem;
 }
 
 .tools-section {
@@ -191,8 +190,6 @@ export default {
 }
 
 .section-header {
-  display: flex;
-  align-items: center;
   margin-bottom: 1.5rem;
   padding-bottom: 1rem;
   border-bottom: 2px solid #e9ecef;
@@ -200,7 +197,6 @@ export default {
 
 .section-icon {
   font-size: 2rem;
-  margin-right: 1rem;
 }
 
 .section-title {
@@ -271,9 +267,7 @@ export default {
 }
 
 .challenge-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+  margin-top: 1rem;
 }
 
 .challenge-complete-btn {
@@ -314,23 +308,5 @@ export default {
   color: white;
 }
 
-@media (max-width: 768px) {
-  .content-wrapper {
-    padding: 1.5rem;
-  }
-  
-  .section-header {
-    flex-direction: column;
-    text-align: center;
-  }
-  
-  .section-icon {
-    margin-right: 0;
-    margin-bottom: 0.5rem;
-  }
-  
-  .challenge-actions {
-    flex-direction: column;
-  }
-}
+
 </style>
