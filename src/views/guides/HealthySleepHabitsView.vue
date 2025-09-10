@@ -41,9 +41,12 @@
                   <p>• Adults need 7-9 hours of sleep per night</p>
                   <p>• Poor sleep affects mood, memory, and immune system</p>
                   <p>• Good sleep improves mental health and reduces anxiety</p>
-                  <p>• It takes about 2 weeks to establish a new sleep routine</p>
+                  <p>• it takes about 2 weeks to establish a new sleep routine</p>
                 </div>
               </div>
+
+              <!-- Rating Component -->
+              <RatingComponent guideId="healthy-sleep-habits" />
             </div>
           </div>
         </div>
@@ -54,11 +57,13 @@
 
 <script>
 import MainHeader from '../../components/MainHeader.vue'
+import RatingComponent from '../../components/RatingComponent.vue'
 
 export default {
   name: 'HealthySleepHabitsView',
   components: {
-    MainHeader
+    MainHeader,
+    RatingComponent
   }
 }
 </script>

@@ -59,6 +59,9 @@
                   <p>• Thoughts of self-harm or feeling hopeless</p>
                 </div>
               </div>
+
+              <!-- Rating Component -->
+              <RatingComponent guideId="managing-stress" />
             </div>
           </div>
         </div>
@@ -68,12 +71,14 @@
 </template>
 
 <script>
-import MainHeader from '../../components/MainHeader.vue'
+import MainHeader from '@/components/MainHeader.vue'
+import RatingComponent from '@/components/RatingComponent.vue'
 
 export default {
   name: 'ManagingStressView',
   components: {
-    MainHeader
+    MainHeader,
+    RatingComponent
   }
 }
 </script>
