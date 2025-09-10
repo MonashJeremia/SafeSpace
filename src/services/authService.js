@@ -63,7 +63,7 @@ const initializeAuthState = () => {
 
 // Register a new user
 const registerUser = (userData) => {
-  const { firstName, lastName, email, password } = userData
+  const { firstName, lastName, email, password, userType } = userData
   
   // Check if user already exists
   const existingUser = authState.users.find(user => user.email.toLowerCase() === email.toLowerCase())
@@ -78,6 +78,7 @@ const registerUser = (userData) => {
     lastName,
     email: email.toLowerCase(),
     password, // In a real app, this should be hashed
+    userType,
     createdAt: new Date().toISOString()
   }
   
@@ -106,7 +107,8 @@ const loginUser = (email, password, rememberMe = false) => {
       id: user.id,
       firstName: user.firstName,
       lastName: user.lastName,
-      email: user.email
+      email: user.email,
+      userType: user.userType
     }
   } else {
     // Set current user but don't persist to localStorage
@@ -115,6 +117,7 @@ const loginUser = (email, password, rememberMe = false) => {
       firstName: user.firstName,
       lastName: user.lastName,
       email: user.email,
+      userType: user.userType,
       temporary: true // Flag to indicate this shouldn't be persisted
     }
   }

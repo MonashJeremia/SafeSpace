@@ -64,6 +64,23 @@
                     <div v-if="errors.email" class="error-message">{{ errors.email }}</div>
                   </div>
                   
+                  <div class="form-group">
+                    <label for="userType">I am a</label>
+                    <select 
+                      id="userType" 
+                      class="form-control"
+                      v-model="formData.userType"
+                      @blur="() => validateUserType(true)"
+                      @change="() => validateUserType(false)"
+                      required
+                    >
+                      <option value="">Please select...</option>
+                      <option value="youth">Youth</option>
+                      <option value="advisor">Advisor</option>
+                    </select>
+                    <div v-if="errors.userType" class="error-message">{{ errors.userType }}</div>
+                  </div>
+                  
                   <div class="row g-3">
                     <div class="col-12 col-md-6">
                       <div class="form-group">
@@ -144,7 +161,8 @@ const formData = ref({
   lastName: '',
   email: '',
   password: '',
-  confirmPassword: ''
+  confirmPassword: '',
+  userType: ''
 })
 
 const showPassword = ref(false)
@@ -155,6 +173,7 @@ const errors = ref({
   email: null,
   password: null,
   confirmPassword: null,
+  userType: null,
   registration: null
 })
 
@@ -222,6 +241,14 @@ const validateConfirmPassword = (blur) => {
   }
 }
 
+const validateUserType = (blur) => {
+  if (!formData.value.userType) {
+    if (blur) errors.value.userType = "Please select your user type"
+  } else {
+    errors.value.userType = null
+  }
+}
+
 const submitForm = async () => {
   // Clear previous registration error
   errors.value.registration = null
@@ -232,11 +259,12 @@ const submitForm = async () => {
   validateEmail(true)
   validatePassword(true)
   validateConfirmPassword(true)
+  validateUserType(true)
   
   // Check if all validations pass
   const hasErrors = errors.value.firstName || errors.value.lastName || 
                    errors.value.email || errors.value.password || 
-                   errors.value.confirmPassword
+                   errors.value.confirmPassword || errors.value.userType
   
   if (!hasErrors) {
     try {
@@ -245,7 +273,8 @@ const submitForm = async () => {
         firstName: formData.value.firstName,
         lastName: formData.value.lastName,
         email: formData.value.email,
-        password: formData.value.password
+        password: formData.value.password,
+        userType: formData.value.userType
       })
       
       // Success - redirect to login with success message
@@ -269,6 +298,7 @@ const clearForm = () => {
   formData.value.email = ''
   formData.value.password = ''
   formData.value.confirmPassword = ''
+  formData.value.userType = ''
 }
 </script>
 
