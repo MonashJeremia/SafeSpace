@@ -36,12 +36,6 @@
                       </div>
                       
                       <div class="guide-item">
-                        <button class="guide-btn" @click="openGuide('coping-negative-thoughts-2')">
-                          Coping with Negative Thoughts
-                        </button>
-                      </div>
-                      
-                      <div class="guide-item">
                         <button class="guide-btn" @click="openGuide('daily-positivity')">
                           Daily Positivity Challenge
                         </button>
@@ -144,7 +138,6 @@ export default {
         'coping-negative-thoughts': '/guides/coping-negative-thoughts',
         'healthy-sleep-habits': '/guides/healthy-sleep-habits',
         'managing-stress': '/guides/managing-stress',
-        'coping-negative-thoughts-2': '/guides/coping-negative-thoughts', // Same as first one
         'daily-positivity': '/guides/daily-positivity'
       }
       
