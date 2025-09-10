@@ -95,6 +95,7 @@
 
 <script>
 import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import MainHeader from '../components/MainHeader.vue'
 
 export default {
@@ -103,6 +104,7 @@ export default {
     MainHeader
   },
   setup() {
+    const router = useRouter()
     const challengeCompleted = ref(false)
     const dailyChallenge = ref({
       text: "Write down three things you're grateful for today and share one with someone you care about."
@@ -138,9 +140,19 @@ export default {
     }
     
     const openGuide = (guideId) => {
-      // Placeholder for opening specific guides
+      const routeMap = {
+        'coping-negative-thoughts': '/guides/coping-negative-thoughts',
+        'healthy-sleep-habits': '/guides/healthy-sleep-habits',
+        'managing-stress': '/guides/managing-stress',
+        'coping-negative-thoughts-2': '/guides/coping-negative-thoughts', // Same as first one
+        'daily-positivity': '/guides/daily-positivity'
+      }
+      
+      const routePath = routeMap[guideId]
+      if (routePath) {
+        router.push(routePath)
+      }
       console.log(`Opening guide: ${guideId}`)
-      alert(`Opening ${guideId} guide - This would navigate to a detailed guide page`)
     }
     
     // Check if challenge was already completed today

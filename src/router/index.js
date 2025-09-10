@@ -6,6 +6,10 @@ import HelpNowView from '../views/HelpNowView.vue'
 import InteractiveToolsView from '../views/InteractiveToolsView.vue'
 import TeachingResourcesView from '../views/TeachingResourcesView.vue'
 import GuidelinesView from '../views/GuidelinesView.vue'
+import CopingNegativeThoughtsView from '../views/guides/CopingNegativeThoughtsView.vue'
+import HealthySleepHabitsView from '../views/guides/HealthySleepHabitsView.vue'
+import ManagingStressView from '../views/guides/ManagingStressView.vue'
+import DailyPositivityView from '../views/guides/DailyPositivityView.vue'
 import { authState } from '../services/authService.js'
 
 const routes = [
@@ -49,6 +53,26 @@ const routes = [
     path: '/guidelines',
     name: 'Guidelines',
     component: GuidelinesView
+  },
+  {
+    path: '/guides/coping-negative-thoughts',
+    name: 'CopingNegativeThoughts',
+    component: CopingNegativeThoughtsView
+  },
+  {
+    path: '/guides/healthy-sleep-habits',
+    name: 'HealthySleepHabits',
+    component: HealthySleepHabitsView
+  },
+  {
+    path: '/guides/managing-stress',
+    name: 'ManagingStress',
+    component: ManagingStressView
+  },
+  {
+    path: '/guides/daily-positivity',
+    name: 'DailyPositivity',
+    component: DailyPositivityView
   }
 ]
 
