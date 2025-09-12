@@ -83,6 +83,8 @@ import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import MainHeader from '../components/MainHeader.vue'
 import { loginUser } from '../services/authService.js'
+// Import security utilities for input validation and XSS protection
+import { sanitizeInput, isValidEmail } from '../utils/security.js'
 
 export default {
   name: 'LoginView',
@@ -109,13 +111,28 @@ export default {
     const handleLogin = async () => {
       loginError.value = null
       
-      if (!email.value || !password.value) {
+      // Sanitize inputs to prevent XSS attacks
+      const cleanEmail = sanitizeInput(email.value, 254).toLowerCase()
+      const cleanPassword = sanitizeInput(password.value, 128)
+      
+      // Update the form values with sanitized versions
+      email.value = cleanEmail
+      password.value = cleanPassword
+      
+      // Basic validation with security checks
+      if (!cleanEmail || !cleanPassword) {
         loginError.value = 'Please enter both email and password'
         return
       }
       
+      // Validate email format to prevent malicious input
+      if (!isValidEmail(cleanEmail)) {
+        loginError.value = 'Please enter a valid email address'
+        return
+      }
+      
       try {
-        const user = loginUser(email.value, password.value, false)
+        const user = loginUser(cleanEmail, cleanPassword, false)
         
         // Success - redirect to intended page or home
         const redirectPath = route.query.redirect || '/'

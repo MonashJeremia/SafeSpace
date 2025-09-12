@@ -5,7 +5,19 @@
     <main class="login-content py-2 py-sm-3">
       <div class="container-fluid px-3">
         <div class="row justify-content-center">
-          <div class="col-12 col-sm-11 col-md-10 col-lg-8 col-xl-6 col-xxl-5">
+  const validateEmail = (blur) => {
+  // Clean the input first
+  const clean = sanitizeInput(formData.value.email)
+  formData.value.email = clean
+  
+  if (!clean && blur) {
+    errors.value.email = "Email is required"
+  } else if (!isValidEmail(clean) && blur) {
+    errors.value.email = "Please enter a valid email address"
+  } else {
+    errors.value.email = null
+  }
+}class="col-12 col-sm-11 col-md-10 col-lg-8 col-xl-6 col-xxl-5">
             <div class="login-form-container">
               <div class="login-form p-3 p-sm-4 p-md-5">
                 <div class="text-center">
@@ -90,8 +102,8 @@
                           id="password" 
                           class="form-control"
                           v-model="formData.password"
-                          @blur="() => validatePassword(true)"
-                          @input="() => validatePassword(false)"
+                          @blur="() => validatePasswordField(true)"
+                          @input="() => validatePasswordField(false)"
                           required
                         >
                         <div v-if="errors.password" class="error-message">{{ errors.password }}</div>
@@ -153,6 +165,8 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import MainHeader from '../components/MainHeader.vue'
 import { registerUser } from '../services/authService.js'
+// Import security utilities for input validation and XSS protection
+import { validateName, isValidEmail, validatePassword, sanitizeInput } from '../utils/security.js'
 
 const router = useRouter()
 
@@ -177,57 +191,66 @@ const errors = ref({
   registration: null
 })
 
+// Simple validation functions with basic security
 const validateFirstName = (blur) => {
-  if (formData.value.firstName.length < 3) {
-    if (blur) errors.value.firstName = "First name must be at least 3 characters"
+  // Clean the input first
+  const clean = sanitizeInput(formData.value.firstName)
+  formData.value.firstName = clean
+  
+  // Basic validation
+  const validation = validateName(clean)
+  
+  if (!validation.isValid && blur) {
+    errors.value.firstName = validation.error
   } else {
     errors.value.firstName = null
   }
 }
 
 const validateLastName = (blur) => {
-  if (formData.value.lastName.length < 3) {
-    if (blur) errors.value.lastName = "Last name must be at least 3 characters"
+  // Clean the input first
+  const clean = sanitizeInput(formData.value.lastName)
+  formData.value.lastName = clean
+  
+  // Basic validation
+  const validation = validateName(clean)
+  
+  if (!validation.isValid && blur) {
+    errors.value.lastName = validation.error
   } else {
     errors.value.lastName = null
   }
 }
 
 const validateEmail = (blur) => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  if (!formData.value.email) {
-    if (blur) errors.value.email = "Email address is required"
-  } else if (!emailRegex.test(formData.value.email)) {
-    if (blur) errors.value.email = "Please enter a valid email address"
+  // Sanitize email input to prevent XSS
+  const sanitized = sanitizeInput(formData.value.email, 254)
+  formData.value.email = sanitized.toLowerCase() // Email should be lowercase
+  
+  if (!sanitized && blur) {
+    errors.value.email = "Email address is required"
+  } else if (!isValidEmail(sanitized) && blur) {
+    errors.value.email = "Please enter a valid email address"
   } else {
     errors.value.email = null
   }
 }
 
-const validatePassword = (blur) => {
-  const password = formData.value.password
-  const minLength = 8
-  const hasUpperCase = /[A-Z]/.test(password)
-  const hasLowerCase = /[a-z]/.test(password)
-  const hasNumber = /\d/.test(password)
-  const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password)
-
-  if (password.length < minLength) {
-    if (blur) errors.value.password = `Password must be at least ${minLength} characters long.`
-  } else if (!hasUpperCase) {
-    if (blur) errors.value.password = "Password must contain at least one uppercase letter"
-  } else if (!hasLowerCase) {
-    if (blur) errors.value.password = "Password must contain at least one lowercase letter"
-  } else if (!hasNumber) {
-    if (blur) errors.value.password = "Password must contain at least one number"
-  } else if (!hasSpecialChar) {
-    if (blur) errors.value.password = "Password must contain at least one special character"
+// Simple password validation with security
+const validatePasswordField = (blur) => {
+  const result = validatePassword(formData.value.password)
+  
+  if (!result.isValid && blur) {
+    errors.value.password = result.errors[0] // Show first error
   } else {
     errors.value.password = null
   }
   
+  // Also check confirm password if it exists
   if (formData.value.confirmPassword) {
     validateConfirmPassword(false)
+  }
+}
   }
 }
 
@@ -253,11 +276,11 @@ const submitForm = async () => {
   // Clear previous registration error
   errors.value.registration = null
   
-  // Validate all fields
+  // Validate all fields with enhanced security validation
   validateFirstName(true)
   validateLastName(true)
   validateEmail(true)
-  validatePassword(true)
+  validatePasswordField(true)  // Updated function name
   validateConfirmPassword(true)
   validateUserType(true)
   
