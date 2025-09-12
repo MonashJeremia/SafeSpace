@@ -181,43 +181,35 @@ export default {
     
     const goToSignUp = () => {
       router.push('/signup')
-      console.log('Sign up button clicked')
     }
     
     const goToLogin = () => {
       router.push('/login')
-      console.log('Login button clicked')
     }
     
     const handleLogout = () => {
       logoutUser()
       router.push('/')
-      console.log('User logged out')
     }
     
     const goToHelpNow = () => {
       router.push('/help-now')
-      console.log('Help Now button clicked')
     }
     
     const goToHome = () => {
       router.push('/')
-      console.log('Home navigation clicked')
     }
     
     const goToInteractiveTools = () => {
       router.push('/interactive-tools')
-      console.log('Interactive Tools navigation clicked')
     }
     
     const goToTeachingResources = () => {
       router.push('/teaching-resources')
-      console.log('Teaching Resources navigation clicked')
     }
     
     const goToGuidelines = () => {
       router.push('/guidelines')
-      console.log('Guidelines navigation clicked')
     }
     
     return {

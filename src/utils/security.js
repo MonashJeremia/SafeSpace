@@ -13,7 +13,7 @@ export function escapeHtml(text) {
 }
 
 // Remove dangerous content from user input
-export function sanitizeInput(input) {
+export function sanitizeInput(input, maxLength = 1000) {
   if (!input) return ''
   
   let clean = String(input)
@@ -24,8 +24,8 @@ export function sanitizeInput(input) {
   clean = clean.trim()
   
   // Prevent abuse with length limit
-  if (clean.length > 1000) {
-    clean = clean.substring(0, 1000)
+  if (clean.length > maxLength) {
+    clean = clean.substring(0, maxLength)
   }
   
   return clean

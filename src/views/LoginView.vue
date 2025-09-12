@@ -59,10 +59,6 @@
                     <label for="showPassword" class="form-check-label">Show password</label>
                   </div>
                   
-                  <div class="text-center mb-4">
-                    <a href="#" @click.prevent="handleForgotPassword" class="forgot-link">Forgot your password?</a>
-                  </div>
-                  
                   <div class="d-grid">
                     <button type="submit" class="btn login-btn">
                       Login
@@ -143,18 +139,13 @@ export default {
       }
     }
 
-    const handleForgotPassword = () => {
-      // Empty function for now
-    }
-
     return {
       email,
       password,
       showPassword,
       loginError,
       successMessage,
-      handleLogin,
-      handleForgotPassword
+      handleLogin
     }
   }
 }
@@ -264,18 +255,6 @@ export default {
   color: #212529;
   font-size: 0.9rem;
   cursor: pointer;
-}
-
-.forgot-link {
-  color: #0d6efd;
-  text-decoration: none;
-  font-size: 0.9rem;
-  font-weight: 500;
-}
-
-.forgot-link:hover {
-  color: #0b5ed7;
-  text-decoration: underline;
 }
 
 .login-btn {
