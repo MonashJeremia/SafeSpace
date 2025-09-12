@@ -5,19 +5,7 @@
     <main class="login-content py-2 py-sm-3">
       <div class="container-fluid px-3">
         <div class="row justify-content-center">
-  const validateEmail = (blur) => {
-  // Clean the input first
-  const clean = sanitizeInput(formData.value.email)
-  formData.value.email = clean
-  
-  if (!clean && blur) {
-    errors.value.email = "Email is required"
-  } else if (!isValidEmail(clean) && blur) {
-    errors.value.email = "Please enter a valid email address"
-  } else {
-    errors.value.email = null
-  }
-}class="col-12 col-sm-11 col-md-10 col-lg-8 col-xl-6 col-xxl-5">
+          <div class="col-12 col-sm-11 col-md-10 col-lg-8 col-xl-6 col-xxl-5">
             <div class="login-form-container">
               <div class="login-form p-3 p-sm-4 p-md-5">
                 <div class="text-center">
@@ -223,13 +211,13 @@ const validateLastName = (blur) => {
 }
 
 const validateEmail = (blur) => {
-  // Sanitize email input to prevent XSS
-  const sanitized = sanitizeInput(formData.value.email, 254)
-  formData.value.email = sanitized.toLowerCase() // Email should be lowercase
+  // Clean the input first
+  const clean = sanitizeInput(formData.value.email)
+  formData.value.email = clean.toLowerCase() // Email should be lowercase
   
-  if (!sanitized && blur) {
-    errors.value.email = "Email address is required"
-  } else if (!isValidEmail(sanitized) && blur) {
+  if (!clean && blur) {
+    errors.value.email = "Email is required"
+  } else if (!isValidEmail(clean) && blur) {
     errors.value.email = "Please enter a valid email address"
   } else {
     errors.value.email = null
@@ -249,8 +237,6 @@ const validatePasswordField = (blur) => {
   // Also check confirm password if it exists
   if (formData.value.confirmPassword) {
     validateConfirmPassword(false)
-  }
-}
   }
 }
 
