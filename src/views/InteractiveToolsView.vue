@@ -91,8 +91,6 @@
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import MainHeader from '../components/MainHeader.vue'
-// Import security utilities to ensure safe display of content
-import { escapeHtml } from '../utils/security.js'
 
 export default {
   name: 'InteractiveToolsView',

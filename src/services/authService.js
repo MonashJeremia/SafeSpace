@@ -47,7 +47,7 @@ const loadCurrentUserFromStorage = () => {
   }
 }
 
-// Initialize state from localStorage
+// Initialise state from localStorage
 const initializeAuthState = () => {
   try {
     // Load users
@@ -81,7 +81,7 @@ const registerUser = (userData) => {
     firstName,
     lastName,
     email: email.toLowerCase(),
-    password, // In a real app, this should be hashed
+    password, 
     userType,
     createdAt: new Date().toISOString()
   }
@@ -131,7 +131,7 @@ const logoutUser = () => {
 // Get current authentication state
 const getAuthState = () => authState
 
-// Initialize the service
+// Initialise the service
 initializeAuthState()
 
 export {
