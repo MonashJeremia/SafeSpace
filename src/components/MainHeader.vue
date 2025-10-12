@@ -19,7 +19,9 @@
           <button class="btn help-btn btn-sm" @click="goToHelpNow">
             Help Now
           </button>
-          <button class="btn donate-btn btn-sm">Donate now</button>
+          <button class="btn donate-btn btn-sm" @click="goToDonateNow">
+            Donate now
+          </button>
 
           <!-- Show different buttons based on authentication state -->
           <div v-if="!isAuthenticated" class="d-flex gap-1 gap-sm-2">
@@ -221,6 +223,7 @@ import { ref, computed, onMounted, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
 import { signOut, onAuthStateChanged } from "firebase/auth";
 import { auth } from "../main.js";
+import DonateNowView from "@/views/DonateNowView.vue";
 
 export default {
   name: "MainHeader",
@@ -291,6 +294,10 @@ export default {
       router.push("/guidelines");
     };
 
+    const goToDonateNow = () => {
+      router.push("/DonateNow");
+    };
+
     return {
       mobileMenuOpen,
       isAuthenticated,
@@ -304,6 +311,7 @@ export default {
       goToInteractiveTools,
       goToTeachingResources,
       goToGuidelines,
+      goToDonateNow,
     };
   },
 };

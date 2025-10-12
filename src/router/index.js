@@ -11,6 +11,7 @@ import HealthySleepHabitsView from "../views/guides/HealthySleepHabitsView.vue";
 import ManagingStressView from "../views/guides/ManagingStressView.vue";
 import DailyPositivityView from "../views/guides/DailyPositivityView.vue";
 import { auth } from "../main.js";
+import DonateNowView from "@/views/DonateNowView.vue";
 
 const routes = [
   {
@@ -73,6 +74,11 @@ const routes = [
     path: "/guides/daily-positivity",
     name: "DailyPositivity",
     component: DailyPositivityView,
+  },
+  {
+    path: "/DonateNow",
+    name: "DonateNow",
+    component: DonateNowView,
   },
 ];
 
