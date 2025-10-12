@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <MainHeader />
-    
+
     <main class="login-content py-2 py-sm-3">
       <div class="container-fluid px-3">
         <div class="row justify-content-center">
@@ -9,65 +9,79 @@
             <div class="login-form-container">
               <div class="login-form p-3 p-sm-4 p-md-5">
                 <div class="text-center">
-                  <div class="user-icon-large" style="font-size: clamp(2rem, 4vw, 3rem);">👤</div>
+                  <div
+                    class="user-icon-large"
+                    style="font-size: clamp(2rem, 4vw, 3rem)"
+                  >
+                    👤
+                  </div>
                   <h2 class="fs-4 fs-sm-3 fs-md-2">Create an account</h2>
                   <p class="login-subtitle fs-6 fs-sm-5">
-                    Already have an account? <router-link to="/login" class="login-link">Log in</router-link>
+                    Already have an account?
+                    <router-link to="/login" class="login-link"
+                      >Log in</router-link
+                    >
                   </p>
                 </div>
-                
+
                 <form @submit.prevent="submitForm">
                   <div class="row g-3">
                     <div class="col-12 col-md-6">
                       <div class="form-group">
                         <label for="firstName">First name</label>
-                        <input 
-                          type="text" 
-                          id="firstName" 
+                        <input
+                          type="text"
+                          id="firstName"
                           class="form-control"
                           v-model="formData.firstName"
                           @blur="() => validateFirstName(true)"
                           @input="() => validateFirstName(false)"
                           required
-                        >
-                        <div v-if="errors.firstName" class="error-message">{{ errors.firstName }}</div>
+                        />
+                        <div v-if="errors.firstName" class="error-message">
+                          {{ errors.firstName }}
+                        </div>
                       </div>
                     </div>
                     <div class="col-12 col-md-6">
                       <div class="form-group">
                         <label for="lastName">Last name</label>
-                        <input 
-                          type="text" 
-                          id="lastName" 
+                        <input
+                          type="text"
+                          id="lastName"
                           class="form-control"
                           v-model="formData.lastName"
                           @blur="() => validateLastName(true)"
                           @input="() => validateLastName(false)"
                           required
-                        >
-                        <div v-if="errors.lastName" class="error-message">{{ errors.lastName }}</div>
+                        />
+                        <div v-if="errors.lastName" class="error-message">
+                          {{ errors.lastName }}
+                        </div>
                       </div>
                     </div>
                   </div>
-                  
+
                   <div class="form-group">
                     <label for="email">Email address</label>
-                    <input 
-                      type="email" 
-                      id="email" 
+                    <input
+                      type="email"
+                      id="email"
                       class="form-control"
                       v-model="formData.email"
                       @blur="() => validateEmail(true)"
                       @input="() => validateEmail(false)"
                       required
-                    >
-                    <div v-if="errors.email" class="error-message">{{ errors.email }}</div>
+                    />
+                    <div v-if="errors.email" class="error-message">
+                      {{ errors.email }}
+                    </div>
                   </div>
-                  
+
                   <div class="form-group">
                     <label for="userType">I am a</label>
-                    <select 
-                      id="userType" 
+                    <select
+                      id="userType"
                       class="form-control"
                       v-model="formData.userType"
                       @blur="() => validateUserType(true)"
@@ -78,61 +92,79 @@
                       <option value="youth">Youth</option>
                       <option value="advisor">Advisor</option>
                     </select>
-                    <div v-if="errors.userType" class="error-message">{{ errors.userType }}</div>
+                    <div v-if="errors.userType" class="error-message">
+                      {{ errors.userType }}
+                    </div>
                   </div>
-                  
+
                   <div class="row g-3">
                     <div class="col-12 col-md-6">
                       <div class="form-group">
                         <label for="password">Password</label>
-                        <input 
-                          :type="showPassword ? 'text' : 'password'" 
-                          id="password" 
+                        <input
+                          :type="showPassword ? 'text' : 'password'"
+                          id="password"
                           class="form-control"
                           v-model="formData.password"
                           @blur="() => validatePasswordField(true)"
                           @input="() => validatePasswordField(false)"
                           required
-                        >
-                        <div v-if="errors.password" class="error-message">{{ errors.password }}</div>
+                        />
+                        <div v-if="errors.password" class="error-message">
+                          {{ errors.password }}
+                        </div>
                       </div>
                     </div>
                     <div class="col-12 col-md-6">
                       <div class="form-group">
-                        <label for="confirmPassword">Confirm your password</label>
-                        <input 
-                          :type="showPassword ? 'text' : 'password'" 
-                          id="confirmPassword" 
+                        <label for="confirmPassword"
+                          >Confirm your password</label
+                        >
+                        <input
+                          :type="showPassword ? 'text' : 'password'"
+                          id="confirmPassword"
                           class="form-control"
                           v-model="formData.confirmPassword"
                           @blur="() => validateConfirmPassword(true)"
                           @input="() => validateConfirmPassword(false)"
                           required
+                        />
+                        <div
+                          v-if="errors.confirmPassword"
+                          class="error-message"
                         >
-                        <div v-if="errors.confirmPassword" class="error-message">{{ errors.confirmPassword }}</div>
+                          {{ errors.confirmPassword }}
+                        </div>
                       </div>
                     </div>
                   </div>
-                  
+
                   <p class="password-requirement">
-                    Use 8 or more characters with a mix of letters, numbers & symbols
+                    Use 8 or more characters with a mix of letters, numbers &
+                    symbols
                   </p>
-                  
+
                   <div class="form-check mb-3">
-                    <input 
-                      type="checkbox" 
-                      id="showPassword" 
+                    <input
+                      type="checkbox"
+                      id="showPassword"
                       class="form-check-input"
                       v-model="showPassword"
+                    />
+                    <label for="showPassword" class="form-check-label"
+                      >Show password</label
                     >
-                    <label for="showPassword" class="form-check-label">Show password</label>
                   </div>
-                  
+
                   <!-- Registration Error Message -->
-                  <div v-if="errors.registration" class="alert alert-danger mb-3" role="alert">
+                  <div
+                    v-if="errors.registration"
+                    class="alert alert-danger mb-3"
+                    role="alert"
+                  >
                     {{ errors.registration }}
                   </div>
-                  
+
                   <div class="d-grid">
                     <button type="submit" class="btn create-account-btn">
                       Create an account
@@ -149,25 +181,31 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
-import MainHeader from '../components/MainHeader.vue'
-import { registerUser } from '../services/authService.js'
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../main.js";
+import MainHeader from "../components/MainHeader.vue";
 // Import security utilities for input validation and XSS protection
-import { validateName, isValidEmail, validatePassword, sanitizeInput } from '../utils/security.js'
+import {
+  validateName,
+  isValidEmail,
+  validatePassword,
+  sanitizeInput,
+} from "../utils/security.js";
 
-const router = useRouter()
+const router = useRouter();
 
 const formData = ref({
-  firstName: '',
-  lastName: '',
-  email: '',
-  password: '',
-  confirmPassword: '',
-  userType: ''
-})
+  firstName: "",
+  lastName: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
+  userType: "",
+});
 
-const showPassword = ref(false)
+const showPassword = ref(false);
 
 const errors = ref({
   firstName: null,
@@ -176,139 +214,152 @@ const errors = ref({
   password: null,
   confirmPassword: null,
   userType: null,
-  registration: null
-})
+  registration: null,
+});
 
 // Simple validation functions with basic security
 const validateFirstName = (blur) => {
   // Clean the input first
-  const clean = sanitizeInput(formData.value.firstName)
-  formData.value.firstName = clean
-  
+  const clean = sanitizeInput(formData.value.firstName);
+  formData.value.firstName = clean;
+
   // Basic validation
-  const validation = validateName(clean)
-  
+  const validation = validateName(clean);
+
   if (!validation.isValid && blur) {
-    errors.value.firstName = validation.error
+    errors.value.firstName = validation.error;
   } else {
-    errors.value.firstName = null
+    errors.value.firstName = null;
   }
-}
+};
 
 const validateLastName = (blur) => {
   // Clean the input first
-  const clean = sanitizeInput(formData.value.lastName)
-  formData.value.lastName = clean
-  
+  const clean = sanitizeInput(formData.value.lastName);
+  formData.value.lastName = clean;
+
   // Basic validation
-  const validation = validateName(clean)
-  
+  const validation = validateName(clean);
+
   if (!validation.isValid && blur) {
-    errors.value.lastName = validation.error
+    errors.value.lastName = validation.error;
   } else {
-    errors.value.lastName = null
+    errors.value.lastName = null;
   }
-}
+};
 
 const validateEmail = (blur) => {
   // Clean the input first
-  const clean = sanitizeInput(formData.value.email)
-  formData.value.email = clean.toLowerCase() // Email should be lowercase
-  
+  const clean = sanitizeInput(formData.value.email);
+  formData.value.email = clean.toLowerCase(); // Email should be lowercase
+
   if (!clean && blur) {
-    errors.value.email = "Email is required"
+    errors.value.email = "Email is required";
   } else if (!isValidEmail(clean) && blur) {
-    errors.value.email = "Please enter a valid email address"
+    errors.value.email = "Please enter a valid email address";
   } else {
-    errors.value.email = null
+    errors.value.email = null;
   }
-}
+};
 
 // Simple password validation with security
 const validatePasswordField = (blur) => {
-  const result = validatePassword(formData.value.password)
-  
+  const result = validatePassword(formData.value.password);
+
   if (!result.isValid && blur) {
-    errors.value.password = result.errors[0] // Show first error
+    errors.value.password = result.errors[0]; // Show first error
   } else {
-    errors.value.password = null
+    errors.value.password = null;
   }
-  
+
   // Also check confirm password if it exists
   if (formData.value.confirmPassword) {
-    validateConfirmPassword(false)
+    validateConfirmPassword(false);
   }
-}
+};
 
 const validateConfirmPassword = (blur) => {
   if (!formData.value.confirmPassword) {
-    if (blur) errors.value.confirmPassword = "Please confirm your password"
+    if (blur) errors.value.confirmPassword = "Please confirm your password";
   } else if (formData.value.confirmPassword !== formData.value.password) {
-    if (blur) errors.value.confirmPassword = "Passwords do not match"
+    if (blur) errors.value.confirmPassword = "Passwords do not match";
   } else {
-    errors.value.confirmPassword = null
+    errors.value.confirmPassword = null;
   }
-}
+};
 
 const validateUserType = (blur) => {
   if (!formData.value.userType) {
-    if (blur) errors.value.userType = "Please select your user type"
+    if (blur) errors.value.userType = "Please select your user type";
   } else {
-    errors.value.userType = null
+    errors.value.userType = null;
   }
-}
+};
 
 const submitForm = async () => {
   // Clear previous registration error
-  errors.value.registration = null
-  
+  errors.value.registration = null;
+
   // Validate all fields with enhanced security validation
-  validateFirstName(true)
-  validateLastName(true)
-  validateEmail(true)
-  validatePasswordField(true)  // Updated function name
-  validateConfirmPassword(true)
-  validateUserType(true)
-  
+  validateFirstName(true);
+  validateLastName(true);
+  validateEmail(true);
+  validatePasswordField(true);
+  validateConfirmPassword(true);
+  validateUserType(true);
+
   // Check if all validations pass
-  const hasErrors = errors.value.firstName || errors.value.lastName || 
-                   errors.value.email || errors.value.password || 
-                   errors.value.confirmPassword || errors.value.userType
-  
+  const hasErrors =
+    errors.value.firstName ||
+    errors.value.lastName ||
+    errors.value.email ||
+    errors.value.password ||
+    errors.value.confirmPassword ||
+    errors.value.userType;
+
   if (!hasErrors) {
     try {
-      // Register user using auth service
-      const newUser = registerUser({
-        firstName: formData.value.firstName,
-        lastName: formData.value.lastName,
-        email: formData.value.email,
-        password: formData.value.password,
-        userType: formData.value.userType
-      })
-      
+      // Register user using Firebase Authentication
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        formData.value.email,
+        formData.value.password
+      );
+
       // Success - redirect to login with success message
-      router.push({ 
-        path: '/login', 
-        query: { 
-          message: 'Account created successfully! Please log in.'
-        } 
-      })
-      
+      router.push({
+        path: "/login",
+        query: {
+          message: "Account created successfully! Please log in.",
+        },
+      });
     } catch (error) {
-      // Handle registration errors (like duplicate email)
-      errors.value.registration = error.message
+      // Handle Firebase registration errors
+      let errorMessage = "Failed to create account. Please try again.";
+
+      if (error.code === "auth/email-already-in-use") {
+        errorMessage = "An account with this email already exists";
+      } else if (error.code === "auth/invalid-email") {
+        errorMessage = "Invalid email address";
+      } else if (error.code === "auth/weak-password") {
+        errorMessage = "Password is too weak. Please use a stronger password.";
+      } else if (error.code === "auth/network-request-failed") {
+        errorMessage = "Network error. Please check your connection.";
+      }
+
+      errors.value.registration = errorMessage;
     }
   }
-}
+};
 
 const clearForm = () => {
-  formData.value.firstName = ''
-  formData.value.lastName = ''
-  formData.value.email = ''
-  formData.value.password = ''
-  formData.value.confirmPassword = ''
-  formData.value.userType = ''
-}
+  formData.value.firstName = "";
+  formData.value.lastName = "";
+  formData.value.email = "";
+  formData.value.password = "";
+  formData.value.confirmPassword = "";
+  formData.value.userType = "";
+};
 </script>
 
 <style scoped>
@@ -445,8 +496,6 @@ const clearForm = () => {
 .create-account-btn:focus {
   box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.5);
 }
-
-
 
 .alert {
   border-radius: 8px;

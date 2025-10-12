@@ -1,10 +1,27 @@
-import 'bootstrap/dist/css/bootstrap.min.css'
+import { createApp } from "vue";
+import { initializeApp } from "firebase/app";
+import { getAuth } from "firebase/auth";
+import "bootstrap/dist/css/bootstrap.min.css";
+import router from "./router";
+import App from "./App.vue";
 
-import { createApp } from 'vue'
-import App from './App.vue'
-import router from './router'
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyBJJHBYuXQw4u8rWCc87xeLOBg0mCybvBo",
+  authDomain: "safespace-80cba.firebaseapp.com",
+  projectId: "safespace-80cba",
+  storageBucket: "safespace-80cba.firebasestorage.app",
+  messagingSenderId: "243792408421",
+  appId: "1:243792408421:web:1ee2e0bd4709f0756b7b8c",
+};
 
-const app = createApp(App)
-app.use(router)
+// Initialize Firebase
+const firebaseApp = initializeApp(firebaseConfig);
 
-app.mount('#app')
+// Initialize Firebase Auth
+export const auth = getAuth(firebaseApp);
+
+// Create and mount Vue app
+const app = createApp(App);
+app.use(router);
+app.mount("#app");

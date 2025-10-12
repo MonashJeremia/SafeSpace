@@ -3,14 +3,24 @@
     <div class="container-fluid">
       <!-- Top Navigation -->
       <nav class="row navigation align-items-center">
-        <div class="col-12 col-lg-6 nav-left d-flex align-items-center justify-content-center justify-content-lg-start mb-2 mb-lg-0">
-          <div class="logo-placeholder me-2 me-sm-3 d-none d-sm-block">Your Logo Here</div>
-          <h1 class="mb-0 text-center text-lg-start fs-4 fs-sm-3 fs-md-2">SafeSpace</h1>
+        <div
+          class="col-12 col-lg-6 nav-left d-flex align-items-center justify-content-center justify-content-lg-start mb-2 mb-lg-0"
+        >
+          <div class="logo-placeholder me-2 me-sm-3 d-none d-sm-block">
+            Your Logo Here
+          </div>
+          <h1 class="mb-0 text-center text-lg-start fs-4 fs-sm-3 fs-md-2">
+            SafeSpace
+          </h1>
         </div>
-        <div class="col-12 col-lg-6 nav-right d-flex justify-content-center justify-content-lg-end flex-wrap gap-1 gap-sm-2">
-          <button class="btn help-btn btn-sm" @click="goToHelpNow">Help Now</button>
+        <div
+          class="col-12 col-lg-6 nav-right d-flex justify-content-center justify-content-lg-end flex-wrap gap-1 gap-sm-2"
+        >
+          <button class="btn help-btn btn-sm" @click="goToHelpNow">
+            Help Now
+          </button>
           <button class="btn donate-btn btn-sm">Donate now</button>
-          
+
           <!-- Show different buttons based on authentication state -->
           <div v-if="!isAuthenticated" class="d-flex gap-1 gap-sm-2">
             <button class="btn login-btn btn-sm" @click="goToLogin">
@@ -23,11 +33,13 @@
               <span class="d-sm-none">Join</span>
             </button>
           </div>
-          
+
           <div v-else class="d-flex align-items-center gap-1 gap-sm-2">
             <div class="user-info d-flex align-items-center">
               <span class="user-icon">👤</span>
-              <span class="user-name d-none d-sm-inline">{{ currentUser.firstName }}</span>
+              <span class="user-name d-none d-sm-inline">{{
+                currentUser.firstName
+              }}</span>
             </div>
             <button class="btn logout-btn btn-sm" @click="handleLogout">
               <span class="d-none d-sm-inline">Logout</span>
@@ -36,13 +48,15 @@
           </div>
         </div>
       </nav>
-      
+
       <!-- Secondary Navigation -->
       <div class="row nav-secondary align-items-center">
         <div class="col-12">
-          <div class="d-flex align-items-center justify-content-center justify-content-lg-start">
+          <div
+            class="d-flex align-items-center justify-content-center justify-content-lg-start"
+          >
             <div class="home-icon me-3 me-lg-4" @click="goToHome">🏠</div>
-            
+
             <!-- Desktop Navigation -->
             <div class="nav-items d-none d-lg-flex flex-wrap">
               <div class="dropdown nav-dropdown me-4">
@@ -50,11 +64,15 @@
                 <div class="dropdown-content">
                   <div class="dropdown-item">Youth Resource 1</div>
                   <div class="dropdown-item">Youth Resource 2</div>
-                  <div class="dropdown-item" @click="goToInteractiveTools">Interactive Tools</div>
+                  <div class="dropdown-item" @click="goToInteractiveTools">
+                    Interactive Tools
+                  </div>
                 </div>
               </div>
               <div class="dropdown nav-dropdown me-4">
-                <button class="btn dropdown-toggle">For Community & Health Professionals</button>
+                <button class="btn dropdown-toggle">
+                  For Community & Health Professionals
+                </button>
                 <div class="dropdown-content">
                   <div class="dropdown-item">Resource A</div>
                   <div class="dropdown-item">Resource B</div>
@@ -62,11 +80,21 @@
                 </div>
               </div>
               <!-- Only show "For Educators" if user is advisor or not logged in -->
-              <div v-if="!isAuthenticated || (currentUser && currentUser.userType === 'advisor')" class="dropdown nav-dropdown me-4">
+              <div
+                v-if="
+                  !isAuthenticated ||
+                  (currentUser && currentUser.userType === 'advisor')
+                "
+                class="dropdown nav-dropdown me-4"
+              >
                 <button class="btn dropdown-toggle">For Educators</button>
                 <div class="dropdown-content">
-                  <div class="dropdown-item" @click="goToTeachingResources">Teaching Resources</div>
-                  <div class="dropdown-item" @click="goToGuidelines">Guidelines for Supporting Students</div>
+                  <div class="dropdown-item" @click="goToTeachingResources">
+                    Teaching Resources
+                  </div>
+                  <div class="dropdown-item" @click="goToGuidelines">
+                    Guidelines for Supporting Students
+                  </div>
                 </div>
               </div>
               <div class="dropdown nav-dropdown me-4">
@@ -86,35 +114,47 @@
                 </div>
               </div>
             </div>
-            
+
             <!-- Mobile Navigation Toggle -->
-            <button 
-              class="btn mobile-menu-toggle d-lg-none ms-auto" 
-              type="button" 
+            <button
+              class="btn mobile-menu-toggle d-lg-none ms-auto"
+              type="button"
               @click="toggleMobileMenu"
               :aria-expanded="mobileMenuOpen"
               aria-controls="mobileNav"
             >
-              <span class="navbar-toggler-icon">{{ mobileMenuOpen ? '✕' : '☰' }}</span>
+              <span class="navbar-toggler-icon">{{
+                mobileMenuOpen ? "✕" : "☰"
+              }}</span>
             </button>
           </div>
-          
+
           <!-- Mobile Navigation Menu -->
-          <div v-show="mobileMenuOpen" class="mobile-nav-menu d-lg-none mt-3" id="mobileNav">
+          <div
+            v-show="mobileMenuOpen"
+            class="mobile-nav-menu d-lg-none mt-3"
+            id="mobileNav"
+          >
             <div class="row g-2">
               <div class="col-12 col-sm-6">
                 <div class="dropdown nav-dropdown w-100">
-                  <button class="btn dropdown-toggle w-100 text-start">For the Youth</button>
+                  <button class="btn dropdown-toggle w-100 text-start">
+                    For the Youth
+                  </button>
                   <div class="dropdown-content w-100">
                     <div class="dropdown-item">Youth Resource 1</div>
                     <div class="dropdown-item">Youth Resource 2</div>
-                    <div class="dropdown-item" @click="goToInteractiveTools">Interactive Tools</div>
+                    <div class="dropdown-item" @click="goToInteractiveTools">
+                      Interactive Tools
+                    </div>
                   </div>
                 </div>
               </div>
               <div class="col-12 col-sm-6">
                 <div class="dropdown nav-dropdown w-100">
-                  <button class="btn dropdown-toggle w-100 text-start">Community & Health</button>
+                  <button class="btn dropdown-toggle w-100 text-start">
+                    Community & Health
+                  </button>
                   <div class="dropdown-content w-100">
                     <div class="dropdown-item">Resource A</div>
                     <div class="dropdown-item">Resource B</div>
@@ -123,18 +163,32 @@
                 </div>
               </div>
               <!-- Only show "For Educators" if user is advisor or not logged in -->
-              <div v-if="!isAuthenticated || (currentUser && currentUser.userType === 'advisor')" class="col-12 col-sm-6">
+              <div
+                v-if="
+                  !isAuthenticated ||
+                  (currentUser && currentUser.userType === 'advisor')
+                "
+                class="col-12 col-sm-6"
+              >
                 <div class="dropdown nav-dropdown w-100">
-                  <button class="btn dropdown-toggle w-100 text-start">For Educators</button>
+                  <button class="btn dropdown-toggle w-100 text-start">
+                    For Educators
+                  </button>
                   <div class="dropdown-content w-100">
-                    <div class="dropdown-item" @click="goToTeachingResources">Teaching Resources</div>
-                    <div class="dropdown-item" @click="goToGuidelines">Guidelines for Supporting Students</div>
+                    <div class="dropdown-item" @click="goToTeachingResources">
+                      Teaching Resources
+                    </div>
+                    <div class="dropdown-item" @click="goToGuidelines">
+                      Guidelines for Supporting Students
+                    </div>
                   </div>
                 </div>
               </div>
               <div class="col-12 col-sm-6">
                 <div class="dropdown nav-dropdown w-100">
-                  <button class="btn dropdown-toggle w-100 text-start">Support & Resources</button>
+                  <button class="btn dropdown-toggle w-100 text-start">
+                    Support & Resources
+                  </button>
                   <div class="dropdown-content w-100">
                     <div class="dropdown-item">Support Resource 1</div>
                     <div class="dropdown-item">Support Resource 2</div>
@@ -144,7 +198,9 @@
               </div>
               <div class="col-12">
                 <div class="dropdown nav-dropdown w-100">
-                  <button class="btn dropdown-toggle w-100 text-start">About Us</button>
+                  <button class="btn dropdown-toggle w-100 text-start">
+                    About Us
+                  </button>
                   <div class="dropdown-content w-100">
                     <div class="dropdown-item">Our Story</div>
                     <div class="dropdown-item">Team</div>
@@ -161,57 +217,80 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
-import { authState, logoutUser } from '../services/authService.js'
+import { ref, computed, onMounted, onUnmounted } from "vue";
+import { useRouter } from "vue-router";
+import { signOut, onAuthStateChanged } from "firebase/auth";
+import { auth } from "../main.js";
 
 export default {
-  name: 'MainHeader',
+  name: "MainHeader",
   setup() {
-    const router = useRouter()
-    const mobileMenuOpen = ref(false)
-    
-    // Computed properties for authentication state
-    const isAuthenticated = computed(() => authState.isAuthenticated)
-    const currentUser = computed(() => authState.currentUser)
-    
+    const router = useRouter();
+    const mobileMenuOpen = ref(false);
+    const currentUser = ref(null);
+    const isAuthenticated = computed(() => currentUser.value !== null);
+
+    // Listen to Firebase auth state changes
+    let unsubscribe = null;
+    onMounted(() => {
+      unsubscribe = onAuthStateChanged(auth, (user) => {
+        if (user) {
+          currentUser.value = {
+            email: user.email,
+            firstName: user.email?.split("@")[0] || "User", // Use email prefix as name for now
+            userType: "youth", // Default, can be stored in Firestore later
+          };
+        } else {
+          currentUser.value = null;
+        }
+      });
+    });
+
+    onUnmounted(() => {
+      if (unsubscribe) unsubscribe();
+    });
+
     const toggleMobileMenu = () => {
-      mobileMenuOpen.value = !mobileMenuOpen.value
-    }
-    
+      mobileMenuOpen.value = !mobileMenuOpen.value;
+    };
+
     const goToSignUp = () => {
-      router.push('/signup')
-    }
-    
+      router.push("/signup");
+    };
+
     const goToLogin = () => {
-      router.push('/login')
-    }
-    
-    const handleLogout = () => {
-      logoutUser()
-      router.push('/')
-    }
-    
+      router.push("/login");
+    };
+
+    const handleLogout = async () => {
+      try {
+        await signOut(auth);
+        router.push("/");
+      } catch (error) {
+        console.error("Logout error:", error);
+      }
+    };
+
     const goToHelpNow = () => {
-      router.push('/help-now')
-    }
-    
+      router.push("/help-now");
+    };
+
     const goToHome = () => {
-      router.push('/')
-    }
-    
+      router.push("/");
+    };
+
     const goToInteractiveTools = () => {
-      router.push('/interactive-tools')
-    }
-    
+      router.push("/interactive-tools");
+    };
+
     const goToTeachingResources = () => {
-      router.push('/teaching-resources')
-    }
-    
+      router.push("/teaching-resources");
+    };
+
     const goToGuidelines = () => {
-      router.push('/guidelines')
-    }
-    
+      router.push("/guidelines");
+    };
+
     return {
       mobileMenuOpen,
       isAuthenticated,
@@ -224,10 +303,10 @@ export default {
       goToHome,
       goToInteractiveTools,
       goToTeachingResources,
-      goToGuidelines
-    }
-  }
-}
+      goToGuidelines,
+    };
+  },
+};
 </script>
 
 <style scoped>
@@ -302,7 +381,7 @@ export default {
   background-color: white;
   width: 100%;
   min-width: max-content;
-  box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
   z-index: 1000;
   border-radius: 4px;
   border: 1px solid #e0e0e0;
@@ -324,7 +403,11 @@ export default {
   background-color: #f1f1f1;
 }
 
-.help-btn, .donate-btn, .signup-btn, .login-btn, .logout-btn {
+.help-btn,
+.donate-btn,
+.signup-btn,
+.login-btn,
+.logout-btn {
   background-color: #e8e8e8;
   border: none;
   border-radius: 25px;
@@ -337,7 +420,10 @@ export default {
   white-space: nowrap;
 }
 
-.help-btn:hover, .donate-btn:hover, .signup-btn:hover, .login-btn:hover {
+.help-btn:hover,
+.donate-btn:hover,
+.signup-btn:hover,
+.login-btn:hover {
   background-color: #d8d8d8;
 }
 

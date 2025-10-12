@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <MainHeader />
-    
+
     <main class="login-content py-2 py-sm-3">
       <div class="container-fluid px-3">
         <div class="row justify-content-center">
@@ -9,60 +9,76 @@
             <div class="login-form-container">
               <div class="login-form p-3 p-sm-4 p-md-5">
                 <div class="text-center">
-                  <div class="user-icon-large" style="font-size: clamp(2rem, 4vw, 3rem);">👤</div>
+                  <div
+                    class="user-icon-large"
+                    style="font-size: clamp(2rem, 4vw, 3rem)"
+                  >
+                    👤
+                  </div>
                   <h2 class="fs-4 fs-sm-3 fs-md-2">Login to your account</h2>
                   <p class="login-subtitle fs-6 fs-sm-5">
-                    Don't have an account? <router-link to="/signup" class="login-link">Sign up</router-link>
+                    Don't have an account?
+                    <router-link to="/signup" class="login-link"
+                      >Sign up</router-link
+                    >
                   </p>
                 </div>
-                
+
                 <!-- Success Message from Registration -->
-                <div v-if="successMessage" class="alert alert-success mb-3" role="alert">
+                <div
+                  v-if="successMessage"
+                  class="alert alert-success mb-3"
+                  role="alert"
+                >
                   {{ successMessage }}
                 </div>
-                
+
                 <!-- Login Error Message -->
-                <div v-if="loginError" class="alert alert-danger mb-3" role="alert">
+                <div
+                  v-if="loginError"
+                  class="alert alert-danger mb-3"
+                  role="alert"
+                >
                   {{ loginError }}
                 </div>
-                
+
                 <form @submit.prevent="handleLogin">
                   <div class="form-group">
                     <label for="email">Email address</label>
-                    <input 
-                      type="email" 
-                      id="email" 
+                    <input
+                      type="email"
+                      id="email"
                       class="form-control"
                       v-model="email"
                       required
-                    >
+                    />
                   </div>
-                  
+
                   <div class="form-group">
                     <label for="password">Password</label>
-                    <input 
-                      :type="showPassword ? 'text' : 'password'" 
-                      id="password" 
+                    <input
+                      :type="showPassword ? 'text' : 'password'"
+                      id="password"
                       class="form-control"
                       v-model="password"
                       required
-                    >
+                    />
                   </div>
-                  
+
                   <div class="form-check mb-3">
-                    <input 
-                      type="checkbox" 
-                      id="showPassword" 
+                    <input
+                      type="checkbox"
+                      id="showPassword"
                       class="form-check-input"
                       v-model="showPassword"
+                    />
+                    <label for="showPassword" class="form-check-label"
+                      >Show password</label
                     >
-                    <label for="showPassword" class="form-check-label">Show password</label>
                   </div>
-                  
+
                   <div class="d-grid">
-                    <button type="submit" class="btn login-btn">
-                      Login
-                    </button>
+                    <button type="submit" class="btn login-btn">Login</button>
                   </div>
                 </form>
               </div>
@@ -75,69 +91,92 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
-import MainHeader from '../components/MainHeader.vue'
-import { loginUser } from '../services/authService.js'
+import { ref, onMounted } from "vue";
+import { useRouter, useRoute } from "vue-router";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../main.js";
+import MainHeader from "../components/MainHeader.vue";
 // Import security utilities for input validation and XSS protection
-import { sanitizeInput, isValidEmail } from '../utils/security.js'
+import { sanitizeInput, isValidEmail } from "../utils/security.js";
 
 export default {
-  name: 'LoginView',
+  name: "LoginView",
   components: {
-    MainHeader
+    MainHeader,
   },
   setup() {
-    const router = useRouter()
-    const route = useRoute()
-    
-    const email = ref('')
-    const password = ref('')
-    const showPassword = ref(false)
-    const loginError = ref(null)
-    const successMessage = ref(null)
+    const router = useRouter();
+    const route = useRoute();
+
+    const email = ref("");
+    const password = ref("");
+    const showPassword = ref(false);
+    const loginError = ref(null);
+    const successMessage = ref(null);
 
     // Check for success message from registration
     onMounted(() => {
       if (route.query.message) {
-        successMessage.value = route.query.message
+        successMessage.value = route.query.message;
       }
-    })
+    });
 
     const handleLogin = async () => {
-      loginError.value = null
-      
+      loginError.value = null;
+
       // Sanitize inputs to prevent XSS attacks
-      const cleanEmail = sanitizeInput(email.value, 254).toLowerCase()
-      const cleanPassword = sanitizeInput(password.value, 128)
-      
+      const cleanEmail = sanitizeInput(email.value, 254).toLowerCase();
+      const cleanPassword = sanitizeInput(password.value, 128);
+
       // Update the form values with sanitized versions
-      email.value = cleanEmail
-      password.value = cleanPassword
-      
+      email.value = cleanEmail;
+      password.value = cleanPassword;
+
       // Basic validation with security checks
       if (!cleanEmail || !cleanPassword) {
-        loginError.value = 'Please enter both email and password'
-        return
+        loginError.value = "Please enter both email and password";
+        return;
       }
-      
+
       // Validate email format to prevent malicious input
       if (!isValidEmail(cleanEmail)) {
-        loginError.value = 'Please enter a valid email address'
-        return
+        loginError.value = "Please enter a valid email address";
+        return;
       }
-      
+
       try {
-        const user = loginUser(cleanEmail, cleanPassword, false)
-        
+        // Login user using Firebase Authentication
+        const userCredential = await signInWithEmailAndPassword(
+          auth,
+          cleanEmail,
+          cleanPassword
+        );
+
         // Success - redirect to intended page or home
-        const redirectPath = route.query.redirect || '/'
-        router.push({ path: redirectPath })
-        
+        const redirectPath = route.query.redirect || "/";
+        router.push({ path: redirectPath });
       } catch (error) {
-        loginError.value = error.message
+        // Handle Firebase login errors
+        let errorMessage = "Failed to login. Please try again.";
+
+        if (
+          error.code === "auth/user-not-found" ||
+          error.code === "auth/wrong-password"
+        ) {
+          errorMessage = "Invalid email or password";
+        } else if (error.code === "auth/invalid-email") {
+          errorMessage = "Please enter a valid email address";
+        } else if (error.code === "auth/user-disabled") {
+          errorMessage = "This account has been disabled";
+        } else if (error.code === "auth/too-many-requests") {
+          errorMessage = "Too many failed attempts. Please try again later.";
+        } else if (error.code === "auth/network-request-failed") {
+          errorMessage = "Network error. Please check your connection.";
+        }
+
+        loginError.value = errorMessage;
       }
-    }
+    };
 
     return {
       email,
@@ -145,10 +184,10 @@ export default {
       showPassword,
       loginError,
       successMessage,
-      handleLogin
-    }
-  }
-}
+      handleLogin,
+    };
+  },
+};
 </script>
 
 <style scoped>
@@ -278,8 +317,6 @@ export default {
 .login-btn:focus {
   box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.5);
 }
-
-
 
 .alert {
   border-radius: 8px;
