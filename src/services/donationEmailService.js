@@ -1,5 +1,18 @@
 import { Resend } from "resend";
-const resend = new Resend(process.env.RESEND_API_KEY);
+
+// Initialize Resend - will be set when sending email
+let resend;
+
+function getResendInstance() {
+  if (!resend) {
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) {
+      throw new Error("RESEND_API_KEY is not set in environment variables");
+    }
+    resend = new Resend(apiKey);
+  }
+  return resend;
+}
 
 /**
  * Load PDF file and convert to base64
@@ -38,110 +51,45 @@ export async function sendDonationReceipt(to, amount, attachments = null) {
   const html = `
     <!DOCTYPE html>
     <html>
-      <head>
-        <style>
-          body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-          }
-          .header {
-            background: linear-gradient(135deg, #1976d2 0%, #125ea7 100%);
-            color: white;
-            padding: 30px;
-            text-align: center;
-            border-radius: 10px 10px 0 0;
-          }
-          .header h1 {
-            margin: 0;
-            font-size: 28px;
-          }
-          .content {
-            background: #ffffff;
-            padding: 30px;
-            border: 1px solid #e5eaf1;
-            border-top: none;
-          }
-          .amount-box {
-            background: #f4f6fa;
-            border-left: 4px solid #1976d2;
-            padding: 20px;
-            margin: 20px 0;
-            border-radius: 5px;
-          }
-          .amount {
-            font-size: 32px;
-            font-weight: bold;
-            color: #1976d2;
-            margin: 0;
-          }
-          .footer {
-            background: #f4f6fa;
-            padding: 20px;
-            text-align: center;
-            border-radius: 0 0 10px 10px;
-            font-size: 14px;
-            color: #666;
-          }
-          .thank-you {
-            color: #1976d2;
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 15px;
-          }
-        </style>
-      </head>
       <body>
-        <div class="header">
-          <h1>SafeSpace</h1>
-          <p style="margin: 10px 0 0 0; font-size: 16px;">Mental Health Support Platform</p>
-        </div>
-        <div class="content">
-          <p class="thank-you">Thank You for Your Generous Donation!</p>
-          <p>Dear Supporter,</p>
-          <p>
-            We are incredibly grateful for your generous contribution to SafeSpace. 
-            Your donation helps us continue providing vital mental health resources 
-            and support to those who need it most.
-          </p>
-          <div class="amount-box">
-            <p style="margin: 0 0 5px 0; color: #666; font-size: 14px;">Your Donation Amount:</p>
-            <p class="amount">$${amount.toFixed(2)}</p>
-          </div>
-          <p>
-            Your support makes a real difference in the lives of individuals facing 
-            mental health challenges. Thanks to donors like you, we can:
-          </p>
-          <ul>
-            <li>Provide free access to mental health resources</li>
-            <li>Maintain our 24/7 crisis hotline connections</li>
-            <li>Develop interactive tools and coping strategies</li>
-            <li>Create educational content for mental health awareness</li>
-          </ul>
-          <p>
-            This email serves as your donation receipt. Please keep it for your records.
-          </p>
-          <p style="margin-top: 25px;">
-            <strong>Date:</strong> ${new Date().toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}<br>
-            <strong>Receipt Email:</strong> ${to}<br>
-            <strong>Transaction ID:</strong> ${generateTransactionId()}
-          </p>
-        </div>
-        <div class="footer">
-          <p style="margin: 0 0 10px 0;">
-            <strong>SafeSpace</strong> - Supporting Mental Health & Well-being
-          </p>
-          <p style="margin: 0; font-size: 12px;">
-            This is a mockup donation receipt. No actual payment was processed.
-          </p>
-        </div>
+        <h1>SafeSpace</h1>
+        <p>Mental Health Support Platform</p>
+        
+        <h2>Thank You for Your Generous Donation!</h2>
+        <p>Dear Supporter,</p>
+        <p>
+          We are incredibly grateful for your generous contribution to SafeSpace. 
+          Your donation helps us continue providing vital mental health resources 
+          and support to those who need it most.
+        </p>
+        
+        <h3>Your Donation Amount: $${amount.toFixed(2)}</h3>
+        
+        <p>
+          Your support makes a real difference in the lives of individuals facing 
+          mental health challenges. Thanks to donors like you, we can:
+        </p>
+        <ul>
+          <li>Provide free access to mental health resources</li>
+          <li>Maintain our 24/7 crisis hotline connections</li>
+          <li>Develop interactive tools and coping strategies</li>
+          <li>Create educational content for mental health awareness</li>
+        </ul>
+        
+        <p>This email serves as your donation receipt. Please keep it for your records.</p>
+        
+        <p>
+          <strong>Date:</strong> ${new Date().toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          })}<br>
+          <strong>Receipt Email:</strong> ${to}
+        </p>
+        
+        <hr>
+        <p><strong>SafeSpace</strong> - Supporting Mental Health & Well-being</p>
+        <p><small>This is a mockup donation receipt. No actual payment was processed.</small></p>
       </body>
     </html>
   `;
@@ -181,21 +129,12 @@ export async function sendDonationReceipt(to, amount, attachments = null) {
       }
     }
 
-    const result = await resend.emails.send(emailData);
+    const resendInstance = getResendInstance();
+    const result = await resendInstance.emails.send(emailData);
     console.log("Donation receipt email sent:", result);
     return { success: true, result };
   } catch (error) {
     console.error("Error sending donation receipt email:", error);
     return { success: false, error: error.message };
   }
-}
-
-/**
- * Generate a unique transaction ID for the donation
- * @returns {string} - Transaction ID
- */
-function generateTransactionId() {
-  const timestamp = Date.now();
-  const random = Math.random().toString(36).substring(2, 9).toUpperCase();
-  return `SS-${timestamp}-${random}`;
 }

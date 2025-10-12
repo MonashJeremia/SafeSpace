@@ -18,6 +18,20 @@ See [Vite Configuration Reference](https://vite.dev/config/).
 npm install
 ```
 
+### Environment Variables
+
+Create a `.env` file in the root directory (copy from `.env.example`):
+
+```sh
+cp .env.example .env
+```
+
+Then add your API keys:
+
+- `RESEND_API_KEY`: Get your API key from [Resend](https://resend.com/api-keys)
+
+**Important**: Never commit the `.env` file to Git. It's already included in `.gitignore`.
+
 ### Compile and Hot-Reload for Development
 
 ```sh
