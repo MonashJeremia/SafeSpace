@@ -29,3 +29,6 @@ coverage
 
 *.tsbuildinfo
 SECURITY.MD
+
+# env files
+.env
