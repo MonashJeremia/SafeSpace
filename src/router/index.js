@@ -10,6 +10,7 @@ import CopingNegativeThoughtsView from "../views/guides/CopingNegativeThoughtsVi
 import HealthySleepHabitsView from "../views/guides/HealthySleepHabitsView.vue";
 import ManagingStressView from "../views/guides/ManagingStressView.vue";
 import DailyPositivityView from "../views/guides/DailyPositivityView.vue";
+import MindfulReadingView from "../views/guides/MindfulReadingView.vue";
 import { auth } from "../main.js";
 import DonateNowView from "@/views/DonateNowView.vue";
 
@@ -74,6 +75,11 @@ const routes = [
     path: "/guides/daily-positivity",
     name: "DailyPositivity",
     component: DailyPositivityView,
+  },
+  {
+    path: "/guides/mindful-reading",
+    name: "MindfulReading",
+    component: MindfulReadingView,
   },
   {
     path: "/DonateNow",

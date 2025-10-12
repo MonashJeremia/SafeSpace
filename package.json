@@ -20,7 +20,11 @@
     "firebase": "^12.4.0",
     "firebase-admin": "^13.5.0",
     "firebase-functions": "^6.5.0",
+    "list": "^2.0.19",
+    "primeicons": "^7.0.0",
+    "primevue": "^4.4.1",
     "resend": "^6.1.2",
+    "view": "^1.1.1",
     "vue": "^3.5.18",
     "vue-router": "^4.5.1"
   },

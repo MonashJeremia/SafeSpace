@@ -1,7 +1,7 @@
 <template>
   <div class="interactive-tools-container">
     <MainHeader />
-    
+
     <main class="tools-content py-3 py-sm-4 py-md-5 px-2 px-sm-3 px-md-4">
       <div class="container-fluid px-3">
         <div class="row justify-content-center">
@@ -11,64 +11,99 @@
                 <!-- Step-by-Step Guides Section -->
                 <div class="col-12 col-lg-6">
                   <div class="tools-section">
-                    <div class="section-header d-flex flex-column flex-md-row align-items-center text-center text-md-start">
-                      <div class="section-icon me-0 me-md-3 mb-2 mb-md-0">📋</div>
+                    <div
+                      class="section-header d-flex flex-column flex-md-row align-items-center text-center text-md-start"
+                    >
+                      <div class="section-icon me-0 me-md-3 mb-2 mb-md-0">
+                        📋
+                      </div>
                       <h2 class="section-title">Step-by-Step Guides</h2>
                     </div>
-                    
+
                     <div class="guides-list">
                       <div class="guide-item">
-                        <button class="guide-btn" @click="openGuide('coping-negative-thoughts')">
+                        <button
+                          class="guide-btn"
+                          @click="openGuide('coping-negative-thoughts')"
+                        >
                           Coping with Negative Thoughts
                         </button>
                       </div>
-                      
+
                       <div class="guide-item">
-                        <button class="guide-btn" @click="openGuide('healthy-sleep-habits')">
+                        <button
+                          class="guide-btn"
+                          @click="openGuide('healthy-sleep-habits')"
+                        >
                           Building Healthy Sleep Habits
                         </button>
                       </div>
-                      
+
                       <div class="guide-item">
-                        <button class="guide-btn" @click="openGuide('managing-stress')">
+                        <button
+                          class="guide-btn"
+                          @click="openGuide('managing-stress')"
+                        >
                           Managing Stress
                         </button>
                       </div>
-                      
+
                       <div class="guide-item">
-                        <button class="guide-btn" @click="openGuide('daily-positivity')">
+                        <button
+                          class="guide-btn"
+                          @click="openGuide('daily-positivity')"
+                        >
                           Daily Positivity Challenge
+                        </button>
+                      </div>
+
+                      <div class="guide-item">
+                        <button
+                          class="guide-btn"
+                          @click="openGuide('mindful-reading')"
+                        >
+                          Mindful Reading
                         </button>
                       </div>
                     </div>
                   </div>
                 </div>
-                
+
                 <!-- Daily Challenge Section -->
                 <div class="col-12 col-lg-6">
                   <div class="tools-section">
-                    <div class="section-header d-flex flex-column flex-md-row align-items-center text-center text-md-start">
-                      <div class="section-icon me-0 me-md-3 mb-2 mb-md-0">⭐</div>
+                    <div
+                      class="section-header d-flex flex-column flex-md-row align-items-center text-center text-md-start"
+                    >
+                      <div class="section-icon me-0 me-md-3 mb-2 mb-md-0">
+                        ⭐
+                      </div>
                       <h2 class="section-title">Daily Challenge !</h2>
                     </div>
-                    
+
                     <div class="challenge-card">
                       <div class="challenge-content">
                         <div class="challenge-text">
                           <p>{{ dailyChallenge.text }}</p>
                         </div>
-                        
-                        <div class="challenge-actions d-flex flex-column flex-md-row gap-3">
-                          <button 
-                            class="btn challenge-complete-btn" 
+
+                        <div
+                          class="challenge-actions d-flex flex-column flex-md-row gap-3"
+                        >
+                          <button
+                            class="btn challenge-complete-btn"
                             @click="completeChallenge"
                             :disabled="challengeCompleted"
                           >
-                            {{ challengeCompleted ? '✅ Completed!' : 'Mark as Complete' }}
+                            {{
+                              challengeCompleted
+                                ? "✅ Completed!"
+                                : "Mark as Complete"
+                            }}
                           </button>
-                          
-                          <button 
-                            class="btn challenge-new-btn" 
+
+                          <button
+                            class="btn challenge-new-btn"
                             @click="generateNewChallenge"
                           >
                             New Challenge
@@ -88,22 +123,22 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import MainHeader from '../components/MainHeader.vue'
+import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import MainHeader from "../components/MainHeader.vue";
 
 export default {
-  name: 'InteractiveToolsView',
+  name: "InteractiveToolsView",
   components: {
-    MainHeader
+    MainHeader,
   },
   setup() {
-    const router = useRouter()
-    const challengeCompleted = ref(false)
+    const router = useRouter();
+    const challengeCompleted = ref(false);
     const dailyChallenge = ref({
-      text: "Write down three things you're grateful for today and share one with someone you care about."
-    })
-    
+      text: "Write down three things you're grateful for today and share one with someone you care about.",
+    });
+
     const challenges = [
       "Write down three things you're grateful for today and share one with someone you care about.",
       "Take a 10-minute walk outside and notice five beautiful things around you.",
@@ -114,58 +149,58 @@ export default {
       "Spend 10 minutes in nature and practice mindful observation.",
       "Write a positive affirmation and repeat it to yourself throughout the day.",
       "Listen to uplifting music and dance or move your body for 5 minutes.",
-      "Reach out to someone you haven't talked to in a while and check in on them."
-    ]
-    
+      "Reach out to someone you haven't talked to in a while and check in on them.",
+    ];
+
     const completeChallenge = () => {
-      challengeCompleted.value = true
+      challengeCompleted.value = true;
       // Save completion status to localStorage
-      const today = new Date().toDateString()
-      localStorage.setItem(`challenge_completed_${today}`, 'true')
-    }
-    
+      const today = new Date().toDateString();
+      localStorage.setItem(`challenge_completed_${today}`, "true");
+    };
+
     const generateNewChallenge = () => {
-      const randomIndex = Math.floor(Math.random() * challenges.length)
-      dailyChallenge.value.text = challenges[randomIndex]
-      challengeCompleted.value = false
+      const randomIndex = Math.floor(Math.random() * challenges.length);
+      dailyChallenge.value.text = challenges[randomIndex];
+      challengeCompleted.value = false;
       // Clear completion status for new challenge
-      const today = new Date().toDateString()
-      localStorage.removeItem(`challenge_completed_${today}`)
-    }
-    
+      const today = new Date().toDateString();
+      localStorage.removeItem(`challenge_completed_${today}`);
+    };
+
     const openGuide = (guideId) => {
       const routeMap = {
-        'coping-negative-thoughts': '/guides/coping-negative-thoughts',
-        'healthy-sleep-habits': '/guides/healthy-sleep-habits',
-        'managing-stress': '/guides/managing-stress',
-        'daily-positivity': '/guides/daily-positivity'
-      }
-      
-      const routePath = routeMap[guideId]
+        "coping-negative-thoughts": "/guides/coping-negative-thoughts",
+        "healthy-sleep-habits": "/guides/healthy-sleep-habits",
+        "managing-stress": "/guides/managing-stress",
+        "daily-positivity": "/guides/daily-positivity",
+        "mindful-reading": "/guides/mindful-reading",
+      };
+
+      const routePath = routeMap[guideId];
       if (routePath) {
-        router.push(routePath)
+        router.push(routePath);
       }
-      console.log(`Opening guide: ${guideId}`)
-    }
-    
+    };
+
     // Check if challenge was already completed today
     onMounted(() => {
-      const today = new Date().toDateString()
-      const completed = localStorage.getItem(`challenge_completed_${today}`)
+      const today = new Date().toDateString();
+      const completed = localStorage.getItem(`challenge_completed_${today}`);
       if (completed) {
-        challengeCompleted.value = true
+        challengeCompleted.value = true;
       }
-    })
-    
+    });
+
     return {
       challengeCompleted,
       dailyChallenge,
       completeChallenge,
       generateNewChallenge,
-      openGuide
-    }
-  }
-}
+      openGuide,
+    };
+  },
+};
 </script>
 
 <style scoped>
@@ -237,8 +272,6 @@ export default {
   transform: translateY(-2px);
 }
 
-
-
 .challenge-card {
   background-color: transparent;
   border: none;
@@ -307,6 +340,4 @@ export default {
   background-color: #007bff;
   color: white;
 }
-
-
 </style>

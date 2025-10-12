@@ -19,7 +19,7 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// Initialize Resend
+// Initialise Resend
 const resend = new Resend(process.env.VITE_RESEND_API_KEY);
 
 app.get("/", (req, res) => {

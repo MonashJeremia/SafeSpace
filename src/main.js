@@ -2,6 +2,8 @@ import { createApp } from "vue";
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import "bootstrap/dist/css/bootstrap.min.css";
+import PrimeVue from "primevue/config";
+import "primeicons/primeicons.css";
 import router from "./router";
 import App from "./App.vue";
 
@@ -24,4 +26,5 @@ export const auth = getAuth(firebaseApp);
 // Create and mount Vue app
 const app = createApp(App);
 app.use(router);
+app.use(PrimeVue);
 app.mount("#app");
