@@ -107,11 +107,9 @@ app.post("/api/send-donation-receipt", async (req, res) => {
     }
 
     const result = await resend.emails.send(emailData);
-    console.log("✅ Email sent successfully:", result);
 
     res.json({ success: true, result });
   } catch (error) {
-    console.error("❌ Error sending email:", error);
     res.status(500).json({
       success: false,
       error: error.message,
@@ -120,5 +118,5 @@ app.post("/api/send-donation-receipt", async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`🚀 SafeSpace Email Server is running on port ${port}`);
+  console.log(`SafeSpace Email Server is running on port ${port}`);
 });

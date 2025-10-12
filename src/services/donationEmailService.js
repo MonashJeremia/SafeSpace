@@ -6,8 +6,6 @@
  */
 export async function sendDonationReceipt(to, amount) {
   try {
-    console.log("📧 Sending donation receipt to backend API...");
-
     const response = await fetch(
       "http://localhost:3000/api/send-donation-receipt",
       {
@@ -25,10 +23,8 @@ export async function sendDonationReceipt(to, amount) {
       throw new Error(result.error || "Failed to send email");
     }
 
-    console.log("✅ Email sent successfully:", result);
     return result;
   } catch (error) {
-    console.error("❌ Error sending donation receipt email:", error);
     return { success: false, error: error.message };
   }
 }

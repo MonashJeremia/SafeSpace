@@ -131,29 +131,14 @@ async function checkout() {
     return;
   }
 
-  // Process the donation and send email with Thank_you.pdf attachment
   isProcessing.value = true;
 
   try {
-    console.log("💰 Processing donation of $" + amount.value);
-    console.log("📧 Sending receipt to:", email.value);
-
-    // Send donation receipt email with attached PDF
-    const emailResult = await sendDonationReceipt(email.value, amount.value);
-
-    if (emailResult.success) {
-      console.log("✅ Donation receipt sent successfully!");
-      console.log("📊 Email result:", emailResult.result);
-    } else {
-      console.error("❌ Failed to send donation receipt:", emailResult.error);
-      // Still show thank you popup even if email fails
-    }
+    await sendDonationReceipt(email.value, amount.value);
   } catch (error) {
-    console.error("❌ Error processing donation:", error);
-    // Still show thank you popup even if email fails
+    // Continue even if email fails
   } finally {
     isProcessing.value = false;
-    // Show thank you popup
     showThankYou.value = true;
   }
 }
