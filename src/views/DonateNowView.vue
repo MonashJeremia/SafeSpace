@@ -64,8 +64,13 @@
             <div v-if="emailError" class="error-message">{{ emailError }}</div>
           </div>
           <div class="donate-actions">
-            <button class="btn btn-blue btn-full" @click="checkout">
-              Pay ${{ amount }} Now
+            <button
+              class="btn btn-blue btn-full"
+              @click="checkout"
+              :disabled="isProcessing"
+            >
+              <span v-if="!isProcessing">Pay ${{ amount }} Now</span>
+              <span v-else>Processing...</span>
             </button>
           </div>
         </div>
@@ -90,6 +95,7 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import MainHeader from "../components/MainHeader.vue";
+import { sendDonationReceipt } from "../services/donationEmailService";
 
 const router = useRouter();
 const amount = ref(25);
@@ -98,6 +104,7 @@ const customAmount = ref(null);
 const email = ref("");
 const emailError = ref("");
 const showThankYou = ref(false);
+const isProcessing = ref(false);
 
 function setCustomAmount() {
   if (customAmount.value && customAmount.value > 0) {
@@ -111,7 +118,7 @@ function validateEmail(emailStr) {
   return emailRegex.test(emailStr);
 }
 
-function checkout() {
+async function checkout() {
   emailError.value = "";
 
   if (!email.value) {
@@ -124,8 +131,31 @@ function checkout() {
     return;
   }
 
-  // Show thank you popup
-  showThankYou.value = true;
+  // Process the donation and send email with Thank_you.pdf attachment
+  isProcessing.value = true;
+
+  try {
+    console.log("💰 Processing donation of $" + amount.value);
+    console.log("📧 Sending receipt to:", email.value);
+
+    // Send donation receipt email with attached PDF
+    const emailResult = await sendDonationReceipt(email.value, amount.value);
+
+    if (emailResult.success) {
+      console.log("✅ Donation receipt sent successfully!");
+      console.log("📊 Email result:", emailResult.result);
+    } else {
+      console.error("❌ Failed to send donation receipt:", emailResult.error);
+      // Still show thank you popup even if email fails
+    }
+  } catch (error) {
+    console.error("❌ Error processing donation:", error);
+    // Still show thank you popup even if email fails
+  } finally {
+    isProcessing.value = false;
+    // Show thank you popup
+    showThankYou.value = true;
+  }
 }
 
 function closePopup() {
@@ -259,6 +289,10 @@ function closePopup() {
 }
 .btn-full {
   width: 100%;
+}
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 .email-input {
   width: 100%;
