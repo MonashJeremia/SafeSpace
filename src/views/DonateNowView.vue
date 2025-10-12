@@ -136,12 +136,13 @@ function closePopup() {
 
 <style scoped>
 .donate-container {
-  min-height: 100vh;
+  min-height: calc(100vh - 180px);
   background: #f4f6fa;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem 0;
+  padding: 1rem;
+  overflow: hidden;
 }
 .donate-card {
   background: #fff;
@@ -166,7 +167,7 @@ function closePopup() {
   letter-spacing: 0.02em;
 }
 .donate-body {
-  padding: 2rem;
+  padding: 1.5rem 2rem;
 }
 .donate-welcome {
   color: #444;
@@ -177,10 +178,10 @@ function closePopup() {
   color: #1976d2;
   font-size: 1.3rem;
   font-weight: 700;
-  margin-bottom: 2rem;
+  margin-bottom: 1.2rem;
 }
 .donate-section {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.2rem;
 }
 .donate-label {
   font-weight: 600;
