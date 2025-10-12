@@ -7,14 +7,17 @@
 export async function sendDonationReceipt(to, amount) {
   try {
     console.log("📧 Sending donation receipt to backend API...");
-    
-    const response = await fetch("http://localhost:3000/api/send-donation-receipt", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ to, amount }),
-    });
+
+    const response = await fetch(
+      "http://localhost:3000/api/send-donation-receipt",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ to, amount }),
+      }
+    );
 
     const result = await response.json();
 
