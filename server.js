@@ -117,6 +117,64 @@ app.post("/api/send-donation-receipt", async (req, res) => {
   }
 });
 
+// Positivity email endpoint
+app.post("/api/send-positivity-email", async (req, res) => {
+  try {
+    const { to, from, message, senderName } = req.body;
+
+    if (!to || !message) {
+      return res.status(400).json({
+        success: false,
+        error: "Recipient email and message are required",
+      });
+    }
+
+    const subject = `Message from ${senderName || "Someone"} via SafeSpace`;
+
+    const html = `
+      <!DOCTYPE html>
+      <html>
+        <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px;">
+          <div style="text-align: center; margin-bottom: 40px;">
+            <h2 style="color: #333; font-weight: 500;">SafeSpace</h2>
+          </div>
+          
+          <div style="background: #f8f9fa; padding: 30px; border-radius: 4px; margin-bottom: 30px;">
+            <p style="font-size: 16px; line-height: 1.6; color: #333; margin: 0;">
+              "${message}"
+            </p>
+            <p style="text-align: right; color: #666; margin-top: 20px;">
+              — ${senderName || "A Friend"}
+            </p>
+          </div>
+          
+          <div style="text-align: center; color: #999; font-size: 13px;">
+            <p>Sent via SafeSpace Daily Positivity Challenge</p>
+          </div>
+        </body>
+      </html>
+    `;
+
+    const emailData = {
+      from: "SafeSpace Positivity <onboarding@resend.dev>",
+      to,
+      subject,
+      html,
+      reply_to: from || undefined,
+    };
+
+    const result = await resend.emails.send(emailData);
+
+    res.json({ success: true, result });
+  } catch (error) {
+    console.error("Error sending positivity email:", error);
+    res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+});
+
 app.listen(port, () => {
   console.log(`SafeSpace Email Server is running on port ${port}`);
 });
