@@ -11,6 +11,8 @@ import HealthySleepHabitsView from "../views/guides/HealthySleepHabitsView.vue";
 import ManagingStressView from "../views/guides/ManagingStressView.vue";
 import DailyPositivityView from "../views/guides/DailyPositivityView.vue";
 import MindfulReadingView from "../views/guides/MindfulReadingView.vue";
+import AboutUsView from "../views/AboutUsView.vue";
+import DonationStatisticsView from "../views/DonationStatisticsView.vue";
 import { auth } from "../main.js";
 import DonateNowView from "@/views/DonateNowView.vue";
 
@@ -85,6 +87,16 @@ const routes = [
     path: "/DonateNow",
     name: "DonateNow",
     component: DonateNowView,
+  },
+  {
+    path: "/about-us",
+    name: "AboutUs",
+    component: AboutUsView,
+  },
+  {
+    path: "/donation-statistics",
+    name: "DonationStatistics",
+    component: DonationStatisticsView,
   },
 ];
 

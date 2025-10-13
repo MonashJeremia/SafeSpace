@@ -110,9 +110,8 @@
               <div class="dropdown nav-dropdown">
                 <button class="btn dropdown-toggle">About Us</button>
                 <div class="dropdown-content">
-                  <div class="dropdown-item">Our Story</div>
-                  <div class="dropdown-item">Team</div>
-                  <div class="dropdown-item">Careers</div>
+                  <div class="dropdown-item" @click="goToAboutUs">About SafeSpace</div>
+                  <div class="dropdown-item" @click="goToDonationStats">Donation Statistics</div>
                 </div>
               </div>
             </div>
@@ -204,9 +203,8 @@
                     About Us
                   </button>
                   <div class="dropdown-content w-100">
-                    <div class="dropdown-item">Our Story</div>
-                    <div class="dropdown-item">Team</div>
-                    <div class="dropdown-item">Careers</div>
+                    <div class="dropdown-item" @click="goToAboutUs">About SafeSpace</div>
+                    <div class="dropdown-item" @click="goToDonationStats">Donation Statistics</div>
                   </div>
                 </div>
               </div>
@@ -298,6 +296,14 @@ export default {
       router.push("/DonateNow");
     };
 
+    const goToAboutUs = () => {
+      router.push("/about-us");
+    };
+
+    const goToDonationStats = () => {
+      router.push("/donation-statistics");
+    };
+
     return {
       mobileMenuOpen,
       isAuthenticated,
@@ -312,6 +318,8 @@ export default {
       goToTeachingResources,
       goToGuidelines,
       goToDonateNow,
+      goToAboutUs,
+      goToDonationStats,
     };
   },
 };
