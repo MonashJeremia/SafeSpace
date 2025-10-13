@@ -94,10 +94,12 @@
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import { getFunctions, httpsCallable } from "firebase/functions";
 import MainHeader from "../components/MainHeader.vue";
 import { sendDonationReceipt } from "../services/donationEmailService";
 
 const router = useRouter();
+const functions = getFunctions();
 const amount = ref(25);
 const showCustom = ref(false);
 const customAmount = ref(null);
@@ -134,9 +136,20 @@ async function checkout() {
   isProcessing.value = true;
 
   try {
-    await sendDonationReceipt(email.value, amount.value);
+    // Call Firebase Cloud Function to record donation
+    const recordDonation = httpsCallable(functions, "recordDonation");
+    const result = await recordDonation({
+      amount: amount.value,
+      email: email.value,
+    });
+
+    if (result.data.success) {
+      // Send email receipt
+      await sendDonationReceipt(email.value, amount.value);
+    }
   } catch (error) {
-    // Continue even if email fails
+    // Continue even if there's an error
+    console.error("Error processing donation:", error);
   } finally {
     isProcessing.value = false;
     showThankYou.value = true;

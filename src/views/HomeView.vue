@@ -1,31 +1,39 @@
 <template>
   <div class="main-container">
     <MainHeader />
-    
+
     <main class="content py-3 py-sm-4 py-md-5 px-2 px-sm-3 px-md-4">
       <div class="container-fluid px-3">
         <div class="row justify-content-center">
           <div class="col-12 col-md-10 col-lg-8 col-xl-6">
             <div class="content-wrapper text-center">
-              <h1 class="main-heading display-4 display-sm-3 display-md-2 display-lg-1">This is your SafeSpace</h1>
+              <h1
+                class="main-heading display-4 display-sm-3 display-md-2 display-lg-1"
+              >
+                This is your SafeSpace
+              </h1>
             </div>
           </div>
         </div>
       </div>
-      <div class="contact position-fixed bottom-0 start-0 m-2 m-sm-3 m-lg-4 fs-6 fs-sm-5">Contact us</div>
+      <div
+        class="contact position-fixed bottom-0 start-0 m-2 m-sm-3 m-lg-4 fs-6 fs-sm-5"
+      >
+        Contact us
+      </div>
     </main>
   </div>
 </template>
 
 <script>
-import MainHeader from '../components/MainHeader.vue'
+import MainHeader from "../components/MainHeader.vue";
 
 export default {
-  name: 'HomeView',
+  name: "HomeView",
   components: {
-    MainHeader
-  }
-}
+    MainHeader,
+  },
+};
 </script>
 
 <style scoped>
