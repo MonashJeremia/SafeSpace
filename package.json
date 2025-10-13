@@ -13,6 +13,7 @@
     "start": "node server.js"
   },
   "dependencies": {
+    "axios": "^1.12.2",
     "bootstrap": "^5.3.8",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
@@ -24,7 +25,7 @@
     "primeicons": "^7.0.0",
     "primevue": "^4.4.1",
     "resend": "^6.1.2",
-    "view": "^1.1.1",
+    "view": "^0.6.1",
     "vue": "^3.5.18",
     "vue-router": "^4.5.1"
   },
