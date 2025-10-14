@@ -2,29 +2,31 @@
   <div class="interactive-tools-container">
     <MainHeader />
 
-    <main class="tools-content py-3 py-sm-4 py-md-5 px-2 px-sm-3 px-md-4">
+    <main id="main-content" class="tools-content py-3 py-sm-4 py-md-5 px-2 px-sm-3 px-md-4" role="main">
       <div class="container-fluid px-3">
         <div class="row justify-content-center">
           <div class="col-12 col-lg-10 col-xl-9">
             <div class="content-wrapper p-3 p-md-5">
+              <h1 class="sr-only">Interactive Mental Health Tools and Guides</h1>
               <div class="row g-4">
                 <!-- Step-by-Step Guides Section -->
                 <div class="col-12 col-lg-6">
-                  <div class="tools-section">
+                  <div class="tools-section" role="region" aria-labelledby="guides-heading">
                     <div
                       class="section-header d-flex flex-column flex-md-row align-items-center text-center text-md-start"
                     >
-                      <div class="section-icon me-0 me-md-3 mb-2 mb-md-0">
+                      <div class="section-icon me-0 me-md-3 mb-2 mb-md-0" aria-hidden="true">
                         📋
                       </div>
-                      <h2 class="section-title">Step-by-Step Guides</h2>
+                      <h2 id="guides-heading" class="section-title">Step-by-Step Guides</h2>
                     </div>
 
-                    <div class="guides-list">
+                    <nav class="guides-list" aria-label="Step-by-step guides navigation">
                       <div class="guide-item">
                         <button
                           class="guide-btn"
                           @click="openGuide('wellbeing-map')"
+                          aria-label="Open Wellbeing Map guide"
                         >
                           Wellbeing Map
                         </button>
@@ -34,6 +36,7 @@
                         <button
                           class="guide-btn"
                           @click="openGuide('healthy-sleep-habits')"
+                          aria-label="Open Building Healthy Sleep Habits guide"
                         >
                           Building Healthy Sleep Habits
                         </button>
@@ -43,6 +46,7 @@
                         <button
                           class="guide-btn"
                           @click="openGuide('managing-stress')"
+                          aria-label="Open Managing Stress guide"
                         >
                           Managing Stress
                         </button>
@@ -52,6 +56,7 @@
                         <button
                           class="guide-btn"
                           @click="openGuide('daily-positivity')"
+                          aria-label="Open Daily Positivity Challenge guide"
                         >
                           Daily Positivity Challenge
                         </button>
@@ -61,11 +66,12 @@
                         <button
                           class="guide-btn"
                           @click="openGuide('mindful-reading')"
+                          aria-label="Open Mindful Reading guide"
                         >
                           Mindful Reading
                         </button>
                       </div>
-                    </div>
+                    </nav>
                   </div>
                 </div>
 

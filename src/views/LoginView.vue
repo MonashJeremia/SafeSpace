@@ -2,7 +2,7 @@
   <div class="login-container">
     <MainHeader />
 
-    <main class="login-content py-2 py-sm-3">
+    <main id="main-content" class="login-content py-2 py-sm-3" role="main" aria-labelledby="login-heading">
       <div class="container-fluid px-3">
         <div class="row justify-content-center">
           <div class="col-12 col-sm-11 col-md-8 col-lg-6 col-xl-5 col-xxl-4">
@@ -12,10 +12,11 @@
                   <div
                     class="user-icon-large"
                     style="font-size: clamp(2rem, 4vw, 3rem)"
+                    aria-hidden="true"
                   >
                     👤
                   </div>
-                  <h2 class="fs-4 fs-sm-3 fs-md-2">Login to your account</h2>
+                  <h2 id="login-heading" class="fs-4 fs-sm-3 fs-md-2">Login to your account</h2>
                   <p class="login-subtitle fs-6 fs-sm-5">
                     Don't have an account?
                     <router-link to="/signup" class="login-link"
@@ -42,27 +43,35 @@
                   {{ loginError }}
                 </div>
 
-                <form @submit.prevent="handleLogin">
+                <form @submit.prevent="handleLogin" aria-label="Login form">
                   <div class="form-group">
-                    <label for="email">Email address</label>
+                    <label for="email">Email address <span class="required-indicator" aria-label="required">*</span></label>
                     <input
                       type="email"
                       id="email"
                       class="form-control"
                       v-model="email"
                       required
+                      aria-required="true"
+                      aria-describedby="email-hint"
+                      autocomplete="email"
                     />
+                    <span id="email-hint" class="sr-only">Enter your registered email address</span>
                   </div>
 
                   <div class="form-group">
-                    <label for="password">Password</label>
+                    <label for="password">Password <span class="required-indicator" aria-label="required">*</span></label>
                     <input
                       :type="showPassword ? 'text' : 'password'"
                       id="password"
                       class="form-control"
                       v-model="password"
                       required
+                      aria-required="true"
+                      aria-describedby="password-hint"
+                      autocomplete="current-password"
                     />
+                    <span id="password-hint" class="sr-only">Enter your account password</span>
                   </div>
 
                   <div class="form-check mb-3">
@@ -78,7 +87,7 @@
                   </div>
 
                   <div class="d-grid">
-                    <button type="submit" class="btn login-btn">Login</button>
+                    <button type="submit" class="btn login-btn" aria-label="Submit login credentials">Login</button>
                   </div>
                 </form>
               </div>

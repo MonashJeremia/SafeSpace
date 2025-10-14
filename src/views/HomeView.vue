@@ -2,7 +2,7 @@
   <div class="main-container">
     <MainHeader />
 
-    <main class="content py-3 py-sm-4 py-md-5 px-2 px-sm-3 px-md-4">
+    <main id="main-content" class="content py-3 py-sm-4 py-md-5 px-2 px-sm-3 px-md-4" role="main" aria-label="Welcome to SafeSpace">
       <div class="container-fluid px-3">
         <div class="row justify-content-center">
           <div class="col-12 col-md-10 col-lg-8 col-xl-6">
@@ -12,14 +12,17 @@
               >
                 This is your SafeSpace
               </h1>
+              <p class="sr-only">Welcome to SafeSpace, a mental health support platform providing resources and tools for wellbeing</p>
             </div>
           </div>
         </div>
       </div>
       <div
         class="contact position-fixed bottom-0 start-0 m-2 m-sm-3 m-lg-4 fs-6 fs-sm-5"
+        role="contentinfo"
+        aria-label="Contact information"
       >
-        Contact us
+        <a href="mailto:support@safespace.com" aria-label="Contact us via email">Contact us</a>
       </div>
     </main>
   </div>

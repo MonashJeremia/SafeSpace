@@ -2,7 +2,7 @@
   <div class="login-container">
     <MainHeader />
 
-    <main class="login-content py-2 py-sm-3">
+    <main id="main-content" class="login-content py-2 py-sm-3" role="main" aria-labelledby="signup-heading">
       <div class="container-fluid px-3">
         <div class="row justify-content-center">
           <div class="col-12 col-sm-11 col-md-10 col-lg-8 col-xl-6 col-xxl-5">
@@ -12,10 +12,11 @@
                   <div
                     class="user-icon-large"
                     style="font-size: clamp(2rem, 4vw, 3rem)"
+                    aria-hidden="true"
                   >
                     👤
                   </div>
-                  <h2 class="fs-4 fs-sm-3 fs-md-2">Create an account</h2>
+                  <h2 id="signup-heading" class="fs-4 fs-sm-3 fs-md-2">Create an account</h2>
                   <p class="login-subtitle fs-6 fs-sm-5">
                     Already have an account?
                     <router-link to="/login" class="login-link"
@@ -24,11 +25,11 @@
                   </p>
                 </div>
 
-                <form @submit.prevent="submitForm">
+                <form @submit.prevent="submitForm" aria-label="Sign up form">
                   <div class="row g-3">
                     <div class="col-12 col-md-6">
                       <div class="form-group">
-                        <label for="firstName">First name</label>
+                        <label for="firstName">First name <span class="required-indicator" aria-label="required">*</span></label>
                         <input
                           type="text"
                           id="firstName"
@@ -37,15 +38,19 @@
                           @blur="() => validateFirstName(true)"
                           @input="() => validateFirstName(false)"
                           required
+                          aria-required="true"
+                          aria-invalid="errors.firstName ? 'true' : 'false'"
+                          aria-describedby="firstName-error"
+                          autocomplete="given-name"
                         />
-                        <div v-if="errors.firstName" class="error-message">
+                        <div v-if="errors.firstName" id="firstName-error" class="error-message" role="alert">
                           {{ errors.firstName }}
                         </div>
                       </div>
                     </div>
                     <div class="col-12 col-md-6">
                       <div class="form-group">
-                        <label for="lastName">Last name</label>
+                        <label for="lastName">Last name <span class="required-indicator" aria-label="required">*</span></label>
                         <input
                           type="text"
                           id="lastName"
@@ -54,8 +59,12 @@
                           @blur="() => validateLastName(true)"
                           @input="() => validateLastName(false)"
                           required
+                          aria-required="true"
+                          aria-invalid="errors.lastName ? 'true' : 'false'"
+                          aria-describedby="lastName-error"
+                          autocomplete="family-name"
                         />
-                        <div v-if="errors.lastName" class="error-message">
+                        <div v-if="errors.lastName" id="lastName-error" class="error-message" role="alert">
                           {{ errors.lastName }}
                         </div>
                       </div>
@@ -63,7 +72,7 @@
                   </div>
 
                   <div class="form-group">
-                    <label for="email">Email address</label>
+                    <label for="email">Email address <span class="required-indicator" aria-label="required">*</span></label>
                     <input
                       type="email"
                       id="email"
@@ -72,14 +81,18 @@
                       @blur="() => validateEmail(true)"
                       @input="() => validateEmail(false)"
                       required
+                      aria-required="true"
+                      aria-invalid="errors.email ? 'true' : 'false'"
+                      aria-describedby="email-error"
+                      autocomplete="email"
                     />
-                    <div v-if="errors.email" class="error-message">
+                    <div v-if="errors.email" id="email-error" class="error-message" role="alert">
                       {{ errors.email }}
                     </div>
                   </div>
 
                   <div class="form-group">
-                    <label for="userType">I am a</label>
+                    <label for="userType">I am a <span class="required-indicator" aria-label="required">*</span></label>
                     <select
                       id="userType"
                       class="form-control"
@@ -87,12 +100,15 @@
                       @blur="() => validateUserType(true)"
                       @change="() => validateUserType(false)"
                       required
+                      aria-required="true"
+                      aria-invalid="errors.userType ? 'true' : 'false'"
+                      aria-describedby="userType-error"
                     >
                       <option value="">Please select...</option>
                       <option value="youth">Youth</option>
                       <option value="advisor">Advisor</option>
                     </select>
-                    <div v-if="errors.userType" class="error-message">
+                    <div v-if="errors.userType" id="userType-error" class="error-message" role="alert">
                       {{ errors.userType }}
                     </div>
                   </div>

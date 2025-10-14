@@ -2,19 +2,23 @@
   <div class="help-now-container">
     <MainHeader />
     
-    <main class="content py-3 py-sm-4 py-md-5 px-2 px-sm-3 px-md-4">
+    <main id="main-content" class="content py-3 py-sm-4 py-md-5 px-2 px-sm-3 px-md-4" role="main">
       <div class="container-fluid px-3">
         <div class="row">
           <div class="col-12 col-lg-10">
             <div class="content-wrapper">
               <h1 class="main-heading fs-2 fs-sm-1 mb-3 mb-sm-4 mb-md-5">Crisis Hotlines</h1>
+              <p class="sr-only">Access 24/7 crisis hotlines and mental health support services. Filter by category to find the help you need.</p>
               
               <!-- Category Filter Dropdown -->
               <div class="filter-section mb-3 mb-sm-4">
                 <div class="dropdown category-dropdown col-8 col-sm-6 col-md-4 col-lg-3">
+                  <label for="category-filter" class="sr-only">Filter hotlines by category</label>
                   <select 
+                    id="category-filter"
                     v-model="selectedCategory" 
                     class="form-select category-select w-100"
+                    aria-label="Filter hotlines by category"
                   >
                     <option value="">All Categories</option>
                     <option v-for="category in uniqueCategories" :key="category" :value="category">
@@ -25,13 +29,15 @@
               </div>
               
               <!-- Hotlines List -->
-              <div class="hotlines-container">
+              <div class="hotlines-container" role="region" aria-label="Crisis hotline listings">
                 <div class="row">
                   <div class="col-12">
                     <div 
                       v-for="hotline in filteredHotlines" 
                       :key="hotline.name"
                       class="hotline-card mb-4 mb-sm-5"
+                      role="article"
+                      :aria-label="`${hotline.name} hotline information`"
                     >
                       <div class="card-inner p-3 p-sm-4 p-md-5">
                         <div class="row align-items-start g-3 g-sm-4 g-md-5">
@@ -50,7 +56,7 @@
                           <div class="col-12 col-md-6 col-lg-3">
                             <div class="info-section phone-section mb-3 mb-md-0">
                               <div class="section-label fs-7 fs-sm-6">Phone</div>
-                              <div class="phone-value fs-5 fs-sm-4 fs-md-3">{{ hotline.phone }}</div>
+                              <a :href="`tel:${hotline.phone}`" class="phone-value fs-5 fs-sm-4 fs-md-3" :aria-label="`Call ${hotline.name} at ${hotline.phone}`">{{ hotline.phone }}</a>
                             </div>
                           </div>
                           <div class="col-12 col-md-6 col-lg-3">

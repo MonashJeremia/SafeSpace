@@ -29,6 +29,7 @@ coverage
 
 *.tsbuildinfo
 SECURITY.MD
+ACCESSIBILITY_CHANGES.md
 
 # env files
 .env

@@ -1,8 +1,8 @@
 <template>
-  <header class="header-container">
+  <header class="header-container" role="banner">
     <div class="container-fluid">
       <!-- Top Navigation -->
-      <nav class="row navigation align-items-center">
+      <nav class="row navigation align-items-center" role="navigation" aria-label="Primary navigation">
         <div
           class="col-12 col-lg-6 nav-left d-flex align-items-center justify-content-center justify-content-lg-start mb-2 mb-lg-0"
         >
@@ -16,34 +16,34 @@
         <div
           class="col-12 col-lg-6 nav-right d-flex justify-content-center justify-content-lg-end flex-wrap gap-1 gap-sm-2"
         >
-          <button class="btn help-btn btn-sm" @click="goToHelpNow">
+          <button class="btn help-btn btn-sm" @click="goToHelpNow" aria-label="Get immediate mental health support">
             Help Now
           </button>
-          <button class="btn donate-btn btn-sm" @click="goToDonateNow">
+          <button class="btn donate-btn btn-sm" @click="goToDonateNow" aria-label="Support SafeSpace with a donation">
             Donate now
           </button>
 
           <!-- Show different buttons based on authentication state -->
           <div v-if="!isAuthenticated" class="d-flex gap-1 gap-sm-2">
-            <button class="btn login-btn btn-sm" @click="goToLogin">
-              <span class="user-icon">👤</span>
+            <button class="btn login-btn btn-sm" @click="goToLogin" aria-label="Login to your account">
+              <span class="user-icon" aria-hidden="true">👤</span>
               <span class="d-none d-sm-inline">Login</span>
               <span class="d-sm-none">Login</span>
             </button>
-            <button class="btn signup-btn btn-sm" @click="goToSignUp">
+            <button class="btn signup-btn btn-sm" @click="goToSignUp" aria-label="Create a new account">
               <span class="d-none d-sm-inline">Sign Up</span>
               <span class="d-sm-none">Join</span>
             </button>
           </div>
 
           <div v-else class="d-flex align-items-center gap-1 gap-sm-2">
-            <div class="user-info d-flex align-items-center">
-              <span class="user-icon">👤</span>
+            <div class="user-info d-flex align-items-center" role="status" aria-label="Logged in user">
+              <span class="user-icon" aria-hidden="true">👤</span>
               <span class="user-name d-none d-sm-inline">{{
                 currentUser.firstName
               }}</span>
             </div>
-            <button class="btn logout-btn btn-sm" @click="handleLogout">
+            <button class="btn logout-btn btn-sm" @click="handleLogout" aria-label="Logout from your account">
               <span class="d-none d-sm-inline">Logout</span>
               <span class="d-sm-none">Out</span>
             </button>
@@ -57,22 +57,24 @@
           <div
             class="d-flex align-items-center justify-content-center justify-content-lg-start"
           >
-            <div class="home-icon me-3 me-lg-4" @click="goToHome">🏠</div>
+            <button class="home-icon me-3 me-lg-4" @click="goToHome" aria-label="Go to home page">
+              <span aria-hidden="true">🏠</span>
+            </button>
 
             <!-- Desktop Navigation -->
-            <div class="nav-items d-none d-lg-flex flex-wrap">
-              <div class="dropdown nav-dropdown me-4">
-                <button class="btn dropdown-toggle">For the Youth</button>
-                <div class="dropdown-content">
-                  <div class="dropdown-item">Youth Resource 1</div>
-                  <div class="dropdown-item">Youth Resource 2</div>
-                  <div class="dropdown-item" @click="goToInteractiveTools">
+            <div class="nav-items d-none d-lg-flex flex-wrap" role="menubar">
+              <div class="dropdown nav-dropdown me-4" role="none">
+                <button class="btn dropdown-toggle" aria-haspopup="true" aria-expanded="false" role="menuitem">For the Youth</button>
+                <div class="dropdown-content" role="menu">
+                  <button class="dropdown-item" role="menuitem">Youth Resource 1</button>
+                  <button class="dropdown-item" role="menuitem">Youth Resource 2</button>
+                  <button class="dropdown-item" @click="goToInteractiveTools" role="menuitem">
                     Interactive Tools
-                  </div>
+                  </button>
                 </div>
               </div>
-              <div class="dropdown nav-dropdown me-4">
-                <button class="btn dropdown-toggle">
+              <div class="dropdown nav-dropdown me-4" role="none">
+                <button class="btn dropdown-toggle" aria-haspopup="true" aria-expanded="false" role="menuitem">
                   For Community & Health Professionals
                 </button>
                 <div class="dropdown-content">

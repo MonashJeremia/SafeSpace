@@ -4,6 +4,7 @@ import { getAuth } from "firebase/auth";
 import "bootstrap/dist/css/bootstrap.min.css";
 import PrimeVue from "primevue/config";
 import "primeicons/primeicons.css";
+import "./assets/accessibility.css";
 import router from "./router";
 import App from "./App.vue";
 
