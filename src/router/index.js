@@ -6,7 +6,7 @@ import HelpNowView from "../views/HelpNowView.vue";
 import InteractiveToolsView from "../views/InteractiveToolsView.vue";
 import TeachingResourcesView from "../views/TeachingResourcesView.vue";
 import GuidelinesView from "../views/GuidelinesView.vue";
-import CopingNegativeThoughtsView from "../views/guides/CopingNegativeThoughtsView.vue";
+import WellbeingMapView from "../views/guides/WellbeingMapView.vue";
 import HealthySleepHabitsView from "../views/guides/HealthySleepHabitsView.vue";
 import ManagingStressView from "../views/guides/ManagingStressView.vue";
 import DailyPositivityView from "../views/guides/DailyPositivityView.vue";
@@ -59,9 +59,9 @@ const routes = [
     component: GuidelinesView,
   },
   {
-    path: "/guides/coping-negative-thoughts",
-    name: "CopingNegativeThoughts",
-    component: CopingNegativeThoughtsView,
+    path: "/guides/wellbeing-map",
+    name: "WellbeingMap",
+    component: WellbeingMapView,
   },
   {
     path: "/guides/healthy-sleep-habits",

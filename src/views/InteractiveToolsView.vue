@@ -24,9 +24,9 @@
                       <div class="guide-item">
                         <button
                           class="guide-btn"
-                          @click="openGuide('coping-negative-thoughts')"
+                          @click="openGuide('wellbeing-map')"
                         >
-                          Coping with Negative Thoughts
+                          Wellbeing Map
                         </button>
                       </div>
 
@@ -170,7 +170,7 @@ export default {
 
     const openGuide = (guideId) => {
       const routeMap = {
-        "coping-negative-thoughts": "/guides/coping-negative-thoughts",
+        "wellbeing-map": "/guides/wellbeing-map",
         "healthy-sleep-habits": "/guides/healthy-sleep-habits",
         "managing-stress": "/guides/managing-stress",
         "daily-positivity": "/guides/daily-positivity",
