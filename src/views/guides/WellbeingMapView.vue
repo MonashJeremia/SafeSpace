@@ -184,178 +184,119 @@ export default {
         showUserHeading: true
       })
       map.addControl(geolocate, 'top-right')
-
-      // Trigger geolocation on load
-      map.on('load', () => {
-        geolocate.trigger()
-      })
+      map.on('load', () => geolocate.trigger())
     })
+
+    onBeforeUnmount(() => map?.remove())
 
     const searchPlaces = async () => {
       if (!searchQuery.value.trim()) return
 
-      try {
-        const response = await fetch(
-          `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(searchQuery.value)}.json?access_token=${mapboxgl.accessToken}&limit=10`
-        )
-        const data = await response.json()
+      const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(searchQuery.value)}.json?access_token=${mapboxgl.accessToken}&limit=10`
+      const data = await fetch(url).then(r => r.json())
 
-        searchResults.value = data.features.map(feature => ({
-          name: feature.text,
-          address: feature.place_name,
-          coordinates: feature.center
-        }))
+      searchResults.value = data.features.map(f => ({
+        name: f.text,
+        address: f.place_name,
+        coordinates: f.center
+      }))
 
-        // Clear existing markers
-        markers.forEach(marker => marker.remove())
-        markers = []
+      markers.forEach(m => m.remove())
+      markers = []
 
-        // Add markers for search results
-        searchResults.value.forEach(result => {
-          const marker = new mapboxgl.Marker({ color: '#0066cc' })
-            .setLngLat(result.coordinates)
-            .setPopup(new mapboxgl.Popup().setHTML(`
-              <strong>${result.name}</strong><br>
-              ${result.address}
-            `))
-            .addTo(map)
-          markers.push(marker)
-        })
+      searchResults.value.forEach(result => {
+        const marker = new mapboxgl.Marker({ color: '#0066cc' })
+          .setLngLat(result.coordinates)
+          .setPopup(new mapboxgl.Popup().setHTML(`<strong>${result.name}</strong><br>${result.address}`))
+          .addTo(map)
+        markers.push(marker)
+      })
 
-        // Fit map to show all results
-        if (searchResults.value.length > 0) {
-          const bounds = new mapboxgl.LngLatBounds()
-          searchResults.value.forEach(result => {
-            bounds.extend(result.coordinates)
-          })
-          map.fitBounds(bounds, { padding: 50 })
-        }
-      } catch (error) {
-        console.error('Search error:', error)
+      if (searchResults.value.length) {
+        const bounds = new mapboxgl.LngLatBounds()
+        searchResults.value.forEach(r => bounds.extend(r.coordinates))
+        map.fitBounds(bounds, { padding: 50 })
       }
     }
 
     const selectLocation = (location, type) => {
-      if (type === 'start') {
+      const isStart = type === 'start'
+      const marker = isStart ? startMarker : endMarker
+      const color = isStart ? '#22c55e' : '#ef4444'
+      const label = isStart ? 'Start' : 'End'
+
+      if (marker) marker.remove()
+
+      if (isStart) {
         startLocation.value = location
         startLocationName.value = location.name
-        
-        // Remove old start marker
-        if (startMarker) startMarker.remove()
-        
-        // Add new start marker
-        startMarker = new mapboxgl.Marker({ color: '#22c55e' })
+        startMarker = new mapboxgl.Marker({ color })
           .setLngLat(location.coordinates)
-          .setPopup(new mapboxgl.Popup().setHTML(`<strong>Start:</strong> ${location.name}`))
+          .setPopup(new mapboxgl.Popup().setHTML(`<strong>${label}:</strong> ${location.name}`))
           .addTo(map)
-          
-        showRoutePanel.value = true
-      } else if (type === 'end') {
+      } else {
         endLocation.value = location
         endLocationName.value = location.name
-        
-        // Remove old end marker
-        if (endMarker) endMarker.remove()
-        
-        // Add new end marker
-        endMarker = new mapboxgl.Marker({ color: '#ef4444' })
+        endMarker = new mapboxgl.Marker({ color })
           .setLngLat(location.coordinates)
-          .setPopup(new mapboxgl.Popup().setHTML(`<strong>End:</strong> ${location.name}`))
+          .setPopup(new mapboxgl.Popup().setHTML(`<strong>${label}:</strong> ${location.name}`))
           .addTo(map)
-          
-        showRoutePanel.value = true
       }
 
-      if (startLocation.value && endLocation.value) {
-        getRoute()
-      }
-      
-      // Close search results
+      showRoutePanel.value = true
       searchResults.value = []
+
+      if (startLocation.value && endLocation.value) getRoute()
     }
 
     const viewOnMap = (location) => {
-      map.flyTo({
-        center: location.coordinates,
-        zoom: 15,
-        duration: 1500
-      })
+      map.flyTo({ center: location.coordinates, zoom: 15, duration: 1500 })
     }
 
     const getRoute = async () => {
       if (!startLocation.value || !endLocation.value) return
 
-      const start = startLocation.value.coordinates
-      const end = endLocation.value.coordinates
-      const profile = routeMode.value === 'driving' ? 'driving' : 
-                     routeMode.value === 'walking' ? 'walking' : 'cycling'
+      const [start, end] = [startLocation.value.coordinates, endLocation.value.coordinates]
+      const profile = { driving: 'driving', walking: 'walking', cycling: 'cycling' }[routeMode.value]
+      const url = `https://api.mapbox.com/directions/v5/mapbox/${profile}/${start[0]},${start[1]};${end[0]},${end[1]}?geometries=geojson&steps=true&access_token=${mapboxgl.accessToken}`
+      
+      const route = await fetch(url).then(r => r.json()).then(d => d.routes[0])
 
-      try {
-        const response = await fetch(
-          `https://api.mapbox.com/directions/v5/mapbox/${profile}/${start[0]},${start[1]};${end[0]},${end[1]}?geometries=geojson&steps=true&access_token=${mapboxgl.accessToken}`
-        )
-        const data = await response.json()
-        const route = data.routes[0]
-
-        // Update route info
-        const distanceKm = (route.distance / 1000).toFixed(2)
-        const durationMin = Math.round(route.duration / 60)
-        routeInfo.value = {
-          distance: `${distanceKm} km`,
-          duration: `${durationMin} min`
-        }
-
-        // Remove existing route if any
-        if (map.getLayer('route')) {
-          map.removeLayer('route')
-          map.removeSource('route')
-        }
-
-        // Add route to map
-        map.addSource('route', {
-          type: 'geojson',
-          data: {
-            type: 'Feature',
-            properties: {},
-            geometry: route.geometry
-          }
-        })
-
-        map.addLayer({
-          id: 'route',
-          type: 'line',
-          source: 'route',
-          layout: {
-            'line-join': 'round',
-            'line-cap': 'round'
-          },
-          paint: {
-            'line-color': '#3b9ddd',
-            'line-width': 6,
-            'line-opacity': 0.8
-          }
-        })
-
-        // Fit map to show entire route
-        const bounds = new mapboxgl.LngLatBounds()
-        route.geometry.coordinates.forEach(coord => bounds.extend(coord))
-        map.fitBounds(bounds, { padding: 100 })
-      } catch (error) {
-        console.error('Route error:', error)
+      routeInfo.value = {
+        distance: `${(route.distance / 1000).toFixed(2)} km`,
+        duration: `${Math.round(route.duration / 60)} min`
       }
+
+      if (map.getLayer('route')) {
+        map.removeLayer('route')
+        map.removeSource('route')
+      }
+
+      map.addSource('route', {
+        type: 'geojson',
+        data: { type: 'Feature', properties: {}, geometry: route.geometry }
+      })
+
+      map.addLayer({
+        id: 'route',
+        type: 'line',
+        source: 'route',
+        layout: { 'line-join': 'round', 'line-cap': 'round' },
+        paint: { 'line-color': '#3b9ddd', 'line-width': 6, 'line-opacity': 0.8 }
+      })
+
+      const bounds = new mapboxgl.LngLatBounds()
+      route.geometry.coordinates.forEach(c => bounds.extend(c))
+      map.fitBounds(bounds, { padding: 100 })
     }
 
     const updateRoute = () => {
-      if (startLocation.value && endLocation.value) {
-        getRoute()
-      }
+      if (startLocation.value && endLocation.value) getRoute()
     }
 
     const clearRoute = () => {
-      startLocation.value = null
-      endLocation.value = null
-      startLocationName.value = ''
-      endLocationName.value = ''
+      startLocation.value = endLocation.value = null
+      startLocationName.value = endLocationName.value = ''
       routeInfo.value = null
       showRoutePanel.value = false
       
@@ -364,23 +305,11 @@ export default {
         map.removeSource('route')
       }
 
-      if (startMarker) {
-        startMarker.remove()
-        startMarker = null
-      }
-      if (endMarker) {
-        endMarker.remove()
-        endMarker = null
-      }
+      if (startMarker) startMarker.remove(), startMarker = null
+      if (endMarker) endMarker.remove(), endMarker = null
     }
 
-    const closeRoutePanel = () => {
-      showRoutePanel.value = false
-    }
-
-    onBeforeUnmount(() => {
-      if (map) map.remove()
-    })
+    const closeRoutePanel = () => showRoutePanel.value = false
 
     return {
       mapContainer,
