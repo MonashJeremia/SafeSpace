@@ -66,11 +66,14 @@
               <div class="dropdown nav-dropdown me-4" role="none">
                 <button class="btn dropdown-toggle" aria-haspopup="true" aria-expanded="false" role="menuitem">For the Youth</button>
                 <div class="dropdown-content" role="menu">
-                  <button class="dropdown-item" role="menuitem">Youth Resource 1</button>
-                  <button class="dropdown-item" role="menuitem">Youth Resource 2</button>
-                  <button class="dropdown-item" @click="goToInteractiveTools" role="menuitem">
+                  <div class="dropdown-item" @click="goToJournalLog" role="menuitem">
+                    Journal Log
+                  </div>
+                  <div class="dropdown-item" @click="goToInteractiveTools" role="menuitem">
                     Interactive Tools
-                  </button>
+                  </div>
+                  <div class="dropdown-item" role="menuitem">Youth Resource 1</div>
+                  <div class="dropdown-item" role="menuitem">Youth Resource 2</div>
                 </div>
               </div>
               <div class="dropdown nav-dropdown me-4" role="none">
@@ -145,11 +148,14 @@
                     For the Youth
                   </button>
                   <div class="dropdown-content w-100">
-                    <div class="dropdown-item">Youth Resource 1</div>
-                    <div class="dropdown-item">Youth Resource 2</div>
+                    <div class="dropdown-item" @click="goToJournalLog">
+                      Journal Log
+                    </div>
                     <div class="dropdown-item" @click="goToInteractiveTools">
                       Interactive Tools
                     </div>
+                    <div class="dropdown-item">Youth Resource 1</div>
+                    <div class="dropdown-item">Youth Resource 2</div>
                   </div>
                 </div>
               </div>
@@ -286,6 +292,10 @@ export default {
       router.push("/interactive-tools");
     };
 
+    const goToJournalLog = () => {
+      router.push("/journal-log");
+    };
+
     const goToTeachingResources = () => {
       router.push("/teaching-resources");
     };
@@ -317,6 +327,7 @@ export default {
       goToHelpNow,
       goToHome,
       goToInteractiveTools,
+      goToJournalLog,
       goToTeachingResources,
       goToGuidelines,
       goToDonateNow,

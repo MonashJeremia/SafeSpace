@@ -168,7 +168,7 @@ export default {
       map = new mapboxgl.Map({
         container: mapContainer.value,
         style: 'mapbox://styles/mapbox/streets-v12',
-        center: [-79.3832, 43.6532], // Toronto coordinates (change as needed)
+        center: [37.8124, 144.9623], // Melbourne coordinates
         zoom: 12
       })
 
