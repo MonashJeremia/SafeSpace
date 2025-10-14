@@ -154,26 +154,27 @@ export default {
     const selectingEnd = ref(false)
     const routeMode = ref('driving')
     const routeInfo = ref(null)
-    let map = null
-    let markers = []
-    let routeLayer = null
-    let startMarker = null
-    let endMarker = null
+    const map = ref(null)
+    const markers = ref([])
+    const startMarker = ref(null)
+    const endMarker = ref(null)
 
     // Initialize Mapbox
     mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_API_KEY
 
     onMounted(() => {
-      // Create map centered on a default location (you can change this)
-      map = new mapboxgl.Map({
+      if (!mapContainer.value) return
+
+      // Create map centered on Melbourne (longitude, latitude)
+      map.value = new mapboxgl.Map({
         container: mapContainer.value,
         style: 'mapbox://styles/mapbox/streets-v12',
-        center: [37.8124, 144.9623], // Melbourne coordinates
+        center: [144.9623, -37.8124], // Melbourne: [longitude, latitude]
         zoom: 12
       })
 
       // Add navigation controls
-      map.addControl(new mapboxgl.NavigationControl(), 'top-right')
+      map.value.addControl(new mapboxgl.NavigationControl(), 'top-right')
 
       // Add geolocate control to find user's location
       const geolocate = new mapboxgl.GeolocateControl({
@@ -183,14 +184,35 @@ export default {
         trackUserLocation: true,
         showUserHeading: true
       })
-      map.addControl(geolocate, 'top-right')
-      map.on('load', () => geolocate.trigger())
+      map.value.addControl(geolocate, 'top-right')
+      
+      // Trigger geolocation after map loads
+      map.value.on('load', () => {
+        geolocate.trigger()
+      })
     })
 
-    onBeforeUnmount(() => map?.remove())
+    onBeforeUnmount(() => {
+      // Clean up all markers
+      if (markers.value && markers.value.length > 0) {
+        markers.value.forEach(m => m.remove())
+      }
+      if (startMarker.value) {
+        startMarker.value.remove()
+      }
+      if (endMarker.value) {
+        endMarker.value.remove()
+      }
+      
+      // Remove map instance
+      if (map.value) {
+        map.value.remove()
+        map.value = null
+      }
+    })
 
     const searchPlaces = async () => {
-      if (!searchQuery.value.trim()) return
+      if (!searchQuery.value.trim() || !map.value) return
 
       const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(searchQuery.value)}.json?access_token=${mapboxgl.accessToken}&limit=10`
       const data = await fetch(url).then(r => r.json())
@@ -201,46 +223,51 @@ export default {
         coordinates: f.center
       }))
 
-      markers.forEach(m => m.remove())
-      markers = []
+      // Clean up existing markers
+      markers.value.forEach(m => m.remove())
+      markers.value = []
 
+      // Add new markers
       searchResults.value.forEach(result => {
         const marker = new mapboxgl.Marker({ color: '#0066cc' })
           .setLngLat(result.coordinates)
           .setPopup(new mapboxgl.Popup().setHTML(`<strong>${result.name}</strong><br>${result.address}`))
-          .addTo(map)
-        markers.push(marker)
+          .addTo(map.value)
+        markers.value.push(marker)
       })
 
       if (searchResults.value.length) {
         const bounds = new mapboxgl.LngLatBounds()
         searchResults.value.forEach(r => bounds.extend(r.coordinates))
-        map.fitBounds(bounds, { padding: 50 })
+        map.value.fitBounds(bounds, { padding: 50 })
       }
     }
 
     const selectLocation = (location, type) => {
+      if (!map.value) return
+
       const isStart = type === 'start'
-      const marker = isStart ? startMarker : endMarker
       const color = isStart ? '#22c55e' : '#ef4444'
       const label = isStart ? 'Start' : 'End'
 
-      if (marker) marker.remove()
-
       if (isStart) {
+        if (startMarker.value) startMarker.value.remove()
+        
         startLocation.value = location
         startLocationName.value = location.name
-        startMarker = new mapboxgl.Marker({ color })
+        startMarker.value = new mapboxgl.Marker({ color })
           .setLngLat(location.coordinates)
           .setPopup(new mapboxgl.Popup().setHTML(`<strong>${label}:</strong> ${location.name}`))
-          .addTo(map)
+          .addTo(map.value)
       } else {
+        if (endMarker.value) endMarker.value.remove()
+        
         endLocation.value = location
         endLocationName.value = location.name
-        endMarker = new mapboxgl.Marker({ color })
+        endMarker.value = new mapboxgl.Marker({ color })
           .setLngLat(location.coordinates)
           .setPopup(new mapboxgl.Popup().setHTML(`<strong>${label}:</strong> ${location.name}`))
-          .addTo(map)
+          .addTo(map.value)
       }
 
       showRoutePanel.value = true
@@ -250,11 +277,12 @@ export default {
     }
 
     const viewOnMap = (location) => {
-      map.flyTo({ center: location.coordinates, zoom: 15, duration: 1500 })
+      if (!map.value) return
+      map.value.flyTo({ center: location.coordinates, zoom: 15, duration: 1500 })
     }
 
     const getRoute = async () => {
-      if (!startLocation.value || !endLocation.value) return
+      if (!startLocation.value || !endLocation.value || !map.value) return
 
       const [start, end] = [startLocation.value.coordinates, endLocation.value.coordinates]
       const profile = { driving: 'driving', walking: 'walking', cycling: 'cycling' }[routeMode.value]
@@ -267,17 +295,17 @@ export default {
         duration: `${Math.round(route.duration / 60)} min`
       }
 
-      if (map.getLayer('route')) {
-        map.removeLayer('route')
-        map.removeSource('route')
+      if (map.value.getLayer('route')) {
+        map.value.removeLayer('route')
+        map.value.removeSource('route')
       }
 
-      map.addSource('route', {
+      map.value.addSource('route', {
         type: 'geojson',
         data: { type: 'Feature', properties: {}, geometry: route.geometry }
       })
 
-      map.addLayer({
+      map.value.addLayer({
         id: 'route',
         type: 'line',
         source: 'route',
@@ -287,7 +315,7 @@ export default {
 
       const bounds = new mapboxgl.LngLatBounds()
       route.geometry.coordinates.forEach(c => bounds.extend(c))
-      map.fitBounds(bounds, { padding: 100 })
+      map.value.fitBounds(bounds, { padding: 100 })
     }
 
     const updateRoute = () => {
@@ -295,18 +323,26 @@ export default {
     }
 
     const clearRoute = () => {
-      startLocation.value = endLocation.value = null
-      startLocationName.value = endLocationName.value = ''
+      startLocation.value = null
+      endLocation.value = null
+      startLocationName.value = ''
+      endLocationName.value = ''
       routeInfo.value = null
       showRoutePanel.value = false
       
-      if (map.getLayer('route')) {
-        map.removeLayer('route')
-        map.removeSource('route')
+      if (map.value && map.value.getLayer('route')) {
+        map.value.removeLayer('route')
+        map.value.removeSource('route')
       }
 
-      if (startMarker) startMarker.remove(), startMarker = null
-      if (endMarker) endMarker.remove(), endMarker = null
+      if (startMarker.value) {
+        startMarker.value.remove()
+        startMarker.value = null
+      }
+      if (endMarker.value) {
+        endMarker.value.remove()
+        endMarker.value = null
+      }
     }
 
     const closeRoutePanel = () => showRoutePanel.value = false
@@ -340,10 +376,13 @@ export default {
   font-family: Arial, sans-serif;
   min-height: 100vh;
   background-color: #f8f9fa;
+  position: relative;
+  z-index: 1;
 }
 
 .content {
   padding: 0;
+  position: relative;
 }
 
 .map-header {
