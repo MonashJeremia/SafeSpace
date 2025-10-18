@@ -257,12 +257,19 @@ export default {
           const storedUsers = JSON.parse(localStorage.getItem('safespace_users') || '[]');
           const userProfile = storedUsers.find(u => u.email.toLowerCase() === user.email.toLowerCase());
           
+          // Debug: Log the stored users and found profile
+          console.log('Current Firebase user email:', user.email);
+          console.log('Stored users in localStorage:', storedUsers);
+          console.log('Found matching profile:', userProfile);
+          
           currentUser.value = {
             email: user.email,
             firstName: userProfile?.firstName || user.email?.split("@")[0] || "User",
             lastName: userProfile?.lastName || "",
             userType: userProfile?.userType || "youth", // Default to youth if not found
           };
+          
+          console.log('Final currentUser set to:', currentUser.value);
         } else {
           currentUser.value = null;
         }
