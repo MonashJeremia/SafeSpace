@@ -107,6 +107,7 @@
                       <option value="">Please select...</option>
                       <option value="youth">Youth</option>
                       <option value="advisor">Advisor</option>
+                      <option value="admin">Administrator</option>
                     </select>
                     <div v-if="errors.userType" id="userType-error" class="error-message" role="alert">
                       {{ errors.userType }}

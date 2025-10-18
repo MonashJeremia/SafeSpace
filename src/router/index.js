@@ -12,9 +12,11 @@ import ManagingStressView from "../views/guides/ManagingStressView.vue";
 import DailyPositivityView from "../views/guides/DailyPositivityView.vue";
 import MindfulReadingView from "../views/guides/MindfulReadingView.vue";
 import JournalLogView from "../views/JournalLogView.vue";
+import AdminDashboardView from "../views/AdminDashboardView.vue";
 import AboutUsView from "../views/AboutUsView.vue";
 import DonationStatisticsView from "../views/DonationStatisticsView.vue";
 import { auth } from "../main.js";
+import { authState } from "../services/authService.js";
 import DonateNowView from "@/views/DonateNowView.vue";
 
 const routes = [
@@ -90,6 +92,15 @@ const routes = [
     component: JournalLogView,
   },
   {
+    path: "/admin/dashboard",
+    name: "AdminDashboard",
+    component: AdminDashboardView,
+    meta: {
+      requiresAuth: true,
+      requiresRole: 'admin'
+    },
+  },
+  {
     path: "/DonateNow",
     name: "DonateNow",
     component: DonateNowView,
@@ -113,7 +124,21 @@ const router = createRouter({
 
 // Navigation guards
 router.beforeEach((to, from, next) => {
-  const isAuthenticated = auth.currentUser !== null;
+  // Try to use local auth first, fall back to Firebase
+  const localAuth = authState.isAuthenticated;
+  const firebaseAuth = auth.currentUser !== null;
+  const isAuthenticated = localAuth || firebaseAuth;
+  
+  // Get user from appropriate source
+  let currentUser = null;
+  if (localAuth) {
+    currentUser = authState.currentUser;
+  } else if (firebaseAuth) {
+    // Try to get user profile from localStorage
+    const storedUsers = JSON.parse(localStorage.getItem('safespace_users') || '[]');
+    const userProfile = storedUsers.find(u => u.email.toLowerCase() === auth.currentUser.email.toLowerCase());
+    currentUser = userProfile;
+  }
 
   // Check if route requires authentication
   if (to.meta.requiresAuth && !isAuthenticated) {
@@ -126,6 +151,21 @@ router.beforeEach((to, from, next) => {
       },
     });
     return;
+  }
+
+  // Check if route requires specific role
+  if (to.meta.requiresRole && isAuthenticated) {
+    const requiredRole = to.meta.requiresRole;
+    if (!currentUser || currentUser.userType !== requiredRole) {
+      // Redirect to home with error message
+      next({
+        path: "/",
+        query: {
+          message: `Access denied. This page is only available to ${requiredRole} users.`,
+        },
+      });
+      return;
+    }
   }
 
   // Check if route requires guest (not logged in)

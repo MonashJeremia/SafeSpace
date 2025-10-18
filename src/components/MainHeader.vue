@@ -39,9 +39,10 @@
           <div v-else class="d-flex align-items-center gap-1 gap-sm-2">
             <div class="user-info d-flex align-items-center" role="status" aria-label="Logged in user">
               <span class="user-icon" aria-hidden="true">👤</span>
-              <span class="user-name d-none d-sm-inline">{{
-                currentUser.firstName
-              }}</span>
+              <span class="user-name d-none d-sm-inline">
+                {{ currentUser.firstName }}
+                <small class="user-role">({{ currentUser.userType }})</small>
+              </span>
             </div>
             <button class="btn logout-btn btn-sm" @click="handleLogout" aria-label="Logout from your account">
               <span class="d-none d-sm-inline">Logout</span>
@@ -117,12 +118,19 @@
                   <div class="dropdown-item">Support Resource 3</div>
                 </div>
               </div>
-              <div class="dropdown nav-dropdown">
+              <div class="dropdown nav-dropdown me-4">
                 <button class="btn dropdown-toggle">About Us</button>
                 <div class="dropdown-content">
                   <div class="dropdown-item" @click="goToAboutUs">About SafeSpace</div>
                   <div class="dropdown-item" @click="goToDonationStats">Donation Statistics</div>
                 </div>
+              </div>
+              
+              <!-- Admin Section - Only visible to admin users -->
+              <div v-if="isAdmin" class="admin-button-container">
+                <button class="btn admin-dashboard-btn" @click="goToAdminDashboard" aria-label="Access Admin Dashboard">
+                  ⚙️ Admin Dashboard
+                </button>
               </div>
             </div>
 
@@ -225,6 +233,13 @@
                   </div>
                 </div>
               </div>
+              
+              <!-- Admin Section for Mobile - Only visible to admin users -->
+              <div v-if="isAdmin" class="col-12">
+                <button class="btn admin-dashboard-btn w-100" @click="goToAdminDashboard" aria-label="Access Admin Dashboard">
+                  ⚙️ Admin Dashboard
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -247,6 +262,7 @@ export default {
     const mobileMenuOpen = ref(false);
     const currentUser = ref(null);
     const isAuthenticated = computed(() => currentUser.value !== null);
+    const isAdmin = computed(() => isAuthenticated.value && currentUser.value?.userType === 'admin');
 
     // Listen to Firebase auth state changes
     let unsubscribe = null;
@@ -257,19 +273,12 @@ export default {
           const storedUsers = JSON.parse(localStorage.getItem('safespace_users') || '[]');
           const userProfile = storedUsers.find(u => u.email.toLowerCase() === user.email.toLowerCase());
           
-          // Debug: Log the stored users and found profile
-          console.log('Current Firebase user email:', user.email);
-          console.log('Stored users in localStorage:', storedUsers);
-          console.log('Found matching profile:', userProfile);
-          
           currentUser.value = {
             email: user.email,
             firstName: userProfile?.firstName || user.email?.split("@")[0] || "User",
             lastName: userProfile?.lastName || "",
             userType: userProfile?.userType || "youth", // Default to youth if not found
           };
-          
-          console.log('Final currentUser set to:', currentUser.value);
         } else {
           currentUser.value = null;
         }
@@ -337,10 +346,15 @@ export default {
       router.push("/donation-statistics");
     };
 
+    const goToAdminDashboard = () => {
+      router.push("/admin/dashboard");
+    };
+
     return {
       mobileMenuOpen,
       isAuthenticated,
       currentUser,
+      isAdmin,
       toggleMobileMenu,
       goToSignUp,
       goToLogin,
@@ -354,6 +368,7 @@ export default {
       goToDonateNow,
       goToAboutUs,
       goToDonationStats,
+      goToAdminDashboard,
     };
   },
 };
@@ -499,6 +514,12 @@ export default {
   font-weight: 500;
 }
 
+.user-role {
+  color: #6c757d;
+  font-weight: 400;
+  margin-left: 0.25rem;
+}
+
 .user-icon {
   margin-right: 0.5rem;
   font-size: 1rem;
@@ -544,5 +565,56 @@ export default {
   padding: 1rem;
   margin-top: 0.5rem;
   border: 1px solid #dee2e6;
+}
+
+/* Admin Styles */
+.admin-button-container {
+  margin-left: 1rem;
+}
+
+.admin-dashboard-btn {
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  color: white !important;
+  border: none;
+  border-radius: 25px;
+  padding: 0.6rem 1.5rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
+}
+
+.admin-dashboard-btn:hover {
+  background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
+  color: white !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.4);
+}
+
+.admin-dashboard-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 123, 255, 0.3);
+}
+
+/* Admin responsive adjustments */
+@media (max-width: 991.98px) {
+  .admin-button-container {
+    margin-left: 0;
+    margin-top: 0.5rem;
+  }
+  
+  .admin-dashboard-btn {
+    justify-content: center;
+    text-align: center;
+  }
+}
+
+/* High contrast mode for admin elements */
+@media (prefers-contrast: high) {
+  .admin-dashboard-btn {
+    border: 2px solid currentColor;
+  }
 }
 </style>
