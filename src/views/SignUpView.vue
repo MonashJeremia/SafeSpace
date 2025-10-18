@@ -342,6 +342,21 @@ const submitForm = async () => {
         formData.value.password
       );
 
+      // Save user profile to localStorage for header access
+      const userProfile = {
+        id: userCredential.user.uid,
+        firstName: formData.value.firstName,
+        lastName: formData.value.lastName,
+        email: formData.value.email.toLowerCase(),
+        userType: formData.value.userType,
+        createdAt: new Date().toISOString()
+      };
+
+      // Get existing users from localStorage
+      const existingUsers = JSON.parse(localStorage.getItem('safespace_users') || '[]');
+      existingUsers.push(userProfile);
+      localStorage.setItem('safespace_users', JSON.stringify(existingUsers));
+
       // Success - redirect to login with success message
       router.push({
         path: "/login",

@@ -66,7 +66,12 @@
               <div class="dropdown nav-dropdown me-4" role="none">
                 <button class="btn dropdown-toggle" aria-haspopup="true" aria-expanded="false" role="menuitem">For the Youth</button>
                 <div class="dropdown-content" role="menu">
-                  <div class="dropdown-item" @click="goToJournalLog" role="menuitem">
+                  <div 
+                    v-if="isAuthenticated && currentUser && currentUser.userType === 'youth'"
+                    class="dropdown-item" 
+                    @click="goToJournalLog" 
+                    role="menuitem"
+                  >
                     Journal Log
                   </div>
                   <div class="dropdown-item" @click="goToInteractiveTools" role="menuitem">
@@ -90,7 +95,7 @@
               <div
                 v-if="
                   !isAuthenticated ||
-                  (currentUser && currentUser.userType === 'advisor')
+                  (isAuthenticated && currentUser && currentUser.userType === 'advisor')
                 "
                 class="dropdown nav-dropdown me-4"
               >
@@ -148,7 +153,11 @@
                     For the Youth
                   </button>
                   <div class="dropdown-content w-100">
-                    <div class="dropdown-item" @click="goToJournalLog">
+                    <div 
+                      v-if="isAuthenticated && currentUser && currentUser.userType === 'youth'"
+                      class="dropdown-item" 
+                      @click="goToJournalLog"
+                    >
                       Journal Log
                     </div>
                     <div class="dropdown-item" @click="goToInteractiveTools">
@@ -175,7 +184,7 @@
               <div
                 v-if="
                   !isAuthenticated ||
-                  (currentUser && currentUser.userType === 'advisor')
+                  (isAuthenticated && currentUser && currentUser.userType === 'advisor')
                 "
                 class="col-12 col-sm-6"
               >
@@ -244,10 +253,15 @@ export default {
     onMounted(() => {
       unsubscribe = onAuthStateChanged(auth, (user) => {
         if (user) {
+          // Check if user has userType stored in localStorage from registration
+          const storedUsers = JSON.parse(localStorage.getItem('safespace_users') || '[]');
+          const userProfile = storedUsers.find(u => u.email.toLowerCase() === user.email.toLowerCase());
+          
           currentUser.value = {
             email: user.email,
-            firstName: user.email?.split("@")[0] || "User", // Use email prefix as name for now
-            userType: "youth", // Default, can be stored in Firestore later
+            firstName: userProfile?.firstName || user.email?.split("@")[0] || "User",
+            lastName: userProfile?.lastName || "",
+            userType: userProfile?.userType || "youth", // Default to youth if not found
           };
         } else {
           currentUser.value = null;
