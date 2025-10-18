@@ -111,10 +111,12 @@
                           <button
                             class="btn challenge-new-btn"
                             @click="generateNewChallenge"
+                            :disabled="loading"
                           >
-                            New Challenge
+                            {{ loading ? 'Loading...' : 'New Challenge' }}
                           </button>
                         </div>
+                        <div v-if="fetchError" class="mt-2 text-danger">{{ fetchError }}</div>
                       </div>
                     </div>
                   </div>
@@ -142,21 +144,77 @@ export default {
     const router = useRouter();
     const challengeCompleted = ref(false);
     const dailyChallenge = ref({
-      text: "Write down three things you're grateful for today and share one with someone you care about.",
+      text: "Loading your daily challenge...",
     });
 
-    const challenges = [
-      "Write down three things you're grateful for today and share one with someone you care about.",
-      "Take a 10-minute walk outside and notice five beautiful things around you.",
-      "Send a kind message to someone who has made a difference in your life.",
-      "Practice deep breathing for 5 minutes and focus on the present moment.",
-      "Do something creative for 15 minutes - draw, write, or make something with your hands.",
-      "Help someone today, even if it's just a small gesture of kindness.",
-      "Spend 10 minutes in nature and practice mindful observation.",
-      "Write a positive affirmation and repeat it to yourself throughout the day.",
-      "Listen to uplifting music and dance or move your body for 5 minutes.",
-      "Reach out to someone you haven't talked to in a while and check in on them.",
-    ];
+    // UI state for API calls
+    const loading = ref(false);
+    const fetchError = ref(null);
+
+    
+    // Gemini API configuration
+    const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY || '';
+    const MODEL_NAME = 'gemini-2.0-flash-001'; // Using the working model version
+    const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1/models/${MODEL_NAME}:generateContent?key=${GEMINI_API_KEY}`;
+    console.log('API Key loaded:', GEMINI_API_KEY ? 'Yes' : 'No - API key is missing!');
+
+    // Fetch challenge from Gemini API
+    const fetchGeminiChallenge = async () => {
+      // Check if API key is available
+      if (!GEMINI_API_KEY) {
+        console.error('Gemini API key is not configured');
+        throw new Error('API key not configured');
+      }
+
+      const prompt = "Generate a short, actionable daily positivity challenge that can be done in 5-15 minutes. Focus on gratitude, mindfulness, kindness, creativity, or connection. Make it one sentence only.";
+
+      console.log('Fetching challenge from Gemini API...');
+      
+      try {
+        const response = await fetch(GEMINI_API_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            contents: [{
+              role: 'user',
+              parts: [{
+                text: prompt
+              }]
+            }],
+            generationConfig: {
+              temperature: 0.7,
+              maxOutputTokens: 50,
+              topP: 0.8,
+              topK: 40
+            }
+          }),
+        });
+
+        const responseText = await response.text();
+        console.log('Response status:', response.status);
+
+        if (!response.ok) {
+          console.error('API Error Response:', responseText);
+          throw new Error(`Gemini API error: ${response.status} ${response.statusText}`);
+        }
+
+        const data = JSON.parse(responseText);
+        // Extract text from Gemini API response - handle the specific response structure
+        if (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts) {
+          const text = data.candidates[0].content.parts[0].text;
+          // Clean up the response - remove any markdown formatting or extra text
+          const cleanedText = text.replace(/^[*#>\s-]+|[\n\r]+.*$/g, '').trim();
+          return cleanedText || "Take a moment to practice deep breathing and feel gratitude for this present moment.";
+        }
+        
+        throw new Error("Invalid response format from Gemini API");
+      } catch (error) {
+        console.error('Fetch error:', error);
+        throw error;
+      }
+    };
 
     const completeChallenge = () => {
       challengeCompleted.value = true;
@@ -165,13 +223,25 @@ export default {
       localStorage.setItem(`challenge_completed_${today}`, "true");
     };
 
-    const generateNewChallenge = () => {
-      const randomIndex = Math.floor(Math.random() * challenges.length);
-      dailyChallenge.value.text = challenges[randomIndex];
+    const generateNewChallenge = async () => {
       challengeCompleted.value = false;
       // Clear completion status for new challenge
       const today = new Date().toDateString();
       localStorage.removeItem(`challenge_completed_${today}`);
+
+      loading.value = true;
+      fetchError.value = null;
+      
+      try {
+        const newText = await fetchGeminiChallenge();
+        dailyChallenge.value.text = newText;
+      } catch (err) {
+        console.error("Failed to fetch challenge from Gemini API:", err);
+        fetchError.value = "Unable to generate a new challenge. Please check your internet connection and try again.";
+        dailyChallenge.value.text = "Challenge generation unavailable. Please try again later.";
+      } finally {
+        loading.value = false;
+      }
     };
 
     const openGuide = (guideId) => {
@@ -189,21 +259,36 @@ export default {
       }
     };
 
-    // Check if challenge was already completed today
-    onMounted(() => {
+    // When component mounts: check completion and fetch an initial challenge from Gemini API
+    onMounted(async () => {
       const today = new Date().toDateString();
       const completed = localStorage.getItem(`challenge_completed_${today}`);
       if (completed) {
         challengeCompleted.value = true;
       }
+
+      // Fetch initial challenge from Gemini API
+      loading.value = true;
+      try {
+        const initialText = await fetchGeminiChallenge();
+        dailyChallenge.value.text = initialText;
+      } catch (err) {
+        console.error("Failed to fetch initial challenge from Gemini API:", err);
+        fetchError.value = "Unable to load daily challenge. Please check your internet connection.";
+        dailyChallenge.value.text = "Challenge generation unavailable. Click 'New Challenge' to try again.";
+      } finally {
+        loading.value = false;
+      }
     });
 
-    return {
+      return {
       challengeCompleted,
       dailyChallenge,
       completeChallenge,
       generateNewChallenge,
       openGuide,
+      loading,
+      fetchError,
     };
   },
 };
