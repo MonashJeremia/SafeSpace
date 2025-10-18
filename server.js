@@ -6,31 +6,41 @@ import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 
-// Load environment variables
+// Load environment variables from .env file
 dotenv.config();
 
+// ES module equivalents for __dirname and __filename
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Initialize Express app
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Middleware
+// Enable CORS for cross-origin requests from frontend
 app.use(cors());
+// Parse JSON request bodies
 app.use(express.json());
 
-// Initialise Resend
+// Initialize Resend email service client
 const resend = new Resend(process.env.VITE_RESEND_API_KEY);
 
+// Health check endpoint
 app.get("/", (req, res) => {
   res.send("SafeSpace Email Server is running!");
 });
 
-// Email sending endpoint
+/**
+ * POST /api/send-donation-receipt
+ * Sends donation receipt email to donor
+ * Request body: { to: string, amount: number }
+ * Response: { success: boolean, result?: object, error?: string }
+ */
 app.post("/api/send-donation-receipt", async (req, res) => {
   try {
     const { to, amount } = req.body;
 
+    // Validate required fields
     if (!to || !amount) {
       return res.status(400).json({
         success: false,
@@ -40,6 +50,7 @@ app.post("/api/send-donation-receipt", async (req, res) => {
 
     const subject = "Thank you for your Donation - SafeSpace";
 
+    // HTML template for donation receipt email
     const html = `
       <!DOCTYPE html>
       <html>
@@ -86,6 +97,7 @@ app.post("/api/send-donation-receipt", async (req, res) => {
       </html>
     `;
 
+    // Prepare email data object
     const emailData = {
       from: "SafeSpace <onboarding@resend.dev>",
       to,
@@ -93,7 +105,7 @@ app.post("/api/send-donation-receipt", async (req, res) => {
       html,
     };
 
-    // Try to attach PDF if it exists
+    // Attach PDF receipt if available in assets
     const pdfPath = path.join(__dirname, "src", "assets", "Thank_you.pdf");
     if (fs.existsSync(pdfPath)) {
       const pdfContent = fs.readFileSync(pdfPath);
@@ -106,6 +118,7 @@ app.post("/api/send-donation-receipt", async (req, res) => {
       ];
     }
 
+    // Send email via Resend API
     const result = await resend.emails.send(emailData);
 
     res.json({ success: true, result });
@@ -117,11 +130,17 @@ app.post("/api/send-donation-receipt", async (req, res) => {
   }
 });
 
-// Positivity email endpoint
+/**
+ * POST /api/send-positivity-email
+ * Sends positivity message from Daily Positivity Challenge
+ * Request body: { to: string, from?: string, message: string, senderName?: string }
+ * Response: { success: boolean, result?: object, error?: string }
+ */
 app.post("/api/send-positivity-email", async (req, res) => {
   try {
     const { to, from, message, senderName } = req.body;
 
+    // Validate required fields
     if (!to || !message) {
       return res.status(400).json({
         success: false,
@@ -131,6 +150,7 @@ app.post("/api/send-positivity-email", async (req, res) => {
 
     const subject = `Message from ${senderName || "Someone"} via SafeSpace`;
 
+    // HTML template for positivity message email
     const html = `
       <!DOCTYPE html>
       <html>
@@ -155,6 +175,7 @@ app.post("/api/send-positivity-email", async (req, res) => {
       </html>
     `;
 
+    // Prepare email data with optional reply-to
     const emailData = {
       from: "SafeSpace Positivity <onboarding@resend.dev>",
       to,
@@ -163,11 +184,11 @@ app.post("/api/send-positivity-email", async (req, res) => {
       reply_to: from || undefined,
     };
 
+    // Send email via Resend API
     const result = await resend.emails.send(emailData);
 
     res.json({ success: true, result });
   } catch (error) {
-    console.error("Error sending positivity email:", error);
     res.status(500).json({
       success: false,
       error: error.message,
@@ -175,6 +196,5 @@ app.post("/api/send-positivity-email", async (req, res) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`SafeSpace Email Server is running on port ${port}`);
-});
+// Start Express server on specified port
+app.listen(port, () => {});

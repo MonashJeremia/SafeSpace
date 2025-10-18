@@ -61,10 +61,11 @@ export default {
     const loading = ref(true);
     const error = ref(false);
 
-    // Initialize Firebase Functions
+    // Initialize Firebase Functions client
     const app = getApp();
     const functions = getFunctions(app);
 
+    // Format total amount with 2 decimal places and commas
     const formattedTotalAmount = computed(() => {
       return totalAmount.value.toLocaleString('en-US', {
         minimumFractionDigits: 2,
@@ -72,11 +73,16 @@ export default {
       });
     });
 
+    /**
+     * Fetch donation statistics from Firebase Functions
+     * Updates totalAmount and donationCount refs
+     */
     const fetchDonationStats = async () => {
       try {
         loading.value = true;
         error.value = false;
 
+        // Call Firebase function to get aggregated stats
         const getDonationStats = httpsCallable(functions, "getDonationStats");
         const result = await getDonationStats();
 
@@ -85,7 +91,6 @@ export default {
           donationCount.value = result.data.donationCount || 0;
         }
       } catch (err) {
-        console.error("Error fetching donation stats:", err);
         error.value = true;
       } finally {
         loading.value = false;
@@ -100,6 +105,7 @@ export default {
       router.push("/about-us");
     };
 
+    // Load stats when component mounts
     onMounted(() => {
       fetchDonationStats();
     });

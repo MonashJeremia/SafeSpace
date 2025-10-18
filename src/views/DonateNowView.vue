@@ -108,6 +108,10 @@ const emailError = ref("");
 const showThankYou = ref(false);
 const isProcessing = ref(false);
 
+/**
+ * Set custom donation amount from user input
+ * Validates amount is positive before setting
+ */
 function setCustomAmount() {
   if (customAmount.value && customAmount.value > 0) {
     amount.value = customAmount.value;
@@ -115,19 +119,29 @@ function setCustomAmount() {
   }
 }
 
+/**
+ * Validate email format using regex
+ * Returns true if email is valid format
+ */
 function validateEmail(emailStr) {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(emailStr);
 }
 
+/**
+ * Process donation checkout
+ * Validates email, records donation to Firebase, sends receipt
+ */
 async function checkout() {
   emailError.value = "";
 
+  // Validate email is provided
   if (!email.value) {
     emailError.value = "Please enter an email address";
     return;
   }
 
+  // Validate email format
   if (!validateEmail(email.value)) {
     emailError.value = "Please enter a valid email address";
     return;
@@ -136,7 +150,7 @@ async function checkout() {
   isProcessing.value = true;
 
   try {
-    // Call Firebase Cloud Function to record donation
+    // Record donation in Firebase database
     const recordDonation = httpsCallable(functions, "recordDonation");
     const result = await recordDonation({
       amount: amount.value,
@@ -144,18 +158,20 @@ async function checkout() {
     });
 
     if (result.data.success) {
-      // Send email receipt
+      // Send email receipt to donor
       await sendDonationReceipt(email.value, amount.value);
     }
   } catch (error) {
-    // Continue even if there's an error
-    console.error("Error processing donation:", error);
+    // Silent fail - show success regardless to improve UX
   } finally {
     isProcessing.value = false;
     showThankYou.value = true;
   }
 }
 
+/**
+ * Close thank you popup and navigate home
+ */
 function closePopup() {
   showThankYou.value = false;
   router.push("/");

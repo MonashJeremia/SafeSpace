@@ -1,30 +1,36 @@
 import { reactive } from 'vue'
 
-// Authentication state
+// Reactive auth state - manages user authentication across the app
+// isAuthenticated: boolean flag for current session status
+// currentUser: object containing logged-in user data (null if not logged in)
+// users: array of all registered users stored in localStorage
 const authState = reactive({
   isAuthenticated: false,
   currentUser: null,
   users: []
 })
 
-// Helper functions for localStorage
+// Persist users array to localStorage
 const saveUsersToStorage = (users) => {
   try {
     localStorage.setItem('safespace_users', JSON.stringify(users))
   } catch (error) {
-    console.error('Error saving users to storage:', error)
+    // Silent fail on storage error
   }
 }
 
+// Retrieve users array from localStorage
+// Returns empty array if no data or parsing fails
 const loadUsersFromStorage = () => {
   try {
     return JSON.parse(localStorage.getItem('safespace_users') || '[]')
   } catch (error) {
-    console.error('Error loading users from storage:', error)
     return []
   }
 }
 
+// Save currently authenticated user to localStorage for session persistence
+// Accepts user object or null to clear session
 const saveCurrentUserToStorage = (user) => {
   try {
     if (user) {
@@ -33,51 +39,55 @@ const saveCurrentUserToStorage = (user) => {
       localStorage.removeItem('safespace_current_user')
     }
   } catch (error) {
-    console.error('Error saving current user to storage:', error)
+    // Silent fail on storage error
   }
 }
 
+// Load current user session from localStorage
+// Returns user object if session exists, null otherwise
 const loadCurrentUserFromStorage = () => {
   try {
     const storedUser = localStorage.getItem('safespace_current_user')
     return storedUser ? JSON.parse(storedUser) : null
   } catch (error) {
-    console.error('Error loading current user from storage:', error)
     return null
   }
 }
 
-// Initialise state from localStorage
+// Hydrate auth state from localStorage on initialization
+// Called once when module loads to restore previous session
+// Step 1: Load all registered users
+// Step 2: Check if there's an active session
+// Step 3: If session exists, mark user as authenticated
 const initializeAuthState = () => {
   try {
-    // Load users
     authState.users = loadUsersFromStorage()
     
-    // Load current user session
     const storedUser = loadCurrentUserFromStorage()
     if (storedUser) {
       authState.currentUser = storedUser
       authState.isAuthenticated = true
     }
   } catch (error) {
-    console.error('Error initializing auth state:', error)
     authState.users = []
   }
 }
 
-// Register a new user
+// Create new user account
+// Validates email uniqueness before creating account
+// Throws error if email already registered
 const registerUser = (userData) => {
   const { firstName, lastName, email, password, userType } = userData
   
-  // Check if user already exists
+  // Prevent duplicate email registration
   const existingUser = authState.users.find(user => user.email.toLowerCase() === email.toLowerCase())
   if (existingUser) {
     throw new Error('An account with this email already exists')
   }
   
-  // Create new user
+  // Create user object with unique ID and timestamp
   const newUser = {
-    id: Date.now().toString(), // Simple ID generation
+    id: Date.now().toString(),
     firstName,
     lastName,
     email: email.toLowerCase(),
@@ -86,15 +96,18 @@ const registerUser = (userData) => {
     createdAt: new Date().toISOString()
   }
   
-  // Add user to the list and manually save to localStorage
+  // Add to users array and persist to storage
   authState.users.push(newUser)
   saveUsersToStorage(authState.users)
   
   return newUser
 }
 
-// Login user
+// Authenticate user with credentials
+// Returns sanitized user object if credentials match
+// Throws error if credentials invalid
 const loginUser = (email, password) => {
+  // Find user by email and password match
   const user = authState.users.find(u => 
     u.email.toLowerCase() === email.toLowerCase() && u.password === password
   )
@@ -103,7 +116,7 @@ const loginUser = (email, password) => {
     throw new Error('Invalid email or password')
   }
   
-  // Set authentication state
+  // Update auth state with sanitized user data (exclude password)
   authState.isAuthenticated = true
   authState.currentUser = {
     id: user.id,
@@ -113,25 +126,24 @@ const loginUser = (email, password) => {
     userType: user.userType
   }
   
-  // Manually save current user to localStorage
+  // Persist session to localStorage
   saveCurrentUserToStorage(authState.currentUser)
   
   return authState.currentUser
 }
 
-// Logout user
+// Clear session and reset auth state
+// Removes user from storage and resets state to unauthenticated
 const logoutUser = () => {
   authState.isAuthenticated = false
   authState.currentUser = null
-  
-  // Manually clear current user from localStorage
   saveCurrentUserToStorage(null)
 }
 
-// Get current authentication state
+// Getter for current auth state
 const getAuthState = () => authState
 
-// Initialise the service
+// Initialize auth state on module load
 initializeAuthState()
 
 export {

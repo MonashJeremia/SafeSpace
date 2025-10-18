@@ -272,23 +272,27 @@ export default {
     const router = useRouter();
     const mobileMenuOpen = ref(false);
     const currentUser = ref(null);
+    
+    // Computed properties for auth state
     const isAuthenticated = computed(() => currentUser.value !== null);
     const isAdmin = computed(() => isAuthenticated.value && currentUser.value?.userType === 'admin');
 
-    // Listen to Firebase auth state changes
+    // Sync Firebase auth with localStorage user profile
+    // Combines Firebase auth state with local user data (userType, names)
     let unsubscribe = null;
     onMounted(() => {
       unsubscribe = onAuthStateChanged(auth, (user) => {
         if (user) {
-          // Check if user has userType stored in localStorage from registration
+          // Retrieve full user profile from localStorage
           const storedUsers = JSON.parse(localStorage.getItem('safespace_users') || '[]');
           const userProfile = storedUsers.find(u => u.email.toLowerCase() === user.email.toLowerCase());
           
+          // Merge Firebase auth data with stored profile
           currentUser.value = {
             email: user.email,
             firstName: userProfile?.firstName || user.email?.split("@")[0] || "User",
             lastName: userProfile?.lastName || "",
-            userType: userProfile?.userType || "youth", // Default to youth if not found
+            userType: userProfile?.userType || "youth",
           };
         } else {
           currentUser.value = null;
@@ -296,10 +300,12 @@ export default {
       });
     });
 
+    // Cleanup auth listener on component unmount
     onUnmounted(() => {
       if (unsubscribe) unsubscribe();
     });
 
+    // Navigation functions
     const toggleMobileMenu = () => {
       mobileMenuOpen.value = !mobileMenuOpen.value;
     };
@@ -312,12 +318,16 @@ export default {
       router.push("/login");
     };
 
+    /**
+     * Sign out user from Firebase and redirect home
+     * Clears Firebase auth session
+     */
     const handleLogout = async () => {
       try {
         await signOut(auth);
         router.push("/");
       } catch (error) {
-        console.error("Logout error:", error);
+        // Silent fail on logout error
       }
     };
 
