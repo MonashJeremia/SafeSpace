@@ -202,20 +202,23 @@ export default {
 <style scoped>
 .login-container {
   font-family: Arial, sans-serif;
-  min-height: 100vh;
+  height: 100vh; /* Changed from min-height */
   background-color: #f8f9fa;
   width: 100%;
-  overflow-x: hidden;
+  overflow: hidden; /* Add overflow hidden */
+  display: flex;
+  flex-direction: column;
 }
 
 .login-content {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: calc(100vh - 150px);
+  flex: 1; /* Changed from min-height calculation */
   padding: 1rem;
   width: 100%;
   box-sizing: border-box;
+  overflow-y: auto; /* Allow vertical scroll only within this container if needed */
 }
 
 .login-form-container {
@@ -224,7 +227,7 @@ export default {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   width: 100%;
-  max-width: 100%;
+  max-width: 600px; /* This approximates the col-xl-5 col-xxl-4 sizing */
   margin: 0 1rem;
 }
 
@@ -234,6 +237,7 @@ export default {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+  overflow: visible; /* Add this */
 }
 
 .user-icon-large {
