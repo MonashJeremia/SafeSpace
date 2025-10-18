@@ -8,51 +8,42 @@
           <div class="col-12 col-lg-10 col-xl-9">
             <div class="content-wrapper p-3 p-md-4">
               <div class="page-header text-center">
-                <div class="header-icon mb-2">☀️</div>
-                <h1 class="page-title">Daily Positivity Challenge</h1>
-                <p class="page-subtitle">Build positive habits and mindset through daily practices</p>
+                <div class="header-icon">☀️</div>
+                <h1 class="page-title">Daily Positivity</h1>
+                <p class="page-subtitle">Send kindness, build streaks</p>
               </div>
 
               <!-- Streak Counter Section -->
-              <div class="streak-section mt-3">
+              <div class="streak-section mt-4">
                 <div class="streak-card">
-                  <div class="streak-icon">🔥</div>
-                  <div class="streak-info">
-                    <h3 class="streak-title">Daily Streak</h3>
-                    <div class="streak-counter">{{ streakData.currentStreak }}</div>
-                    <p class="streak-label">{{ streakData.currentStreak === 1 ? 'day' : 'days' }}</p>
+                  <div class="streak-main">
+                    <div class="streak-number">{{ streakData.currentStreak }}</div>
+                    <div class="streak-text">{{ streakData.currentStreak === 1 ? 'Day streak' : 'Days streak' }}</div>
                   </div>
                   <div class="streak-stats">
-                    <div class="streak-stat">
-                      <span class="stat-number">{{ streakData.bestStreak }}</span>
-                      <span class="stat-label">Best</span>
+                    <div class="stat-item">
+                      <div class="stat-value">{{ streakData.bestStreak }}</div>
+                      <div class="stat-label">Best</div>
                     </div>
-                    <div class="streak-stat">
-                      <span class="stat-number">{{ streakData.totalMessages }}</span>
-                      <span class="stat-label">Total</span>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                      <div class="stat-value">{{ streakData.totalMessages }}</div>
+                      <div class="stat-label">Total</div>
                     </div>
                   </div>
                 </div>
                 
-                <div class="streak-status mt-3">
-                  <div v-if="streakData.lastMessageDate === todayDateString" class="streak-complete">
-                    ✅ Today's positivity shared! Come back tomorrow to continue your streak.
+                <div class="streak-status">
+                  <div v-if="streakData.lastMessageDate === todayDateString" class="status-message complete">
+                    Done for today! Come back tomorrow
                   </div>
-                  <div v-else-if="streakData.currentStreak === 0" class="streak-start">
-                    🌟 Start your positivity streak by sending your first message!
+                  <div v-else-if="streakData.currentStreak === 0" class="status-message start">
+                    Send your first message to start
                   </div>
-                  <div v-else class="streak-pending">
-                    ⏰ Send a positive message today to continue your {{ streakData.currentStreak }}-day streak!
+                  <div v-else class="status-message pending">
+                    Keep your {{ streakData.currentStreak }}-day streak alive
                   </div>
                 </div>
-              </div>
-
-              <!-- Challenge Description -->
-              <div class="challenge-section mt-3">
-                <h2 class="section-title">Share Positivity</h2>
-                <p class="challenge-text">
-                  Send a positive message to someone you care about
-                </p>
               </div>
 
               <!-- Email Form Section -->
@@ -289,283 +280,302 @@ export default {
 
 <style scoped>
 .guide-container {
-  font-family: Arial, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   min-height: 100vh;
-  background-color: #f8f9fa;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
 }
 
 .content-wrapper {
-  background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  background: white;
+  border-radius: 24px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .header-icon {
-  font-size: 4rem;
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.8;
 }
 
 .page-title {
-  font-size: 2.2rem;
-  font-weight: 700;
-  color: #212529;
-  margin-bottom: 0.75rem;
+  font-size: 2rem;
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.025em;
 }
 
 .page-subtitle {
-  font-size: 1.1rem;
-  color: #6c757d;
+  font-size: 1rem;
+  color: #718096;
   margin: 0;
+  font-weight: 400;
 }
 
 /* Streak Section */
 .streak-section {
-  padding: 1rem 0;
+  padding: 2rem 0 1rem;
 }
 
 .streak-card {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border-radius: 16px;
-  padding: 1.5rem;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 2rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
-  margin-bottom: 0.75rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  position: relative;
+  overflow: hidden;
 }
 
-.streak-icon {
-  font-size: 2.5rem;
-  margin-right: 1rem;
+.streak-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #4299e1 0%, #667eea 100%);
 }
 
-.streak-info {
-  flex: 1;
+.streak-main {
   text-align: center;
+  flex: 1;
 }
 
-.streak-title {
-  font-size: 1.1rem;
-  font-weight: 600;
-  margin-bottom: 0.25rem;
-  opacity: 0.9;
-}
-
-.streak-counter {
-  font-size: 2.8rem;
+.streak-number {
+  font-size: 3.5rem;
   font-weight: 700;
+  color: #4299e1;
   line-height: 1;
-  margin-bottom: 0.15rem;
+  margin-bottom: 0.25rem;
 }
 
-.streak-label {
-  font-size: 1rem;
-  opacity: 0.8;
-  margin: 0;
+.streak-text {
+  font-size: 0.9rem;
+  color: #718096;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .streak-stats {
   display: flex;
+  align-items: center;
   gap: 1.5rem;
 }
 
-.streak-stat {
+.stat-item {
   text-align: center;
 }
 
-.stat-number {
-  display: block;
-  font-size: 1.3rem;
-  font-weight: 700;
+.stat-value {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #2d3748;
   line-height: 1;
+  margin-bottom: 0.25rem;
 }
 
 .stat-label {
   font-size: 0.75rem;
-  opacity: 0.8;
+  color: #a0aec0;
+  font-weight: 500;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.05em;
+}
+
+.stat-divider {
+  width: 1px;
+  height: 2rem;
+  background: #e2e8f0;
 }
 
 .streak-status {
   text-align: center;
-  padding: 0.75rem;
-  border-radius: 12px;
+  margin-top: 1.5rem;
+}
+
+.status-message {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  border-radius: 50px;
+  font-size: 0.875rem;
   font-weight: 500;
+  border: 1px solid transparent;
 }
 
-.streak-complete {
-  background: #d1f2eb;
-  color: #0f5132;
-  border: 2px solid #a7e9d1;
+.status-message.complete {
+  background: #f0fff4;
+  color: #38a169;
+  border-color: #9ae6b4;
 }
 
-.streak-start {
-  background: #fff3cd;
-  color: #856404;
-  border: 2px solid #ffeaa7;
+.status-message.start {
+  background: #fffbeb;
+  color: #d69e2e;
+  border-color: #fbd38d;
 }
 
-.streak-pending {
-  background: #cff4fc;
-  color: #055160;
-  border: 2px solid #b6effb;
-}
-
-.challenge-section {
-  padding: 1rem 0;
-  text-align: center;
-}
-
-.section-title {
-  font-size: 1.4rem;
-  font-weight: 500;
-  color: #333;
-  margin-bottom: 0.4rem;
-}
-
-.challenge-text {
-  font-size: 0.95rem;
-  color: #666;
+.status-message.pending {
+  background: #ebf8ff;
+  color: #3182ce;
+  border-color: #90cdf4;
 }
 
 .email-form-section {
-  padding: 1rem 0;
+  padding: 2rem 0 1rem;
 }
 
 .form-card {
   background: white;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 2rem;
-  max-width: 700px;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  padding: 2.5rem;
+  max-width: 600px;
   margin: 0 auto;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
 }
 
 .form-control {
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  padding: 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1rem;
   font-size: 0.95rem;
   width: 100%;
-  transition: border 0.2s;
+  transition: all 0.2s ease;
+  background: #f7fafc;
 }
 
 .form-control:focus {
   outline: none;
-  border-color: #667eea;
+  border-color: #4299e1;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
 }
 
 .form-control::placeholder {
-  color: #999;
+  color: #a0aec0;
 }
 
 .btn-send {
   width: 100%;
-  background: #000;
+  background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
   color: white;
   border: none;
-  padding: 0.75rem;
+  padding: 1rem;
   font-size: 0.95rem;
-  font-weight: 500;
-  border-radius: 4px;
+  font-weight: 600;
+  border-radius: 12px;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
 }
 
 .btn-send:hover:not(:disabled) {
-  background: #333;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 25px rgba(66, 153, 225, 0.3);
 }
 
 .btn-send:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+  transform: none;
 }
 
 .success-msg,
 .error-msg {
-  padding: 0.75rem;
-  border-radius: 4px;
-  margin-bottom: 1rem;
+  padding: 1rem;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
   font-size: 0.9rem;
   text-align: center;
+  font-weight: 500;
+  border: 1px solid transparent;
 }
 
 .success-msg {
-  background: #d4edda;
-  color: #155724;
-  border: 1px solid #c3e6cb;
+  background: #f0fff4;
+  color: #38a169;
+  border-color: #9ae6b4;
 }
 
 .error-msg {
-  background: #f8d7da;
-  color: #721c24;
-  border: 1px solid #f5c6cb;
+  background: #fed7d7;
+  color: #e53e3e;
+  border-color: #feb2b2;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
   .streak-card {
     flex-direction: column;
+    padding: 1.5rem;
     text-align: center;
-    padding: 1.25rem;
   }
   
-  .streak-icon {
-    margin-right: 0;
-    margin-bottom: 0.75rem;
-    font-size: 2rem;
+  .streak-main {
+    margin-bottom: 1.5rem;
   }
   
-  .streak-info {
-    margin-bottom: 1rem;
-  }
-  
-  .streak-counter {
-    font-size: 2.2rem;
+  .streak-number {
+    font-size: 2.5rem;
   }
   
   .streak-stats {
-    gap: 1rem;
+    justify-content: center;
+    gap: 2rem;
   }
   
-  .stat-number {
-    font-size: 1.1rem;
+  .stat-divider {
+    height: 1.5rem;
   }
   
   .form-card {
-    padding: 1.5rem 1.25rem;
+    padding: 2rem 1.5rem;
   }
   
   .page-title {
-    font-size: 1.8rem;
+    font-size: 1.75rem;
   }
   
   .page-subtitle {
-    font-size: 0.95rem;
+    font-size: 0.9rem;
   }
 }
 
 @media (max-width: 480px) {
   .streak-card {
-    padding: 1rem;
+    padding: 1.25rem;
   }
   
-  .streak-counter {
-    font-size: 1.8rem;
+  .streak-number {
+    font-size: 2rem;
   }
   
   .streak-stats {
-    gap: 0.75rem;
+    gap: 1.5rem;
+  }
+  
+  .stat-value {
+    font-size: 1.1rem;
   }
   
   .form-card {
-    padding: 1.25rem 1rem;
+    padding: 1.5rem 1rem;
   }
   
   .content-wrapper {
     padding: 1.5rem 1rem !important;
+    border-radius: 16px;
+  }
+  
+  .page-title {
+    font-size: 1.5rem;
   }
 }
 </style>
