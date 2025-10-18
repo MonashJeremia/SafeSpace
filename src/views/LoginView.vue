@@ -3,7 +3,7 @@
     <MainHeader />
 
     <main id="main-content" class="login-content py-2 py-sm-3" role="main" aria-labelledby="login-heading">
-      <div class="container-fluid px-3">
+      <div class="container-fluid">
         <div class="row justify-content-center">
           <div class="col-12 col-sm-11 col-md-8 col-lg-6 col-xl-5 col-xxl-4">
             <div class="login-form-container">
@@ -204,6 +204,8 @@ export default {
   font-family: Arial, sans-serif;
   min-height: 100vh;
   background-color: #f8f9fa;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 .login-content {
@@ -211,7 +213,9 @@ export default {
   justify-content: center;
   align-items: center;
   min-height: calc(100vh - 150px);
-  padding: 1rem 0;
+  padding: 1rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .login-form-container {
@@ -220,6 +224,8 @@ export default {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   width: 100%;
+  max-width: 100%;
+  margin: 0 1rem;
 }
 
 .login-form {
@@ -227,6 +233,7 @@ export default {
   padding: 1.5rem;
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
 }
 
 .user-icon-large {
