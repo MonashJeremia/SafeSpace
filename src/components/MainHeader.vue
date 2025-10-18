@@ -75,11 +75,17 @@
                   >
                     Journal Log
                   </div>
+                  <div 
+                    v-if="isAuthenticated && currentUser && currentUser.userType === 'youth'"
+                    class="dropdown-item" 
+                    @click="goToCalendar" 
+                    role="menuitem"
+                  >
+                    Wellness Calendar
+                  </div>
                   <div class="dropdown-item" @click="goToInteractiveTools" role="menuitem">
                     Interactive Tools
                   </div>
-                  <div class="dropdown-item" role="menuitem">Youth Resource 1</div>
-                  <div class="dropdown-item" role="menuitem">Youth Resource 2</div>
                 </div>
               </div>
               <div class="dropdown nav-dropdown me-4" role="none">
@@ -168,11 +174,16 @@
                     >
                       Journal Log
                     </div>
+                    <div 
+                      v-if="isAuthenticated && currentUser && currentUser.userType === 'youth'"
+                      class="dropdown-item" 
+                      @click="goToCalendar"
+                    >
+                      Wellness Calendar
+                    </div>
                     <div class="dropdown-item" @click="goToInteractiveTools">
                       Interactive Tools
                     </div>
-                    <div class="dropdown-item">Youth Resource 1</div>
-                    <div class="dropdown-item">Youth Resource 2</div>
                   </div>
                 </div>
               </div>
@@ -350,6 +361,10 @@ export default {
       router.push("/admin/dashboard");
     };
 
+    const goToCalendar = () => {
+      router.push("/calendar");
+    };
+
     return {
       mobileMenuOpen,
       isAuthenticated,
@@ -369,6 +384,7 @@ export default {
       goToAboutUs,
       goToDonationStats,
       goToAdminDashboard,
+      goToCalendar,
     };
   },
 };

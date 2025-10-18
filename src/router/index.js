@@ -18,6 +18,7 @@ import DonationStatisticsView from "../views/DonationStatisticsView.vue";
 import { auth } from "../main.js";
 import { authState } from "../services/authService.js";
 import DonateNowView from "@/views/DonateNowView.vue";
+import CalendarView from "@/views/CalendarView.vue";
 
 const routes = [
   {
@@ -114,6 +115,15 @@ const routes = [
     path: "/donation-statistics",
     name: "DonationStatistics",
     component: DonationStatisticsView,
+  },
+  {
+    path: "/calendar",
+    name: "Calendar",
+    component: CalendarView,
+    meta: {
+      requiresAuth: true,
+      requiresRole: 'youth'
+    }
   },
 ];
 

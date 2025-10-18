@@ -14,5 +14,14 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
+    dedupe: ['vue']
   },
+  optimizeDeps: {
+    include: [
+      '@fullcalendar/core',
+      '@fullcalendar/vue3',
+      '@fullcalendar/daygrid',
+      '@fullcalendar/interaction'
+    ]
+  }
 })
