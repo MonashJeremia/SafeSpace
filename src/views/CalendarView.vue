@@ -230,10 +230,8 @@ const calendarOptions = computed(() => ({
     const renderEventContent = (eventInfo) => {
       return {
         html: `
-          <div class="fc-event-main-content">
-            <div class="fc-event-title" style="color: ${eventColors[eventInfo.event.extendedProps.type] || eventColors.other}">
-              ${eventInfo.event.title}
-            </div>
+          <div class="fc-event-main-content" style="background-color: ${eventColors[eventInfo.event.extendedProps.type] || eventColors.other}; color: white; padding: 2px 4px; border-radius: 3px;">
+            ${eventInfo.event.title}
           </div>
         `
       }
