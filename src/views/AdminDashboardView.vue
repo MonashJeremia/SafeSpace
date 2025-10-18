@@ -5,8 +5,17 @@
     <!-- Admin Dashboard Content -->
     <main id="main-content" class="content" role="main">
       <div class="admin-header">
-        <h1>Admin Dashboard</h1>
-        <p class="header-subtitle">System administration and analytics</p>
+        <div class="header-content">
+          <div class="header-text">
+            <h1>Admin Dashboard</h1>
+            <p class="header-subtitle">System administration and analytics</p>
+          </div>
+          <div class="header-actions">
+            <button class="btn reset-btn" @click="resetDashboardData" title="Reset all dashboard data">
+              🔄 Reset Data
+            </button>
+          </div>
+        </div>
       </div>
 
       <div class="admin-content">
@@ -258,6 +267,27 @@ export default {
       }
     }
 
+    // Reset all dashboard data
+    const resetDashboardData = () => {
+      if (confirm('Are you sure you want to reset all dashboard data? This will clear all users and journal entries. This action cannot be undone.')) {
+        // Clear all SafeSpace localStorage data
+        localStorage.removeItem('safespace_users')
+        localStorage.removeItem('journalEntries')
+        
+        // Clear any other SafeSpace related data
+        Object.keys(localStorage).forEach(key => {
+          if (key.startsWith('safespace_')) {
+            localStorage.removeItem(key)
+          }
+        })
+        
+        // Reload the data to show empty state
+        loadAdminData()
+        
+        alert('Dashboard data has been reset successfully.')
+      }
+    }
+
     onMounted(() => {
       loadAdminData()
     })
@@ -269,7 +299,8 @@ export default {
       journalStats,
       recentUsers,
       formatDate,
-      getRoleClass
+      getRoleClass,
+      resetDashboardData
     }
   }
 }
@@ -340,8 +371,42 @@ export default {
   background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
   color: white;
   padding: 2.5rem 2rem;
-  text-align: center;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header-text {
+  text-align: left;
+}
+
+.header-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.reset-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.reset-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-1px);
 }
 
 .header-icon {
@@ -562,9 +627,24 @@ export default {
   .admin-header {
     padding: 2rem 1rem;
   }
+  
+  .header-content {
+    flex-direction: column;
+    gap: 1.5rem;
+    text-align: center;
+  }
+  
+  .header-text {
+    text-align: center;
+  }
 
   .admin-header h1 {
     font-size: 2rem;
+  }
+  
+  .reset-btn {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.85rem;
   }
 
   .stats-grid {
