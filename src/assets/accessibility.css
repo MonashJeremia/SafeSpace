@@ -273,17 +273,19 @@ label {
 }
 
 /* Input Error States - WCAG 3.3.1 */
-input:invalid:not(:focus),
-textarea:invalid:not(:focus),
-select:invalid:not(:focus) {
-  border-color: #dc2626;
-}
-
+/* Only show error state for inputs with explicit aria-invalid="true" */
 input[aria-invalid="true"],
 textarea[aria-invalid="true"],
 select[aria-invalid="true"] {
   border-color: #dc2626;
   border-width: 2px;
+}
+
+/* Show error state for touched inputs that are invalid */
+input.touched:invalid:not(:focus),
+textarea.touched:invalid:not(:focus),
+select.touched:invalid:not(:focus) {
+  border-color: #dc2626;
 }
 
 /* Loading States - WCAG 1.3.1 */

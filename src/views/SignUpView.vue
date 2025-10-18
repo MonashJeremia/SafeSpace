@@ -39,7 +39,7 @@
                           @input="() => validateFirstName(false)"
                           required
                           aria-required="true"
-                          aria-invalid="errors.firstName ? 'true' : 'false'"
+                          :aria-invalid="errors.firstName ? 'true' : 'false'"
                           aria-describedby="firstName-error"
                           autocomplete="given-name"
                         />
@@ -60,7 +60,7 @@
                           @input="() => validateLastName(false)"
                           required
                           aria-required="true"
-                          aria-invalid="errors.lastName ? 'true' : 'false'"
+                          :aria-invalid="errors.lastName ? 'true' : 'false'"
                           aria-describedby="lastName-error"
                           autocomplete="family-name"
                         />
@@ -82,7 +82,7 @@
                       @input="() => validateEmail(false)"
                       required
                       aria-required="true"
-                      aria-invalid="errors.email ? 'true' : 'false'"
+                      :aria-invalid="errors.email ? 'true' : 'false'"
                       aria-describedby="email-error"
                       autocomplete="email"
                     />
@@ -101,7 +101,7 @@
                       @change="() => validateUserType(false)"
                       required
                       aria-required="true"
-                      aria-invalid="errors.userType ? 'true' : 'false'"
+                      :aria-invalid="errors.userType ? 'true' : 'false'"
                       aria-describedby="userType-error"
                     >
                       <option value="">Please select...</option>
