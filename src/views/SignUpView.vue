@@ -252,8 +252,8 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { useRouter } from "vue-router";
+import { ref, onMounted } from "vue";
+import { useRouter, onBeforeRouteUpdate } from "vue-router";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../main.js";
 import { createUserProfile } from "../services/authService.js";
@@ -440,6 +440,27 @@ const clearForm = () => {
   formData.value.confirmPassword = "";
   formData.value.userType = "";
 };
+
+// Clear form when the component is mounted and when the route updates
+onMounted(() => {
+  clearForm();
+});
+
+onBeforeRouteUpdate((to, from, next) => {
+  clearForm();
+  // Also clear validation errors
+  errors.value = {
+    firstName: null,
+    lastName: null,
+    email: null,
+    password: null,
+    confirmPassword: null,
+    userType: null,
+    registration: null,
+  };
+  showPassword.value = false;
+  next();
+});
 </script>
 
 <style scoped>
