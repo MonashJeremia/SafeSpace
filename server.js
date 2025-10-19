@@ -5,6 +5,7 @@ import cors from "cors";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+import multer from "multer";
 
 // Load environment variables from .env file
 dotenv.config();
@@ -24,6 +25,33 @@ app.use(express.json());
 
 // Initialize Resend email service client
 const resend = new Resend(process.env.VITE_RESEND_API_KEY);
+
+// Configure multer for file uploads
+// Store files in memory for direct email attachment
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 5 * 1024 * 1024, // 5MB max file size
+  },
+  fileFilter: (req, file, cb) => {
+    // Accept images, PDFs, and Word documents
+    const allowedMimes = [
+      'image/jpeg',
+      'image/png',
+      'image/gif',
+      'image/webp',
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    ];
+    
+    if (allowedMimes.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error('Invalid file type. Only images, PDFs, and Word documents are allowed.'));
+    }
+  }
+});
 
 // Health check endpoint
 app.get("/", (req, res) => {
@@ -133,12 +161,14 @@ app.post("/api/send-donation-receipt", async (req, res) => {
 /**
  * POST /api/send-positivity-email
  * Sends positivity message from Daily Positivity Challenge
- * Request body: { to: string, from?: string, message: string, senderName?: string }
+ * Supports optional file attachment
+ * Request body (multipart/form-data): { to: string, from?: string, message: string, senderName?: string, attachment?: File }
  * Response: { success: boolean, result?: object, error?: string }
  */
-app.post("/api/send-positivity-email", async (req, res) => {
+app.post("/api/send-positivity-email", upload.single('attachment'), async (req, res) => {
   try {
     const { to, from, message, senderName } = req.body;
+    const attachment = req.file;
 
     // Validate required fields
     if (!to || !message) {
@@ -170,6 +200,7 @@ app.post("/api/send-positivity-email", async (req, res) => {
           
           <div style="text-align: center; color: #999; font-size: 13px;">
             <p>Sent via SafeSpace Daily Positivity Challenge</p>
+            ${attachment ? '<p>📎 This message includes an attachment</p>' : ''}
           </div>
         </body>
       </html>
@@ -184,11 +215,30 @@ app.post("/api/send-positivity-email", async (req, res) => {
       reply_to: from || undefined,
     };
 
+    // Add attachment if present
+    if (attachment) {
+      const base64Content = attachment.buffer.toString('base64');
+      emailData.attachments = [
+        {
+          filename: attachment.originalname,
+          content: base64Content,
+        }
+      ];
+    }
+
     // Send email via Resend API
     const result = await resend.emails.send(emailData);
 
     res.json({ success: true, result });
   } catch (error) {
+    // Handle multer errors (file too large, invalid type, etc.)
+    if (error instanceof multer.MulterError) {
+      return res.status(400).json({
+        success: false,
+        error: error.message,
+      });
+    }
+    
     res.status(500).json({
       success: false,
       error: error.message,
@@ -197,4 +247,6 @@ app.post("/api/send-positivity-email", async (req, res) => {
 });
 
 // Start Express server on specified port
-app.listen(port, () => {});
+app.listen(port, () => {
+  console.log(`SafeSpace Email Server is running at http://localhost:${port}`);
+});

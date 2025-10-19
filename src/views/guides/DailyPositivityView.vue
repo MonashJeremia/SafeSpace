@@ -91,6 +91,29 @@
                       ></textarea>
                     </div>
 
+                    <!-- File Attachment Input -->
+                    <div class="mb-3">
+                      <label class="file-upload-label">
+                        <input
+                          type="file"
+                          ref="fileInput"
+                          @change="handleFileChange"
+                          accept="image/*,.pdf,.doc,.docx"
+                          class="file-input"
+                        />
+                        <div class="file-upload-button">
+                          <span class="upload-icon">📎</span>
+                          <span>{{ attachment ? attachment.name : 'Attach file (optional)' }}</span>
+                        </div>
+                      </label>
+                      <div v-if="attachment" class="file-info">
+                        <span class="file-name">{{ attachment.name }}</span>
+                        <span class="file-size">({{ formatFileSize(attachment.size) }})</span>
+                        <button type="button" @click="removeAttachment" class="remove-file-btn">✕</button>
+                      </div>
+                      <small class="form-text">Max 5MB • Images, PDF, Word documents</small>
+                    </div>
+
                     <button
                       type="submit"
                       class="btn-send"
@@ -128,6 +151,8 @@ export default {
     const showSuccess = ref(false)
     const showError = ref(false)
     const errorMessage = ref('')
+    const attachment = ref(null)
+    const fileInput = ref(null)
     
     // Streak system
     const streakData = ref({
@@ -211,6 +236,56 @@ export default {
       saveStreakData()
     }
 
+    /**
+     * Handle file selection for attachment
+     * Validates file size (max 5MB)
+     */
+    const handleFileChange = (event) => {
+      const file = event.target.files[0]
+      if (file) {
+        // Validate file size (5MB max)
+        const maxSize = 5 * 1024 * 1024 // 5MB in bytes
+        if (file.size > maxSize) {
+          showError.value = true
+          errorMessage.value = 'File size must be less than 5MB'
+          setTimeout(() => {
+            showError.value = false
+          }, 3000)
+          // Reset file input
+          if (fileInput.value) {
+            fileInput.value.value = ''
+          }
+          return
+        }
+        attachment.value = file
+      }
+    }
+
+    /**
+     * Remove selected attachment
+     */
+    const removeAttachment = () => {
+      attachment.value = null
+      if (fileInput.value) {
+        fileInput.value.value = ''
+      }
+    }
+
+    /**
+     * Format file size for display
+     */
+    const formatFileSize = (bytes) => {
+      if (bytes === 0) return '0 Bytes'
+      const k = 1024
+      const sizes = ['Bytes', 'KB', 'MB']
+      const i = Math.floor(Math.log(bytes) / Math.log(k))
+      return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i]
+    }
+
+    /**
+     * Send positivity email with optional attachment
+     * Uses FormData to handle file uploads
+     */
     const sendEmail = async () => {
       // Check if already sent today
       if (streakData.value.lastMessageDate === todayDateString.value) {
@@ -229,10 +304,21 @@ export default {
 
         const apiUrl = config.api.baseUrl || 'http://localhost:3000'
         
-        await axios.post(`${apiUrl}/api/send-positivity-email`, {
-          to: recipientEmail.value,
-          message: message.value,
-          senderName: senderName.value
+        // Use FormData to handle file upload
+        const formData = new FormData()
+        formData.append('to', recipientEmail.value)
+        formData.append('message', message.value)
+        formData.append('senderName', senderName.value)
+        
+        // Add attachment if present
+        if (attachment.value) {
+          formData.append('attachment', attachment.value)
+        }
+        
+        await axios.post(`${apiUrl}/api/send-positivity-email`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
         })
 
         // Update streak on successful send
@@ -242,6 +328,7 @@ export default {
         senderName.value = ''
         recipientEmail.value = ''
         message.value = ''
+        removeAttachment()
         
         setTimeout(() => {
           showSuccess.value = false
@@ -272,7 +359,12 @@ export default {
       errorMessage,
       sendEmail,
       streakData,
-      todayDateString
+      todayDateString,
+      attachment,
+      fileInput,
+      handleFileChange,
+      removeAttachment,
+      formatFileSize
     }
   }
 }
@@ -508,6 +600,90 @@ export default {
   background: #fed7d7;
   color: #e53e3e;
   border-color: #feb2b2;
+}
+
+/* File Upload Styles */
+.file-upload-label {
+  display: block;
+  cursor: pointer;
+  margin: 0;
+}
+
+.file-input {
+  display: none;
+}
+
+.file-upload-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  border: 2px dashed #cbd5e0;
+  border-radius: 12px;
+  background: #f7fafc;
+  color: #4a5568;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.file-upload-button:hover {
+  border-color: #4299e1;
+  background: #ebf8ff;
+  color: #3182ce;
+}
+
+.upload-icon {
+  font-size: 1.25rem;
+}
+
+.file-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding: 0.75rem;
+  background: #ebf8ff;
+  border-radius: 8px;
+  font-size: 0.85rem;
+}
+
+.file-name {
+  color: #2d3748;
+  font-weight: 500;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file-size {
+  color: #718096;
+  font-size: 0.8rem;
+}
+
+.remove-file-btn {
+  background: transparent;
+  border: none;
+  color: #e53e3e;
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0 0.25rem;
+  line-height: 1;
+  transition: all 0.2s ease;
+}
+
+.remove-file-btn:hover {
+  color: #c53030;
+  transform: scale(1.1);
+}
+
+.form-text {
+  display: block;
+  margin-top: 0.5rem;
+  color: #a0aec0;
+  font-size: 0.8rem;
 }
 
 /* Responsive Design */
