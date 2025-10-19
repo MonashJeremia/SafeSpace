@@ -56,9 +56,9 @@
                         <button
                           class="guide-btn"
                           @click="openGuide('daily-positivity')"
-                          aria-label="Open Daily Positivity Challenge guide"
+                          aria-label="Open Daily Positivity Message guide"
                         >
-                          Daily Positivity Challenge
+                          Daily Positivity Message
                         </button>
                       </div>
 
