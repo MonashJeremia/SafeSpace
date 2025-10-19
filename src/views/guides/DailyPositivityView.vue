@@ -137,6 +137,9 @@ import { ref, computed, onMounted } from 'vue'
 import axios from 'axios'
 import MainHeader from '../../components/MainHeader.vue'
 import config from '../../config/environment.js'
+import { authState } from '../../services/authService.js'
+import { doc, getDoc, setDoc } from 'firebase/firestore'
+import { db } from '../../main.js'
 
 export default {
   name: 'DailyPositivityView',
@@ -166,38 +169,81 @@ export default {
     const todayDateString = computed(() => {
       return new Date().toDateString()
     })
-    
-    // Initialize streak data from localStorage
-    const initializeStreakData = () => {
-      const savedStreak = localStorage.getItem('dailyPositivityStreak')
-      if (savedStreak) {
-        const parsed = JSON.parse(savedStreak)
-        streakData.value = { ...parsed }
-        
-        // Check if streak should be reset due to missed days
-        if (parsed.lastMessageDate) {
-          const lastDate = new Date(parsed.lastMessageDate)
-          const today = new Date()
-          const yesterday = new Date(today)
-          yesterday.setDate(yesterday.getDate() - 1)
-          
-          // Reset streak if more than 1 day has passed
-          if (lastDate.toDateString() !== today.toDateString() && 
-              lastDate.toDateString() !== yesterday.toDateString()) {
-            streakData.value.currentStreak = 0
-            saveStreakData()
+
+    // Helper: check if user is authenticated and get UID
+    const isAuthenticated = computed(() => authState.isAuthenticated)
+    const currentUid = computed(() => authState.currentUser ? authState.currentUser.id : null)
+
+    // Load streak data for authenticated user from Firestore or fallback to localStorage for guests
+    const initializeStreakData = async () => {
+      try {
+        if (isAuthenticated.value && currentUid.value) {
+          // Fetch user doc and read dailyPositivityStreak field
+          const userDocRef = doc(db, 'users', currentUid.value)
+          const snap = await getDoc(userDocRef)
+          if (snap.exists()) {
+            const data = snap.data()
+            if (data && data.dailyPositivityStreak) {
+              streakData.value = { ...data.dailyPositivityStreak }
+            }
+          }
+
+          // If lastMessageDate exists, check if streak should be reset
+          if (streakData.value.lastMessageDate) {
+            const lastDate = new Date(streakData.value.lastMessageDate)
+            const today = new Date()
+            const yesterday = new Date(today)
+            yesterday.setDate(yesterday.getDate() - 1)
+
+            if (lastDate.toDateString() !== today.toDateString() && 
+                lastDate.toDateString() !== yesterday.toDateString()) {
+              streakData.value.currentStreak = 0
+              await saveStreakData()
+            }
+          }
+        } else {
+          // Guest/localStorage fallback
+          const savedStreak = localStorage.getItem('dailyPositivityStreak_guest')
+          if (savedStreak) {
+            const parsed = JSON.parse(savedStreak)
+            streakData.value = { ...parsed }
+
+            // Check if streak should be reset due to missed days
+            if (parsed.lastMessageDate) {
+              const lastDate = new Date(parsed.lastMessageDate)
+              const today = new Date()
+              const yesterday = new Date(today)
+              yesterday.setDate(yesterday.getDate() - 1)
+
+              if (lastDate.toDateString() !== today.toDateString() && 
+                  lastDate.toDateString() !== yesterday.toDateString()) {
+                streakData.value.currentStreak = 0
+                saveStreakData()
+              }
+            }
           }
         }
+      } catch (err) {
+        // Fail silently but keep local state
       }
     }
-    
-    // Save streak data to localStorage
-    const saveStreakData = () => {
-      localStorage.setItem('dailyPositivityStreak', JSON.stringify(streakData.value))
+
+    // Save streak data to Firestore for authenticated users, otherwise to localStorage
+    const saveStreakData = async () => {
+      try {
+        if (isAuthenticated.value && currentUid.value) {
+          const userDocRef = doc(db, 'users', currentUid.value)
+          await setDoc(userDocRef, { dailyPositivityStreak: streakData.value }, { merge: true })
+        } else {
+          localStorage.setItem('dailyPositivityStreak_guest', JSON.stringify(streakData.value))
+        }
+      } catch (err) {
+        // Silent fail
+      }
     }
-    
+
     // Update streak when message is sent
-    const updateStreak = () => {
+    const updateStreak = async () => {
       const today = todayDateString.value
       
       // Don't update streak if already sent today
@@ -232,8 +278,8 @@ export default {
       streakData.value.lastMessageDate = today
       streakData.value.totalMessages += 1
       
-      // Save to localStorage
-      saveStreakData()
+      // Save to Firestore or localStorage
+      await saveStreakData()
     }
 
     /**
@@ -322,7 +368,7 @@ export default {
         })
 
         // Update streak on successful send
-        updateStreak()
+        await updateStreak()
         
         showSuccess.value = true
         senderName.value = ''
@@ -345,10 +391,10 @@ export default {
     }
     
     // Initialize streak data on component mount
-    onMounted(() => {
-      initializeStreakData()
+    onMounted(async () => {
+      await initializeStreakData()
     })
-
+    
     return {
       senderName,
       recipientEmail,
