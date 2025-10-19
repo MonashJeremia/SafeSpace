@@ -104,6 +104,7 @@ import { ref, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../main.js";
+import { getUserProfile, setCurrentUser } from "../services/authService.js";
 import MainHeader from "../components/MainHeader.vue";
 // Import security utilities for input validation and XSS protection
 import { sanitizeInput, isValidEmail } from "../utils/security.js";
@@ -160,6 +161,13 @@ export default {
           cleanEmail,
           cleanPassword
         );
+
+        // Fetch user profile from Firestore and set in auth state
+        const userProfile = await getUserProfile(userCredential.user.uid);
+        
+        if (userProfile) {
+          setCurrentUser(userProfile);
+        }
 
         // Success - redirect to intended page or home
         const redirectPath = route.query.redirect || "/";

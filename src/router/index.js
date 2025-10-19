@@ -134,21 +134,9 @@ const router = createRouter({
 
 // Navigation guards
 router.beforeEach((to, from, next) => {
-  // Try to use local auth first, fall back to Firebase
-  const localAuth = authState.isAuthenticated;
-  const firebaseAuth = auth.currentUser !== null;
-  const isAuthenticated = localAuth || firebaseAuth;
-  
-  // Get user from appropriate source
-  let currentUser = null;
-  if (localAuth) {
-    currentUser = authState.currentUser;
-  } else if (firebaseAuth) {
-    // Try to get user profile from localStorage
-    const storedUsers = JSON.parse(localStorage.getItem('safespace_users') || '[]');
-    const userProfile = storedUsers.find(u => u.email.toLowerCase() === auth.currentUser.email.toLowerCase());
-    currentUser = userProfile;
-  }
+  // Check authentication state from authService
+  const isAuthenticated = authState.isAuthenticated;
+  const currentUser = authState.currentUser;
 
   // Check if route requires authentication
   if (to.meta.requiresAuth && !isAuthenticated) {

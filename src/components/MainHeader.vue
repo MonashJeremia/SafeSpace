@@ -264,6 +264,7 @@ import { ref, computed, onMounted, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
 import { signOut, onAuthStateChanged } from "firebase/auth";
 import { auth } from "../main.js";
+import { getUserProfile, setCurrentUser, logoutUser } from "../services/authService.js";
 import DonateNowView from "@/views/DonateNowView.vue";
 
 export default {
@@ -277,23 +278,28 @@ export default {
     const isAuthenticated = computed(() => currentUser.value !== null);
     const isAdmin = computed(() => isAuthenticated.value && currentUser.value?.userType === 'admin');
 
-    // Sync Firebase auth with localStorage user profile
-    // Combines Firebase auth state with local user data (userType, names)
+    // Sync Firebase auth with Firestore user profile
+    // Fetches complete user data from Firestore when auth state changes
     let unsubscribe = null;
     onMounted(() => {
-      unsubscribe = onAuthStateChanged(auth, (user) => {
+      unsubscribe = onAuthStateChanged(auth, async (user) => {
         if (user) {
-          // Retrieve full user profile from localStorage
-          const storedUsers = JSON.parse(localStorage.getItem('safespace_users') || '[]');
-          const userProfile = storedUsers.find(u => u.email.toLowerCase() === user.email.toLowerCase());
+          // Fetch full user profile from Firestore
+          const userProfile = await getUserProfile(user.uid);
           
-          // Merge Firebase auth data with stored profile
-          currentUser.value = {
-            email: user.email,
-            firstName: userProfile?.firstName || user.email?.split("@")[0] || "User",
-            lastName: userProfile?.lastName || "",
-            userType: userProfile?.userType || "youth",
-          };
+          if (userProfile) {
+            currentUser.value = userProfile;
+            setCurrentUser(userProfile);
+          } else {
+            // Fallback if profile not found in Firestore
+            currentUser.value = {
+              id: user.uid,
+              email: user.email,
+              firstName: user.email?.split("@")[0] || "User",
+              lastName: "",
+              userType: "youth",
+            };
+          }
         } else {
           currentUser.value = null;
         }
@@ -320,11 +326,12 @@ export default {
 
     /**
      * Sign out user from Firebase and redirect home
-     * Clears Firebase auth session
+     * Clears both Firebase auth session and local auth state
      */
     const handleLogout = async () => {
       try {
         await signOut(auth);
+        logoutUser();
         router.push("/");
       } catch (error) {
         // Silent fail on logout error

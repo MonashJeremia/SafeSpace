@@ -1,18 +1,40 @@
-rules_version='2'
+rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    match /{document=**} {
-      // This rule allows anyone with your database reference to view, edit,
-      // and delete all data in your database. It is useful for getting
-      // started, but it is configured to expire after 30 days because it
-      // leaves your app open to attackers. At that time, all client
-      // requests to your database will be denied.
-      //
-      // Make sure to write security rules for your app before that time, or
-      // else all client requests to your database will be denied until you
-      // update your rules.
-      allow read, write: if request.time < timestamp.date(2025, 11, 11);
+    
+    // User profiles collection
+    match /users/{userId} {
+      // Users can read their own profile
+      allow read: if request.auth != null && request.auth.uid == userId;
+      
+      // Users can create their own profile during signup
+      allow create: if request.auth != null && request.auth.uid == userId;
+      
+      // Users can update their own profile
+      allow update: if request.auth != null && request.auth.uid == userId;
+      
+      // Only allow deletion by the user themselves
+      allow delete: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Donations collection - for admin access
+    match /donations/{donationId} {
+      // Anyone can create a donation
+      allow create: if request.auth != null;
+      
+      // Only authenticated users can read donations
+      allow read: if request.auth != null;
+      
+      // No one can update or delete donations (immutable records)
+      allow update, delete: if false;
+    }
+    
+    // Admin-only access to all user data
+    match /users/{userId} {
+      // Admins can read all user profiles
+      allow read: if request.auth != null && 
+                     get(/databases/$(database)/documents/users/$(request.auth.uid)).data.userType == 'admin';
     }
   }
 }

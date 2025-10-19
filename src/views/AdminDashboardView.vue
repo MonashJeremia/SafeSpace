@@ -128,8 +128,9 @@
 <script>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { onAuthStateChanged } from 'firebase/auth'
-import { auth } from '../main.js'
+import { collection, getDocs, query, orderBy, limit, deleteDoc } from 'firebase/firestore'
+import { db } from '../main.js'
+import { authState } from '../services/authService.js'
 import MainHeader from '../components/MainHeader.vue'
 
 export default {
@@ -140,34 +141,9 @@ export default {
   setup() {
     const router = useRouter()
     
-    // Auth state using Firebase (same as MainHeader)
-    const currentUser = ref(null)
-    const isAuthenticated = computed(() => currentUser.value !== null)
-    
-    // Listen to Firebase auth state changes
-    let unsubscribe = null
-    onMounted(() => {
-      unsubscribe = onAuthStateChanged(auth, (user) => {
-        if (user) {
-          // Check if user has userType stored in localStorage from registration
-          const storedUsers = JSON.parse(localStorage.getItem('safespace_users') || '[]')
-          const userProfile = storedUsers.find(u => u.email.toLowerCase() === user.email.toLowerCase())
-          
-          currentUser.value = {
-            email: user.email,
-            firstName: userProfile?.firstName || user.email?.split("@")[0] || "User",
-            lastName: userProfile?.lastName || "",
-            userType: userProfile?.userType || "youth",
-          }
-        } else {
-          currentUser.value = null
-        }
-      })
-    })
-
-    onUnmounted(() => {
-      if (unsubscribe) unsubscribe()
-    })
+    // Use centralized auth state from authService
+    const currentUser = computed(() => authState.currentUser)
+    const isAuthenticated = computed(() => authState.isAuthenticated)
     
     // Data
     const userStats = ref({
@@ -192,60 +168,71 @@ export default {
     
     const recentUsers = ref([])
 
-    // Load admin data
-    const loadAdminData = () => {
-      // Load user statistics
-      const users = JSON.parse(localStorage.getItem('safespace_users') || '[]')
-      userStats.value = {
-        total: users.length,
-        youth: users.filter(u => u.userType === 'youth').length,
-        advisors: users.filter(u => u.userType === 'advisor').length,
-        admins: users.filter(u => u.userType === 'admin').length
-      }
-      
-      // Get recent users (last 5)
-      recentUsers.value = users
-        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-        .slice(0, 5)
-      
-      // Load journal analytics
-      const journalEntries = JSON.parse(localStorage.getItem('journalEntries') || '[]')
-      
-      if (journalEntries.length > 0) {
-        const totalMood = journalEntries.reduce((sum, entry) => sum + parseInt(entry.mood), 0)
-        const averageMood = totalMood / journalEntries.length
+    // Load admin data from Firestore
+    const loadAdminData = async () => {
+      try {
+        // Load user statistics from Firestore
+        const usersRef = collection(db, 'users')
+        const usersSnapshot = await getDocs(usersRef)
         
-        const now = new Date()
-        const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
-        const oneMonthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
+        const users = []
+        usersSnapshot.forEach((doc) => {
+          users.push({ id: doc.id, ...doc.data() })
+        })
         
-        const thisWeekEntries = journalEntries.filter(entry => 
-          new Date(entry.date) >= oneWeekAgo
-        ).length
-        
-        const thisMonthEntries = journalEntries.filter(entry => 
-          new Date(entry.date) >= oneMonthAgo
-        ).length
-        
-        const supportNeeded = journalEntries.filter(entry => entry.needsSupport).length
-        
-        // Mood breakdown
-        const moodBreakdown = journalEntries.reduce((acc, entry) => {
-          const mood = parseInt(entry.mood)
-          if (mood <= 3) acc.low++
-          else if (mood <= 6) acc.medium++
-          else acc.high++
-          return acc
-        }, { low: 0, medium: 0, high: 0 })
-        
-        journalStats.value = {
-          totalEntries: journalEntries.length,
-          averageMood,
-          supportNeeded,
-          thisWeek: thisWeekEntries,
-          thisMonth: thisMonthEntries,
-          moodBreakdown
+        userStats.value = {
+          total: users.length,
+          youth: users.filter(u => u.userType === 'youth').length,
+          advisors: users.filter(u => u.userType === 'advisor').length,
+          admins: users.filter(u => u.userType === 'admin').length
         }
+        
+        // Get recent users (last 5)
+        recentUsers.value = users
+          .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+          .slice(0, 5)
+        
+        // Load journal analytics from localStorage (journal entries stay local for now)
+        const journalEntries = JSON.parse(localStorage.getItem('journalEntries') || '[]')
+        
+        if (journalEntries.length > 0) {
+          const totalMood = journalEntries.reduce((sum, entry) => sum + parseInt(entry.mood), 0)
+          const averageMood = totalMood / journalEntries.length
+          
+          const now = new Date()
+          const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+          const oneMonthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000)
+          
+          const thisWeekEntries = journalEntries.filter(entry => 
+            new Date(entry.date) >= oneWeekAgo
+          ).length
+          
+          const thisMonthEntries = journalEntries.filter(entry => 
+            new Date(entry.date) >= oneMonthAgo
+          ).length
+          
+          const supportNeeded = journalEntries.filter(entry => entry.needsSupport).length
+          
+          // Mood breakdown
+          const moodBreakdown = journalEntries.reduce((acc, entry) => {
+            const mood = parseInt(entry.mood)
+            if (mood <= 3) acc.low++
+            else if (mood <= 6) acc.medium++
+            else acc.high++
+            return acc
+          }, { low: 0, medium: 0, high: 0 })
+          
+          journalStats.value = {
+            totalEntries: journalEntries.length,
+            averageMood,
+            supportNeeded,
+            thisWeek: thisWeekEntries,
+            thisMonth: thisMonthEntries,
+            moodBreakdown
+          }
+        }
+      } catch (error) {
+        console.error('Error loading admin data:', error)
       }
     }
 
@@ -268,13 +255,12 @@ export default {
     }
 
     // Reset all dashboard data
-    const resetDashboardData = () => {
-      if (confirm('Are you sure you want to reset all dashboard data? This will clear all users and journal entries. This action cannot be undone.')) {
-        // Clear all SafeSpace localStorage data
-        localStorage.removeItem('safespace_users')
+    const resetDashboardData = async () => {
+      if (confirm('Are you sure you want to reset all dashboard data? This will clear journal entries from localStorage. This action cannot be undone. Note: User accounts in Firestore will not be deleted.')) {
+        // Clear journal entries from localStorage
         localStorage.removeItem('journalEntries')
         
-        // Clear any other SafeSpace related data
+        // Clear any other SafeSpace related data from localStorage
         Object.keys(localStorage).forEach(key => {
           if (key.startsWith('safespace_')) {
             localStorage.removeItem(key)
@@ -282,9 +268,9 @@ export default {
         })
         
         // Reload the data to show empty state
-        loadAdminData()
+        await loadAdminData()
         
-        alert('Dashboard data has been reset successfully.')
+        alert('Dashboard data has been reset successfully. User accounts remain in Firestore.')
       }
     }
 
